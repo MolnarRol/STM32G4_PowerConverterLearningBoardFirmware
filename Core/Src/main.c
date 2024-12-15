@@ -26,6 +26,8 @@
 #include "PUI_public_interface.h"
 #include <PCC_public_interface.h>
 #include <pcc_line_commutated.h>
+#include <sys_public_interface.h>
+#include <AINT_public_interface.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,6 +109,8 @@ int main(void)
   PCC_LC_InitZeroCrossingDetection_v();
   PCC_InitPulseTimer1_v();
   PCC_LC_ZeroCrossingDetection_Enable_v();
+  AINT_InitializeInterfaces_v();
+  SYS_IWDG_Init_v();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -118,6 +122,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+      SYS_IWDG_FeedTheDog_v();
   }
   /* USER CODE END 3 */
 }
@@ -240,6 +245,7 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+
   while (1)
   {
   }

@@ -20,7 +20,8 @@ inline void AINT_InitializeInterfaces_v(void)
      *  - Reference voltage is set to be around 2048 mV
      */
     VREFBUF->CSR    = 0UL;                              /* Set register to 0. Default: 0x2. */
-    VREFBUF->CSR    |= VREFBUF_CSR_ENVR;                /* Internal voltage reference mode. Reference voltage level: 2048 mV.*/
+    VREFBUF->CSR    |= VREFBUF_CSR_ENVR;                /* Internal voltage reference mode. */
+    VREFBUF->CSR	|= 0UL << VREFBUF_CSR_VRS_Pos;		/*  Reference voltage level: 2048 mV. */
     while((VREFBUF->CSR & VREFBUF_CSR_VRR) == 0)        /* Wait for reference voltage to stabilize at selected level. */
     {
         __NOP();
