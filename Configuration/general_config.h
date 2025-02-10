@@ -18,7 +18,7 @@
 #define CONFIG_ENABLE_DIGITAL_INPUTS_d              ENABLE_d
 
 /* IWDG - Independent watchdog. */
-#define CONFIG_SYS_IWDG_ENABLE_MODULE_d             ENABLE_d
+#define CONFIG_SYS_IWDG_ENABLE_MODULE_d             DISABLE_d
 #define CONFIG_SYS_IWDG_MAX_RESET_PERIOD__us__d     1500UL
 
 #endif /* GENERAL_CONFIG_H_ */

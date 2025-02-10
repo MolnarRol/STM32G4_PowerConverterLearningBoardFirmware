@@ -28,6 +28,7 @@
 #include <pcc_line_commutated.h>
 #include <sys_public_interface.h>
 #include <AINT_public_interface.h>
+#include <ATB_public_interface.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,19 +107,26 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  PCC_LC_InitZeroCrossingDetection_v();
-  PCC_InitPulseTimer1_v();
-  PCC_LC_ZeroCrossingDetection_Enable_v();
-  AINT_InitializeInterfaces_v();
-  SYS_IWDG_Init_v();
   /* USER CODE BEGIN 2 */
-
+  PCC_LC_InitZeroCrossingDetection_v();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(zc_en_b)
+	  {
+		  PCC_LC_ZeroCrossingDetection_Enable_v();
+	  }
+	  else
+	  {
+		  PCC_LC_ZeroCrossingDetection_Disable_v();
+	  }
+//	  GPIOD->BSRR |= GPIO_BSRR_BS_2;
+//	  for(u32 i = 0; i < 500000; i++);
+//	  GPIOD->BSRR |= GPIO_BSRR_BR_2;
+//	  for(u32 i = 0; i < 2000000; i++);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -179,11 +187,25 @@ void SystemClock_Config(void)
   */
 static void MX_GPIO_Init(void)
 {
+  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOF);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOD);
+
+  /**/
+  LL_GPIO_ResetOutputPin(GPIOD, LL_GPIO_PIN_2);
+
+  /**/
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_2;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -203,6 +225,8 @@ void GPIO_Init(void)
                        RCC_AHB2ENR_GPIOFEN  |
                        RCC_AHB2ENR_GPIOGEN;
 
+       GPIOD->MODER					&= ~GPIO_MODER_MODE2_Msk;
+       GPIOD->MODER					|= 1UL << GPIO_MODER_MODE2_Pos;
     /*************************************************************************************************
     * Digital inputs
     *************************************************************************************************/
@@ -234,6 +258,15 @@ void GPIO_Init(void)
        GPIOB->PUPDR                 &= ~(GPIO_PUPDR_PUPD15_Msk);
 
 }
+
+int _write(int file, char *ptr, int len)
+{
+  /* Implement your write code here, this is used by puts and printf for example */
+  int i=0;
+  for(i=0 ; i<len ; i++)
+    ITM_SendChar((*ptr++));
+  return len;
+}
 /* USER CODE END 4 */
 
 /**
@@ -244,6 +277,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+	printf("Fault. Core stopped.\r\n");
   __disable_irq();
 
   while (1)
@@ -265,6 +299,8 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+	printf("Assertion failed: file %s on line %ld\r\n", file, line);
+	Error_Handler();
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
