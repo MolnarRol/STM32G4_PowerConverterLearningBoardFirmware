@@ -52,7 +52,7 @@
 u16 tim4_cnt;
 boolean zc_en_b = False_b;
 boolean prev_zc_en_b = False_b;
-u64 blink_tick_u64 = 0;
+u32 blink_tick_u32 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -134,7 +134,7 @@ int main(void)
 #endif
 
 #if 1
-	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u64, ATB__ms__TO__ticks__u64(250)))
+	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(50)))
 	  {
 		  LL_GPIO_TogglePin(GPIOD, LL_GPIO_PIN_2);
 	  }
@@ -238,8 +238,14 @@ void GPIO_Init(void)
                        RCC_AHB2ENR_GPIOFEN  |
                        RCC_AHB2ENR_GPIOGEN;
 
+	/*************************************************************************************************
+	* Onboard LED.
+	*************************************************************************************************/
        GPIOD->MODER					&= ~GPIO_MODER_MODE2_Msk;
        GPIOD->MODER					|= 1UL << GPIO_MODER_MODE2_Pos;
+
+       GPIOB->MODER					&= ~GPIO_MODER_MODE8_Msk;
+       GPIOB->MODER					|= 1UL << GPIO_MODER_MODE8_Pos;
     /*************************************************************************************************
     * Digital inputs
     *************************************************************************************************/

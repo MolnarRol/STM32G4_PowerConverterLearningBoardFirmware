@@ -18,7 +18,7 @@ extern "C"
 {
 #endif
 
-#define ATB_RELOAD_VALUE_d		0xFFFFFFUL
+#define ATB_RELOAD_VALUE_d		0xFFFFUL
 
 #ifdef __cplusplus
 }
