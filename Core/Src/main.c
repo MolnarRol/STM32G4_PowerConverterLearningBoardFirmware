@@ -52,6 +52,7 @@
 u16 tim4_cnt;
 boolean zc_en_b = False_b;
 boolean prev_zc_en_b = False_b;
+u64 blink_tick_u64 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,19 +103,26 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   GPIO_Init();
+#if 0
   PUI_Init();
+#endif
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+#if 1
   PCC_LC_InitZeroCrossingDetection_v();
+#endif
+  ATB_Init_v();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
+#if 1
 	  if(zc_en_b)
 	  {
 		  PCC_LC_ZeroCrossingDetection_Enable_v();
@@ -123,10 +131,14 @@ int main(void)
 	  {
 		  PCC_LC_ZeroCrossingDetection_Disable_v();
 	  }
-//	  GPIOD->BSRR |= GPIO_BSRR_BS_2;
-//	  for(u32 i = 0; i < 500000; i++);
-//	  GPIOD->BSRR |= GPIO_BSRR_BR_2;
-//	  for(u32 i = 0; i < 2000000; i++);
+#endif
+
+#if 1
+	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u64, ATB__ms__TO__ticks__u64(250)))
+	  {
+		  LL_GPIO_TogglePin(GPIOD, LL_GPIO_PIN_2);
+	  }
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -195,6 +207,7 @@ static void MX_GPIO_Init(void)
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOF);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOD);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
 
   /**/
   LL_GPIO_ResetOutputPin(GPIOD, LL_GPIO_PIN_2);
@@ -218,7 +231,7 @@ void GPIO_Init(void)
     * Enable all GPIO port clocks.
     *************************************************************************************************/
        RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN  |
-                       RCC_AHB2ENR_GPIOBEN  |
+                       RCC_AHB2ENR_GPIOBEN 	|
                        RCC_AHB2ENR_GPIOCEN  |
                        RCC_AHB2ENR_GPIODEN  |
                        RCC_AHB2ENR_GPIOEEN  |

@@ -5,6 +5,7 @@
  */
 #include <stdint.h>
 #include <limits.h>
+#include <compiler_defines.h>
 
 #ifndef INC_APP_TYPES_H_
 #define INC_APP_TYPES_H_

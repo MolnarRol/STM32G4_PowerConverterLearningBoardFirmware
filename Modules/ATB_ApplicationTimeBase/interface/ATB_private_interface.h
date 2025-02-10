@@ -11,12 +11,14 @@
 #include <app_types.h>
 #include <stm32g4xx.h>
 #include <ATB_public_interface.h>
-#include <UTIL_public_interface.h>
+#include <general_config.h>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+#define ATB_RELOAD_VALUE_d		0xFFFFFFUL
 
 #ifdef __cplusplus
 }
