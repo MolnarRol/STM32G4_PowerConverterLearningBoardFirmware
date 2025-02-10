@@ -111,7 +111,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-#if 1
+#if 0
   PCC_LC_InitZeroCrossingDetection_v();
 #endif
   ATB_Init_v();
@@ -122,7 +122,7 @@ int main(void)
   while (1)
   {
 
-#if 1
+#if 0
 	  if(zc_en_b)
 	  {
 		  PCC_LC_ZeroCrossingDetection_Enable_v();
@@ -134,7 +134,7 @@ int main(void)
 #endif
 
 #if 1
-	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(50)))
+	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))
 	  {
 		  LL_GPIO_TogglePin(GPIOD, LL_GPIO_PIN_2);
 	  }
@@ -230,51 +230,79 @@ void GPIO_Init(void)
     /*************************************************************************************************
     * Enable all GPIO port clocks.
     *************************************************************************************************/
-       RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN  |
-                       RCC_AHB2ENR_GPIOBEN 	|
-                       RCC_AHB2ENR_GPIOCEN  |
-                       RCC_AHB2ENR_GPIODEN  |
-                       RCC_AHB2ENR_GPIOEEN  |
-                       RCC_AHB2ENR_GPIOFEN  |
-                       RCC_AHB2ENR_GPIOGEN;
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN  |
+				   RCC_AHB2ENR_GPIOBEN 	|
+				   RCC_AHB2ENR_GPIOCEN  |
+				   RCC_AHB2ENR_GPIODEN  |
+				   RCC_AHB2ENR_GPIOEEN  |
+				   RCC_AHB2ENR_GPIOFEN  |
+				   RCC_AHB2ENR_GPIOGEN;
 
 	/*************************************************************************************************
 	* Onboard LED.
 	*************************************************************************************************/
-       GPIOD->MODER					&= ~GPIO_MODER_MODE2_Msk;
-       GPIOD->MODER					|= 1UL << GPIO_MODER_MODE2_Pos;
+	GPIOD->MODER					&= ~GPIO_MODER_MODE2_Msk;
+	GPIOD->MODER					|= 1UL << GPIO_MODER_MODE2_Pos;
 
-       GPIOB->MODER					&= ~GPIO_MODER_MODE8_Msk;
-       GPIOB->MODER					|= 1UL << GPIO_MODER_MODE8_Pos;
+   	/*************************************************************************************************
+   	* BOOT0.
+   	*************************************************************************************************/
+	GPIOB->MODER					&= ~GPIO_MODER_MODE8_Msk;
+	GPIOB->MODER					|= 1UL << GPIO_MODER_MODE8_Pos;
+
+	/*************************************************************************************************
+	* Gate driver enable pins.
+	*************************************************************************************************/
+	/* PC0 - PC3 <-> GD_en1 - GD_en4 */
+	GPIOC->ODR						&= ~(0xF);
+	GPIOC->MODER					&= 	~(GPIO_MODER_MODE0_Msk 	|
+										 GPIO_MODER_MODE1_Msk 	|
+										 GPIO_MODER_MODE2_Msk 	|
+										 GPIO_MODER_MODE3_Msk	);
+	GPIOC->MODER					|=	(1UL << GPIO_MODER_MODE0_Pos) |
+										(1UL << GPIO_MODER_MODE1_Pos) |
+										(1UL << GPIO_MODER_MODE2_Pos) |
+										(1UL << GPIO_MODER_MODE3_Pos);
+
+	/* PB2 <-> GD_en5 */
+	GPIOB->BSRR						|= GPIO_BSRR_BR2_Msk;
+	GPIOB->MODER					&= ~GPIO_MODER_MODE2_Msk;
+	GPIOB->MODER					|= 1UL << GPIO_MODER_MODE2_Pos;
+
+	/* PA5 <-> GD_en6 */
+	GPIOA->BSRR						|= GPIO_BSRR_BR5_Msk;
+	GPIOA->MODER					&= ~GPIO_MODER_MODE5_Msk;
+	GPIOA->MODER					|= 1UL << GPIO_MODER_MODE5_Pos;
+
     /*************************************************************************************************
     * Digital inputs
     *************************************************************************************************/
-    #if (CONFIG_ENABLE_DIGITAL_INPUTS_d == ENABLE)
-       DI0_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
-       DI0_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
-       DI0_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI0_GPIO_PIN_d);
+#if (CONFIG_ENABLE_DIGITAL_INPUTS_d == ENABLE)
+	DI0_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
+	DI0_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
+	DI0_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI0_GPIO_PIN_d);
 
-       DI1_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
-       DI1_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
-       DI1_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI1_GPIO_PIN_d);
-    #endif
+	DI1_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
+	DI1_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
+	DI1_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI1_GPIO_PIN_d);
+#endif
 
     /*************************************************************************************************
     * Configuring the PB14 pin as zero crossing detection circuit output -> input to the timer module.
     *************************************************************************************************/
-       GPIOB->MODER                 &= ~GPIO_MODER_MODE14_Msk;                                          /* Reset mode for PB14. */
-       GPIOB->MODER                 |= 2UL << GPIO_MODER_MODE14_Pos;                                    /* Set GPIO mode as Alternate function. */
-       GPIOB->AFR[1]                &= ~GPIO_AFRH_AFSEL14_Msk;                                          /* Reset Alternate function on PB14. */
-       GPIOB->AFR[1]                |= 1UL << GPIO_AFRH_AFSEL14_Pos;                                    /* Set Alternate function AF1 on PB14. */
+	GPIOB->MODER                 &= ~GPIO_MODER_MODE14_Msk;                                          /* Reset mode for PB14. */
+	GPIOB->MODER                 |= 2UL << GPIO_MODER_MODE14_Pos;                                    /* Set GPIO mode as Alternate function. */
+	GPIOB->AFR[1]                &= ~GPIO_AFRH_AFSEL14_Msk;                                          /* Reset Alternate function on PB14. */
+	GPIOB->AFR[1]                |= 1UL << GPIO_AFRH_AFSEL14_Pos;                                    /* Set Alternate function AF1 on PB14. */
 
     /*************************************************************************************************
     * Configuring the PB15 pin as zero crossing detection circuit enable pin.
     *************************************************************************************************/
-       GPIOB->BSRR                  |= GPIO_BSRR_BR15;                                                  /* Set pin to default low. */
-       GPIOB->MODER                 &= ~(GPIO_MODER_MODE15_Msk);                                        /* Reset mode for PB15. */
-       GPIOB->MODER                 |= 1UL << GPIO_MODER_MODE15_Pos;                                    /* Set GPIO mode as General purpose output mode. */
-       GPIOB->OTYPER                &= ~(GPIO_OTYPER_OT15);                                             /* Set output as Push-pull. */
-       GPIOB->PUPDR                 &= ~(GPIO_PUPDR_PUPD15_Msk);
+	GPIOB->BSRR                  |= GPIO_BSRR_BR15;                                                  /* Set pin to default low. */
+	GPIOB->MODER                 &= ~(GPIO_MODER_MODE15_Msk);                                        /* Reset mode for PB15. */
+	GPIOB->MODER                 |= 1UL << GPIO_MODER_MODE15_Pos;                                    /* Set GPIO mode as General purpose output mode. */
+	GPIOB->OTYPER                &= ~(GPIO_OTYPER_OT15);                                             /* Set output as Push-pull. */
+	GPIOB->PUPDR                 &= ~(GPIO_PUPDR_PUPD15_Msk);
 
 }
 
