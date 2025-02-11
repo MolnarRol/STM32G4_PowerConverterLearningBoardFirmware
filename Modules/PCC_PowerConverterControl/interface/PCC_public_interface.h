@@ -31,6 +31,7 @@ typedef union
 void PCC_Handler(void);
 void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u);
 
+
 #ifdef __cplusplus
 }
 #endif

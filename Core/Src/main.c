@@ -119,8 +119,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  //HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   while (1)
   {
+	  PCC_Handler();
 
 #if 0
 	  if(zc_en_b)

@@ -14,15 +14,6 @@ extern "C"
 #endif
 #include <PCC_private_interface.h>
 
-typedef enum
-{
-    PCC_UNINITIALIZED_e,
-    PCC_INITIALIZATION_e,
-    PCC_INACTIVE_e,
-    PCC_ACTIVE_e,
-    PCC_UNINITIALIZATION_e
-} PCC_HandleStates_enum;
-
 #ifdef __cplusplus
 }
 #endif
