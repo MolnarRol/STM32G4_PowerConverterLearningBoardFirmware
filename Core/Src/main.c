@@ -53,6 +53,7 @@ u16 tim4_cnt;
 boolean zc_en_b = False_b;
 boolean prev_zc_en_b = False_b;
 u32 blink_tick_u32 = 0;
+PCC_driver_enable_union en_u = {.byte_val_u8 = 0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -122,7 +123,13 @@ int main(void)
   //HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   while (1)
   {
-	  PCC_Handler();
+#if 0
+      PCC_SetGateDriverPowerStates(en_u);
+#endif
+
+#if 1
+	  PCC_Handler_v();
+#endif
 
 #if 0
 	  if(zc_en_b)
