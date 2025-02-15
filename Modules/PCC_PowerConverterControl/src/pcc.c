@@ -12,7 +12,8 @@ PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SimplePWM_e;
 
 const PCC_TopologyHandle_struct* const PCC_Topologies_as[PCC_NUMBER_OF_TOPOLOGIES_d] =
 {
-    &PCC_Topology_SimplePWM_s
+    &PCC_Topology_SimplePWM_s,
+    &PCC_Topology_FullBridgePhaseShiftedPWM_s
 };
 
 boolean pcc_start_test_b = False_b;
