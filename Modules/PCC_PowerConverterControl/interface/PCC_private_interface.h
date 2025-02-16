@@ -21,6 +21,7 @@ extern "C"
 #include <stdio.h>
 #include <stm32_assert.h>
 #include <ATB_public_interface.h>
+#include <MDI_public_interface.h>
 
 typedef enum
 {

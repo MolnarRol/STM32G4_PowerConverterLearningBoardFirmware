@@ -55,6 +55,7 @@ void PCC_Handler(void)
 		        {
 		            switch_delay_active_b = False_b;
 	                PCC_Topologies_as[PCC_ActiveTopology_e]->start_pf();
+	                MDI_WriteInteconnect_d(boolean, MDI_Signal_TopologyActive_b, True_b);
 		        }
 		    }
 		    else
