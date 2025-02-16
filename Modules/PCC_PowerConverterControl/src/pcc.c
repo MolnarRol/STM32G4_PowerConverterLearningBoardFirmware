@@ -12,12 +12,13 @@ PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SimplePWM_e;
 
 const PCC_TopologyHandle_struct* const PCC_Topologies_as[PCC_NUMBER_OF_TOPOLOGIES_d] =
 {
-    &PCC_Topology_SimplePWM_s
+    &PCC_Topology_SimplePWM_s,
+    &PCC_Topology_FullBridgePhaseShiftedPWM_s
 };
 
 boolean pcc_start_test_b = False_b;
 
-void PCC_Handler(void)
+RAM_FUNC void PCC_Handler_v(void)
 {
 	static boolean switch_delay_active_b = False_b;
 	static u32 switch_delay_active_timestamp_u32;
