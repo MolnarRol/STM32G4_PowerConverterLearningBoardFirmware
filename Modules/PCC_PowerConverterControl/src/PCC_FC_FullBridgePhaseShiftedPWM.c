@@ -20,9 +20,9 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
                                 {
                                         .gd1_f1 = 1,
                                         .gd2_f1 = 1,
-                                        .gd3_f1 = 1,
+                                        .gd3_f1 = 0,
                                         .gd4_f1 = 1,
-                                        .gd5_f1 = 0,
+                                        .gd5_f1 = 1,
                                         .gd6_f1 = 0
                                 }
                             }
@@ -70,7 +70,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
 	                               (6UL << GPIO_AFRH_AFSEL10_Pos);		        /* Set alternate function to AF6. */
 
 	/* PB01 - AF6 */
-	GPIOB->MODER                &= GPIO_MODER_MODE1_Msk;
+	GPIOB->MODER                &= ~GPIO_MODER_MODE1_Msk;
     GPIOB->MODER                |= (2UL << GPIO_MODER_MODE1_Pos);          /* Set mode to alternate function. */
     GPIOB->PUPDR                |= GPIO_PUPDR_PUPD1_1;                     /* Enable pull down. */
     GPIOB->OTYPER               &= (~GPIO_OTYPER_OT1_Msk);                 /* Set output type to push-pull. */
