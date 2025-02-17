@@ -279,14 +279,26 @@ void GPIO_Init(void)
     /*************************************************************************************************
     * Digital inputs
     *************************************************************************************************/
-#if (CONFIG_ENABLE_DIGITAL_INPUTS_d == ENABLE)
-	DI0_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
-	DI0_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
-	DI0_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI0_GPIO_PIN_d);
+#if (CONFIG_ENABLE_DIGITAL_INPUTS_d == ENABLE_d)
+//	DI0_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
+//	DI0_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI0_GPIO_PIN_d));
+//	DI0_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI0_GPIO_PIN_d);
+//
+//	DI1_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
+//	DI1_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
+//	DI1_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI1_GPIO_PIN_d);
+#endif
 
-	DI1_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
-	DI1_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
-	DI1_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI1_GPIO_PIN_d);
+#if (CONFIG_ENABLE_DIGITAL_OUTPUTS_d == ENABLE_d)
+	/* DO1 - PC6 */
+	GPIOC->BSRR                 |= GPIO_BSRR_BR6;
+	GPIOC->MODER                &= ~GPIO_MODER_MODE6_Msk;
+	GPIOC->MODER                |= 1UL << GPIO_MODER_MODE6_Pos;
+
+	/* DO2 - PA11 */
+	GPIOA->BSRR                 |= GPIO_BSRR_BR11;
+	GPIOA->MODER                &= ~GPIO_MODER_MODE11_Msk;
+	GPIOA->MODER                |= 1UL << GPIO_MODER_MODE11_Pos;
 #endif
 
     /*************************************************************************************************

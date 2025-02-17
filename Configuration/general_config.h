@@ -18,6 +18,7 @@
 #define DISABLE_d                                   0U
 
 #define CONFIG_ENABLE_DIGITAL_INPUTS_d              ENABLE_d
+#define CONFIG_ENABLE_DIGITAL_OUTPUTS_d             ENABLE_d
 
 /* IWDG - Independent watchdog. */
 #define CONFIG_SYS_IWDG_ENABLE_MODULE_d             DISABLE_d
