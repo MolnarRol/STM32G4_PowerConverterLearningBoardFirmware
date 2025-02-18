@@ -125,11 +125,11 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void)
 {
     UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, 2.0f * PCC_FC_FullBridgePhaseShiftedPWM_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
     TIM1->CCR1 = 0;
-    TIM1->CCR2 = TIM1->ARR;
+    TIM1->CCR2 = TIM1->ARR - 1;
 
     u32 shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_phaseshift__deg__f32 / 180.0f)) + 0.5f);
 
-    TIM1->CCR3 = shift_u32;
+    TIM1->CCR3 = shift_u32 - 1;
     TIM1->CCR4 = TIM1->ARR - shift_u32;
 }
 
