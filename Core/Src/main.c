@@ -29,6 +29,7 @@
 #include <sys_public_interface.h>
 #include <AINT_public_interface.h>
 #include <ATB_public_interface.h>
+#include <UART_API_public_interface.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +54,7 @@ u16 tim4_cnt;
 boolean zc_en_b = False_b;
 boolean prev_zc_en_b = False_b;
 u32 blink_tick_u32 = 0;
+u8 rs485_data_au8[] = {0xDD, 0xAA, 0xBB};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,6 +116,11 @@ int main(void)
 #if 0
   PCC_LC_InitZeroCrossingDetection_v();
 #endif
+
+#if (CONFIG_ENABLE_EXTERNAL_COMMUNICATION_RS485_d == ENABLE_d)
+  UART_API_RS485_Init_v();
+#endif
+
   ATB_Init_v();
   /* USER CODE END 2 */
 
@@ -139,6 +146,7 @@ int main(void)
 	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))
 	  {
 		  LL_GPIO_TogglePin(GPIOD, LL_GPIO_PIN_2);
+		  USART1->TDR = 0x55;
 	  }
 #endif
     /* USER CODE END WHILE */
@@ -287,6 +295,33 @@ void GPIO_Init(void)
 	DI1_GPIO_PORT_dps->MODER     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
 	DI1_GPIO_PORT_dps->PUPDR     &= ~(0x3U << (0x2U * DI1_GPIO_PIN_d));
 	DI1_GPIO_PORT_dps->PUPDR     |= 0x2U << (0x2U * DI1_GPIO_PIN_d);
+#endif
+
+	/*************************************************************************************************
+    * RS485 - external communication interface.
+    *************************************************************************************************/
+#if (CONFIG_ENABLE_EXTERNAL_COMMUNICATION_RS485_d == ENABLE_d)
+	/* PC4  - RS485TX (AF7)
+	   PC5  - RS485RX (AF7)
+	   PA12 - RS485DE (AF7) */
+	GPIOC->MODER                &=  (~GPIO_MODER_MODE4_Msk) &                           /* Reset PC4 and PC5 GPIO mode. */
+	                                (~GPIO_MODER_MODE5_Msk);
+
+	GPIOC->AFR[0]               &=  (~GPIO_AFRL_AFSEL4_Msk) &
+	                                (~GPIO_AFRL_AFSEL5_Msk);
+
+	GPIOC->AFR[0]               |=  (7UL << GPIO_AFRL_AFSEL4_Pos) |
+	                                (7UL << GPIO_AFRL_AFSEL5_Pos);
+
+
+	GPIOC->MODER                |=  (2UL << GPIO_MODER_MODE4_Pos) |                     /* Set PC4 and PC5 GPIO mode to alternate function. */
+	                                (2UL << GPIO_MODER_MODE5_Pos);
+
+	GPIOA->MODER                &=  ~GPIO_MODER_MODE12_Msk;
+	GPIOA->AFR[1]               &=  ~GPIO_AFRH_AFSEL12_Msk;
+	GPIOA->AFR[1]               |=  7UL << GPIO_AFRH_AFSEL12_Pos;
+	GPIOA->MODER                |=  2UL << GPIO_MODER_MODE12_Pos;
+
 #endif
 
     /*************************************************************************************************
