@@ -20,7 +20,7 @@ typedef enum
 } UTIL_Status_enum;
 
 UTIL_Status_enum UTIL_TIM_SetTimerOverflowFrequency_v(f32 input_freq__Hz__f32, f32 desired_ovf_freq__Hz__f32, volatile u16* arr_reg_pu16, volatile u16* psc_reg_pu16);
-
+u8 UTIL_TIM_SetMinumumDeadTimeValue_u8(f32 input_freq__Hz__f32, f32 minimum_deadtime__s__f32);
 #ifdef __cplusplus
 }
 #endif

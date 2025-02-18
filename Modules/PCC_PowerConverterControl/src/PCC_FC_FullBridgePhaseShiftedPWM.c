@@ -30,6 +30,7 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
 
 f32 PCC_FC_FullBridgePhaseShiftedPWM_freq__Hz__f32 = 100000.0f;
 f32 PCC_FC_FullBridgePhaseShiftedPWM_phaseshift__deg__f32 = 90.0f;
+f32 PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32 = 75.0e-9f;
 
 static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
 {
@@ -109,6 +110,10 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
 	                               TIM_CCMR2_OC4M_1 |
 	                               TIM_CCMR2_OC4M_0 |                       /* PWM mode 2. */
 	                               TIM_CCMR2_OC4PE;                         /* Output compare 4 pre-load enable. */
+
+    /* Dead time configuration. */
+    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
+    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32);
 }
 
 static void PCC_FC_FullBridgePhaseShiftedPWM_Start_v(void)
@@ -129,8 +134,20 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void)
 
     u32 shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_phaseshift__deg__f32 / 180.0f)) + 0.5f);
 
-    TIM1->CCR3 = shift_u32 - 1;
-    TIM1->CCR4 = TIM1->ARR - shift_u32;
+    if(shift_u32 != (u32)0)
+    {
+        TIM1->CCR3 = shift_u32 - 1;
+        TIM1->CCR4 = TIM1->ARR - shift_u32;
+    }
+    else
+    {
+        TIM1->CCR3 = 0;
+        TIM1->CCR4 = TIM1->ARR;
+    }
+
+    /* Dead time configuration. */
+    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
+    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32);
 }
 
 static void PCC_FC_FullBridgePhaseShiftedPWM_Stop_v(void)

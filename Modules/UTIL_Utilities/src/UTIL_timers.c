@@ -21,3 +21,31 @@ UTIL_Status_enum UTIL_TIM_SetTimerOverflowFrequency_v(f32 input_freq__Hz__f32, f
 	return UTIL_OK_e;
 }
 
+u8 UTIL_TIM_SetMinumumDeadTimeValue_u8(f32 input_freq__Hz__f32, f32 minimum_deadtime__s__f32)
+{
+    const f32 t_dts_f32 = 1.0f / input_freq__Hz__f32;
+
+    u8 return_deadtime_u8;
+
+    if(minimum_deadtime__s__f32 < (127.0f * t_dts_f32))
+    {
+        return_deadtime_u8 = (u8)(minimum_deadtime__s__f32 / t_dts_f32);
+    }
+    else if (minimum_deadtime__s__f32 < (127.0f * 2.0f * t_dts_f32))
+    {
+        return_deadtime_u8  = (u8)((minimum_deadtime__s__f32 / (2.0f * t_dts_f32)) - 64.0f);
+        return_deadtime_u8  |=  0b100 << 5;
+    }
+    else if (minimum_deadtime__s__f32 < (63.0f * 8.0f * t_dts_f32))
+    {
+        return_deadtime_u8  = (u8)((minimum_deadtime__s__f32 / (8.0f * t_dts_f32)) - 32.0f);
+        return_deadtime_u8  |=  0b110 << 5;
+    }
+    else
+    {
+        return_deadtime_u8  = (u8)((minimum_deadtime__s__f32 / (16.0f * t_dts_f32)) - 32.0f);
+        return_deadtime_u8  |=  0b111 << 5;
+    }
+
+    return return_deadtime_u8;
+}
