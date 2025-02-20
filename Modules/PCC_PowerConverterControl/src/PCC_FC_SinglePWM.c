@@ -1,26 +1,26 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
-static void PCC_FC_SimplePWM_Init_v(void);
-static void PCC_FC_SimplePWM_Start_v(void);
-static void PCC_FC_SimplePWM_ActiveHandling_v(void);
-static void PCC_FC_SimplePWM_Stop_v(void);
-static void PCC_FC_SimplePWM_DeInit_v(void);
+static void PCC_FC_SinglePWM_Init_v(void);
+static void PCC_FC_SinglePWM_Start_v(void);
+static void PCC_FC_SinglePWM_ActiveHandling_v(void);
+static void PCC_FC_SinglePWM_Stop_v(void);
+static void PCC_FC_SinglePWM_DeInit_v(void);
 
-const PCC_TopologyHandle_struct PCC_Topology_SimplePWM_s =
+const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
 {
-        .initialize_pfv     = PCC_FC_SimplePWM_Init_v,
-        .start_pf           = PCC_FC_SimplePWM_Start_v,
-        .active_handler_pfv = PCC_FC_SimplePWM_ActiveHandling_v,
-        .stop_pfv           = PCC_FC_SimplePWM_Stop_v,
-        .deinitalize_pfv    = PCC_FC_SimplePWM_DeInit_v,
+        .initialize_pfv     = PCC_FC_SinglePWM_Init_v,
+        .start_pf           = PCC_FC_SinglePWM_Start_v,
+        .active_handler_pfv = PCC_FC_SinglePWM_ActiveHandling_v,
+        .stop_pfv           = PCC_FC_SinglePWM_Stop_v,
+        .deinitalize_pfv    = PCC_FC_SinglePWM_DeInit_v,
         .driver_enable_u    = {.byte_val_u8 = (u8)0x1}
 };
 
-f32 pwm_freq__Hz__f32 = 1000.0f;
-f32 pwm_duty__per_cent__f32 = 0.0f;
+f32 PCC_Topology_SinglePWM_freq__Hz__f32 = 1000.0f;
+f32 PCC_Topology_SinglePWM_duty__per_cent__f32 = 0.0f;
 
-static void PCC_FC_SimplePWM_Init_v(void)
+static void PCC_FC_SinglePWM_Init_v(void)
 {
 	/* TIM1 CH1 */
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;								        /* Enable clocks for TIM1 module. */
@@ -46,25 +46,25 @@ static void PCC_FC_SimplePWM_Init_v(void)
 	TIM1->CNT                   = 0;
 }
 
-static void PCC_FC_SimplePWM_Start_v(void)
+static void PCC_FC_SinglePWM_Start_v(void)
 {
     TIM1->BDTR                  |= TIM_BDTR_MOE;
     TIM1->CR1                   |= TIM_CR1_CEN;
 }
 
-static void PCC_FC_SimplePWM_ActiveHandling_v(void)
+static void PCC_FC_SinglePWM_ActiveHandling_v(void)
 {
-    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, pwm_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
-    TIM1->CCR1 = (u16)((pwm_duty__per_cent__f32 * (f32)TIM1->ARR)/100.0f);
+    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, PCC_Topology_SinglePWM_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
+    TIM1->CCR1 = (u16)((PCC_Topology_SinglePWM_duty__per_cent__f32 * ((f32)TIM1->ARR + 1.0f))/100.0f);
 }
 
-static void PCC_FC_SimplePWM_Stop_v(void)
+static void PCC_FC_SinglePWM_Stop_v(void)
 {
     TIM1->BDTR                  &= ~TIM_BDTR_MOE;
     TIM1->CR1                   &= ~TIM_CR1_CEN;
 }
 
-static void PCC_FC_SimplePWM_DeInit_v(void)
+static void PCC_FC_SinglePWM_DeInit_v(void)
 {
     GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
 

@@ -8,11 +8,11 @@
 
 
 PCC_TopologyHandleState_enum PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SimplePWM_e;
+PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
 
 const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
 {
-    &PCC_Topology_SimplePWM_s,
+    &PCC_Topology_SinglePWM_s,
     &PCC_Topology_SingleComplementaryPWM_s,
     &PCC_Topology_FullBridgePhaseShiftedPWM_s,
     &PCC_Topology_FullBridgeUnipolarPWM_s,

@@ -33,7 +33,7 @@ typedef enum
 
 typedef enum
 {
-	PCC_TOPO_SimplePWM_e	                = 0,
+	PCC_TOPO_SinglePWM_e	                = 0,
 	PCC_TOPO_SingleComplementaryPWM_e       = 1,
 	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 2,
 	PCC_TOPO_FullBridgeUnipolarPWM_e        = 3,
@@ -55,7 +55,7 @@ typedef struct
     const PCC_driver_enable_union 		    driver_enable_u;
 } PCC_TopologyHandle_struct;
 
-extern const PCC_TopologyHandle_struct PCC_Topology_SimplePWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
