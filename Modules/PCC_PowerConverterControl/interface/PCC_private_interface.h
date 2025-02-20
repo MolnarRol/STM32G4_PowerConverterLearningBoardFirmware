@@ -31,12 +31,14 @@ typedef enum
 	PCC_UNINITIALIZATION_e
 } PCC_TopologyHandleState_enum;
 
-#define PCC_NUMBER_OF_TOPOLOGIES_d              2U
+#define PCC_NUMBER_OF_TOPOLOGIES_d              3U
 
 typedef enum
 {
 	PCC_TOPO_SimplePWM_e	                = 0,
-	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 1
+	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 1,
+	PCC_TOPO_FullBridgeUnipolarPWM_e        = 2,
+	PCC_TOPO_FullBridgeBipolarPWM_e         = 3
 } PCC_Topologies_enum;
 
 #define PCC_IS_VALID_TOPOLOGY(topology_e)	(topology_e >= 0) && (topology_e < PCC_NUMBER_OF_TOPOLOGIES_d)
@@ -55,6 +57,8 @@ typedef struct
 
 extern const PCC_TopologyHandle_struct PCC_Topology_SimplePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
 
 #ifdef __cplusplus
 }

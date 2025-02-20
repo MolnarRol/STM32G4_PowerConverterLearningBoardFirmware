@@ -49,3 +49,13 @@ u8 UTIL_TIM_SetMinumumDeadTimeValue_u8(f32 input_freq__Hz__f32, f32 minimum_dead
 
     return return_deadtime_u8;
 }
+
+f32 UTIL_MapFloatToRange_f32(f32 map_intetval_low_f32, f32 map_interval_high_f32, f32 input_interval_low_f32, f32 input_interval_high_f32, f32 input_val_f32)
+{
+    if(input_val_f32 > input_interval_high_f32)     input_val_f32 = input_interval_high_f32;
+    else if(input_val_f32 < input_interval_low_f32) input_val_f32 = input_interval_low_f32;
+
+    return  (input_val_f32 - input_interval_low_f32) * (map_interval_high_f32 - map_intetval_low_f32) /
+            (input_interval_high_f32 - input_interval_low_f32) +
+            map_intetval_low_f32;
+}
