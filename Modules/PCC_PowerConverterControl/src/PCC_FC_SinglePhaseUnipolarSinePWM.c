@@ -12,15 +12,16 @@ static void PCC_FC_SinglePhaseUnipolarSinePWM_Start_v(void);
 static void PCC_FC_SinglePhaseUnipolarSinePWM_ActiveHandling_v(void);
 static void PCC_FC_SinglePhaseUnipolarSinePWM_Stop_v(void);
 static void PCC_FC_SinglePhaseUnipolarSinePWM_DeInit_v(void);
-static voidPCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v(void);
+static void PCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v(void);
 
-const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s =
+const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s =
 {
         .initialize_pfv     = PCC_FC_SinglePhaseUnipolarSinePWM_Init_v,
         .start_pf           = PCC_FC_SinglePhaseUnipolarSinePWM_Start_v,
         .active_handler_pfv = PCC_FC_SinglePhaseUnipolarSinePWM_ActiveHandling_v,
         .stop_pfv           = PCC_FC_SinglePhaseUnipolarSinePWM_Stop_v,
         .deinitalize_pfv    = PCC_FC_SinglePhaseUnipolarSinePWM_DeInit_v,
+        .isr_handler_pfv    = PCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v,
         .driver_enable_u    =
                             {
                                 .drivers_s =
@@ -42,6 +43,10 @@ PCC_SinePWM_Parameters_s PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s =
         .switching_freq__Hz__f32        = 10000.0f,
 };
 f32 PCC_FC_SinglePhaseUnipolarSinePWM_DeadTime__s__f32 = 75.0e-9f;
+
+f32 PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32 = 0.0f;
+f32 PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 = 0.0f;
+f32 sin_val_f32;
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_Init_v(void)
 {
@@ -98,25 +103,38 @@ static void PCC_FC_SinglePhaseUnipolarSinePWM_Init_v(void)
 
     TIM1->ARR                   = 1;
 
-    TIM1->CR1                   |= TIM_CR1_ARPE |                           /* Auto reload register pre-load enable. */
-                                   TIM_CR1_CMS_1;                           /* Center aligned mode 2. */
+    TIM1->CR1                   |= TIM_CR1_CMS_1;                           /* Center aligned mode 2. */
 
     /* Timer configuration. */
     TIM1->CCMR1                 |= TIM_CCMR1_OC1M_2 |
-                                   TIM_CCMR1_OC1M_1 |                       /* PWM mode 1. */
-                                   TIM_CCMR1_OC1PE;
+                                   TIM_CCMR1_OC1M_1;
 
     TIM1->CCMR2                 |= TIM_CCMR2_OC3M_2 |
-                                   TIM_CCMR2_OC3M_1 |                       /* PWM mode 1. */
-                                   TIM_CCMR2_OC3PE;
+                                   TIM_CCMR2_OC3M_1;
 
-    /* Dead time configuration. */
-    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
-    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_SinglePhaseUnipolarSinePWM_DeadTime__s__f32);
+    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);
+    NVIC_SetPriority(TIM1_UP_TIM16_IRQn, 1);
+    TIM1->DIER                  |=  TIM_DIER_UIE;                           /* Enable update interrupt. */
+    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);
 }
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_Start_v(void)
 {
+    /* Dead time configuration. */
+    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
+    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_SinglePhaseUnipolarSinePWM_DeadTime__s__f32);
+
+    UTIL_TIM_SetTimerOverflowFrequency_v(   170.0e6f,
+                                            2.0f * PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.switching_freq__Hz__f32,
+                                            &TIM1->ARR,
+                                            &TIM1->PSC);
+    TIM1->CCR1                  = 0;
+    TIM1->CCR3                  = 0;
+
+    TIM1->CCMR1                 |= TIM_CCMR1_OC1PE;
+    TIM1->CCMR2                 |= TIM_CCMR2_OC3PE;
+    TIM1->CR1                   |= TIM_CR1_ARPE;
+
     TIM1->CCER                  |= TIM_CCER_CC1E    |                       /* Enable PWM channel: CH1. */
                                    TIM_CCER_CC1NE   |                       /* Enable PWM channel: CH1N. */
                                    TIM_CCER_CC3E    |                       /* Enable PWM channel: CH3. */
@@ -127,26 +145,35 @@ static void PCC_FC_SinglePhaseUnipolarSinePWM_Start_v(void)
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_ActiveHandling_v(void)
 {
-    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, 2.0f * PCC_FC_SinglePhaseUnipolarSinePWM_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
-    u32 duty_compare_u32 = (u32)(UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, PCC_FC_SinglePhaseUnipolarSinePWM_duty__per_cent__f32) + 0.5f);
-
-    TIM1->CCR1                  = duty_compare_u32;
-    TIM1->CCR3                  = TIM1->ARR - duty_compare_u32;
-
-    /* Dead time configuration. */
-    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
-    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_SinglePhaseUnipolarSinePWM_DeadTime__s__f32);
 }
 
-static voidPCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v(void)
+static void PCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v(void)
 {
+    UTIL_TIM_SetTimerOverflowFrequency_v(   170.0e6f,
+                                            2.0f * PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.switching_freq__Hz__f32,
+                                            &TIM1->ARR,
+                                            &TIM1->PSC);
 
+    sin_val_f32 = PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.amplitude_f32 * arm_sin_f32(PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32);
+    const u32 compare_val_u32 = UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, sin_val_f32);
+    TIM1->CCR1 = TIM1->ARR - compare_val_u32;
+    TIM1->CCR3 = compare_val_u32;
+
+    PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (PI_d * PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
+                                                                                        PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.switching_freq__Hz__f32;
+    PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32 += PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32;
+    if(PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32 >= TWO_PI_d) PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32 -= TWO_PI_d;
+
+    TIM1->SR &= ~TIM_SR_UIF;
 }
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_Stop_v(void)
 {
     TIM1->BDTR                  &= ~TIM_BDTR_MOE;
     TIM1->CR1                   &= ~TIM_CR1_CEN;
+    TIM1->CCMR1                 &= ~TIM_CCMR1_OC1PE;
+    TIM1->CCMR2                 &= ~TIM_CCMR2_OC3PE;
+    TIM1->CR1                   &= ~TIM_CR1_ARPE;
 }
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_DeInit_v(void)
@@ -157,7 +184,5 @@ static void PCC_FC_SinglePhaseUnipolarSinePWM_DeInit_v(void)
     RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
     RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
     RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+    NVIC_DisableIRQ(TIM1_UP_TIM16_IRQn);
 }
-
-
-

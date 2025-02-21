@@ -21,6 +21,10 @@ extern "C"
 #include <stdio.h>
 #include <stm32_assert.h>
 #include <ATB_public_interface.h>
+#include <arm_math.h>
+
+#define PI_d                        3.141592653589793f
+#define TWO_PI_d                    6.283185307179586f
 
 typedef enum
 {
@@ -37,10 +41,11 @@ typedef enum
 	PCC_TOPO_SingleComplementaryPWM_e       = 1,
 	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 2,
 	PCC_TOPO_FullBridgeUnipolarPWM_e        = 3,
-	PCC_TOPO_FullBridgeBipolarPWM_e         = 4
+	PCC_TOPO_FullBridgeBipolarPWM_e         = 4,
+	PCC_TOPO_SinglePhaseUnipolarSinePWM_e   = 5
 } PCC_Topologies_enum;
 
-#define PCC_NUMBER_OF_TOPOLOGIES_d          5U
+#define PCC_NUMBER_OF_TOPOLOGIES_d          6U
 #define PCC_IS_VALID_TOPOLOGY(topology_e)	(topology_e >= 0) && (topology_e < PCC_NUMBER_OF_TOPOLOGIES_d)
 
 typedef struct
@@ -58,23 +63,24 @@ typedef struct
 
 typedef struct
 {
-<<<<<<< HEAD
     f32 amplitude_f32;
     f32 modulation_freq__Hz__f32;
     f32 switching_freq__Hz__f32;
 } PCC_SinePWM_Parameters_s;
-=======
+
+typedef struct
+{
     f32 frequency__Hz__f32;
     f32 duty__per_cent__f32;
     f32 deadtime__s__f32;
 } PCC_FC_PWM_Params_s;
->>>>>>> Feature/PCC_InterruptHandlingIntegration
 
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s;
 
 void PCC_InterruptHandler_v(void);
 

@@ -13,6 +13,26 @@ static void PCC_FC_ThreePhaseScalar_ActiveHandling_v(void);
 static void PCC_FC_ThreePhaseScalar_Stop_v(void);
 static void PCC_FC_SimpleThreePhaseScalar_DeInit_v(void);
 
+//    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
+//
+//    arm_sin_cos_f32(    PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__deg__f32,
+//                        &sin_val_f32,
+//                        &cos_val_f32);
+//
+//    arm_inv_park_f32(   PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.amplitude_f32,
+//                        0.0f,
+//                        &alpha_val_f32,
+//                        &beta_val_f32,
+//                        sin_val_f32,
+//                        cos_val_f32);
+//
+//    arm_inv_clarke_f32( alpha_val_f32,
+//                        beta_val_f32,
+//                        &u_val_f32,
+//                        &v_val_f32);
+//
+//    w_val_f32 = - u_val_f32 - v_val_f32;
+
 const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseScalar_s =
 {
         .initialize_pfv     = PCC_FC_ThreePhaseScalar_Init_v,
