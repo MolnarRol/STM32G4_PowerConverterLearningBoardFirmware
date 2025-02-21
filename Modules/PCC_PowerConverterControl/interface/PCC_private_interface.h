@@ -45,10 +45,11 @@ typedef enum
 	PCC_TOPO_FullBridgeUnipolarPWM_e        = 3,
 	PCC_TOPO_FullBridgeBipolarPWM_e         = 4,
 	PCC_TOPO_SinglePhaseUnipolarSinePWM_e   = 5,
-	PCC_TOPO_SinglePhaseBipolarSinePWM_e    = 6
+	PCC_TOPO_SinglePhaseBipolarSinePWM_e    = 6,
+	PCC_TOPO_ThreePhaseSinePWM_e            = 7
 } PCC_Topologies_enum;
 
-#define PCC_NUMBER_OF_TOPOLOGIES_d          7U
+#define PCC_NUMBER_OF_TOPOLOGIES_d          8U
 #define PCC_IS_VALID_TOPOLOGY(topology_e)	(topology_e >= 0) && (topology_e < PCC_NUMBER_OF_TOPOLOGIES_d)
 
 typedef struct
@@ -85,6 +86,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseBipolarSinePWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseSinePWM_s;
 
 void PCC_InterruptHandler_v(void);
 
