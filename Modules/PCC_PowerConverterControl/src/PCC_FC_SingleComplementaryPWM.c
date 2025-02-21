@@ -35,6 +35,15 @@ const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s =
                             }
 };
 
+PCC_FC_PWM_Params_s PCC_FC_SingleComplementaryPWM_NewParameters_s =
+{
+        .duty__per_cent__f32    = 0.0f,
+        .frequency__Hz__f32     = 1000.0f,
+        .deadtime__s__f32       = 75.0e-9f
+};
+
+static PCC_FC_PWM_Params_s s_PCC_FC_SingleComplementaryPWM_ActualParameters_s = {0};
+
 f32 PCC_FC_SingleComplementaryPWM_freq__Hz__f32         = 1000.0f;
 f32 PCC_FC_SingleComplementaryPWM_duty__per_cent__f32   = 0.0f;
 f32 PCC_FC_SingleComplementaryPWM_DeadTime__s__f32      = 75.0e-9f;

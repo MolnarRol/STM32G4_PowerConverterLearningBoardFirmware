@@ -108,15 +108,15 @@ void PCC_InitPulseTimer1_v(void)
     TIM1->BDTR          |= TIM_BDTR_MOE;                                            /* Master output enable */
 }
 
-void TIM1_BRK_TIM15_IRQHandler(void)
-{
-    if((TIM15->SR & TIM_SR_CC1IF) != 0)
-    {
-        PACZC_LineFrequency_Hz_f32 = ZC_CalculateFrequencyFromCaptureValue_Hz_f32(TIM15->CCR1);
-        TIM15->SR &= ~(TIM_SR_CC1IF);
-    }
-    NVIC_ClearPendingIRQ(TIM1_BRK_TIM15_IRQn);
-}
+//void TIM1_BRK_TIM15_IRQHandler(void)
+//{
+//    if((TIM15->SR & TIM_SR_CC1IF) != 0)
+//    {
+//        PACZC_LineFrequency_Hz_f32 = ZC_CalculateFrequencyFromCaptureValue_Hz_f32(TIM15->CCR1);
+//        TIM15->SR &= ~(TIM_SR_CC1IF);
+//    }
+//    NVIC_ClearPendingIRQ(TIM1_BRK_TIM15_IRQn);
+//}
 
 void DMA1_Channel1_IRQHandler(void)
 {
