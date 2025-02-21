@@ -46,7 +46,6 @@ f32 PCC_FC_SinglePhaseUnipolarSinePWM_DeadTime__s__f32 = 75.0e-9f;
 
 f32 PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32 = 0.0f;
 f32 PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 = 0.0f;
-f32 sin_val_f32;
 
 static void PCC_FC_SinglePhaseUnipolarSinePWM_Init_v(void)
 {
@@ -154,7 +153,7 @@ static void PCC_FC_SinglePhaseUnipolarSinePWM_InterruptHandler_v(void)
                                             &TIM1->ARR,
                                             &TIM1->PSC);
 
-    sin_val_f32 = PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.amplitude_f32 * arm_sin_f32(PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32);
+    const f32 sin_val_f32 = PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.amplitude_f32 * arm_sin_f32(PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__rad__f32);
     const u32 compare_val_u32 = UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, sin_val_f32);
     TIM1->CCR1 = TIM1->ARR - compare_val_u32;
     TIM1->CCR3 = compare_val_u32;

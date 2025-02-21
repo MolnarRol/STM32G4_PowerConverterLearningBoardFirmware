@@ -21,6 +21,8 @@ extern "C"
 #include <stdio.h>
 #include <stm32_assert.h>
 #include <ATB_public_interface.h>
+
+#define ARM_MATH_CM4
 #include <arm_math.h>
 
 #define PI_d                        3.141592653589793f
@@ -42,10 +44,11 @@ typedef enum
 	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 2,
 	PCC_TOPO_FullBridgeUnipolarPWM_e        = 3,
 	PCC_TOPO_FullBridgeBipolarPWM_e         = 4,
-	PCC_TOPO_SinglePhaseUnipolarSinePWM_e   = 5
+	PCC_TOPO_SinglePhaseUnipolarSinePWM_e   = 5,
+	PCC_TOPO_SinglePhaseBipolarSinePWM_e    = 6
 } PCC_Topologies_enum;
 
-#define PCC_NUMBER_OF_TOPOLOGIES_d          6U
+#define PCC_NUMBER_OF_TOPOLOGIES_d          7U
 #define PCC_IS_VALID_TOPOLOGY(topology_e)	(topology_e >= 0) && (topology_e < PCC_NUMBER_OF_TOPOLOGIES_d)
 
 typedef struct
@@ -81,6 +84,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseBipolarSinePWM_s;
 
 void PCC_InterruptHandler_v(void);
 
