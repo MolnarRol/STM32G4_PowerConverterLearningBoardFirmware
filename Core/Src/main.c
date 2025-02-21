@@ -53,6 +53,7 @@ u16 tim4_cnt;
 boolean zc_en_b = False_b;
 boolean prev_zc_en_b = False_b;
 u32 blink_tick_u32 = 0;
+u32 pcc_handler_task__ticks__u32 = (u32)0;
 PCC_driver_enable_union en_u = {.byte_val_u8 = 0};
 /* USER CODE END PV */
 
@@ -82,6 +83,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
@@ -127,7 +129,10 @@ int main(void)
 #endif
 
 #if 1
-	  PCC_Handler_v();
+      if(ATB_CheckIfPeriodHasElapsed_b(&pcc_handler_task__ticks__u32, ATB__ms__TO__ticks__du32(1)))
+      {
+          PCC_Handler_v();
+      }
 #endif
 
 #if 0

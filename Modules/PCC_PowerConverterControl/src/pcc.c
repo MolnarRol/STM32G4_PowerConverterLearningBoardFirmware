@@ -8,12 +8,15 @@
 
 
 PCC_TopologyHandleState_enum PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SimplePWM_e;
+PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
 
-const PCC_TopologyHandle_struct* const PCC_Topologies_as[PCC_NUMBER_OF_TOPOLOGIES_d] =
+const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
 {
-    &PCC_Topology_SimplePWM_s,
-    &PCC_Topology_FullBridgePhaseShiftedPWM_s
+    &PCC_Topology_SinglePWM_s,
+    &PCC_Topology_SingleComplementaryPWM_s,
+    &PCC_Topology_FullBridgePhaseShiftedPWM_s,
+    &PCC_Topology_FullBridgeUnipolarPWM_s,
+    &PCC_Topology_FullBridgeBipolarPWM_s
 };
 
 boolean pcc_start_test_b = False_b;
@@ -52,7 +55,7 @@ RAM_FUNC void PCC_Handler_v(void)
 		{
 		    if(switch_delay_active_b)
 		    {
-		        if(ATB_CheckIfPeriodHasElapsed_b(&switch_delay_active_timestamp_u32, ATB__ms__TO__ticks__du32(100)))
+		        if(ATB_CheckIfPeriodHasElapsed_b(&switch_delay_active_timestamp_u32, ATB__ms__TO__ticks__du32(500)))
 		        {
 		            switch_delay_active_b = False_b;
 	                PCC_Topologies_as[PCC_ActiveTopology_e]->start_pf();
