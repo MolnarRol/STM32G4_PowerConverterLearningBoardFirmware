@@ -55,6 +55,13 @@ typedef struct
     const PCC_driver_enable_union 		    driver_enable_u;
 } PCC_TopologyHandle_struct;
 
+typedef struct
+{
+    f32 amplitude_f32;
+    f32 modulation_freq__Hz__f32;
+    f32 switching_freq__Hz__f32;
+} PCC_SinePWM_Parameters_s;
+
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
