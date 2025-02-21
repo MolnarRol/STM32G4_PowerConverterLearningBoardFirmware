@@ -124,10 +124,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-#if 0
-      PCC_SetGateDriverPowerStates(en_u);
-#endif
-
 #if 1
       if(ATB_CheckIfPeriodHasElapsed_b(&pcc_handler_task__ticks__u32, ATB__ms__TO__ticks__du32(1)))
       {
