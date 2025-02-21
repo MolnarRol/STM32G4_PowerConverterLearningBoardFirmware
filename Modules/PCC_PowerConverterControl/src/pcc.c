@@ -87,6 +87,12 @@ RAM_FUNC void PCC_Handler_v(void)
 	}
 }
 
+void PCC_InterruptHandler_v(void)
+{
+    assert_param(PCC_Topologies_as[PCC_ActiveTopology_e]->isr_handler_pfv != NULL);
+    PCC_Topologies_as[PCC_ActiveTopology_e]->isr_handler_pfv();
+}
+
 boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e)
 {
 	boolean return_status_b = False_b;

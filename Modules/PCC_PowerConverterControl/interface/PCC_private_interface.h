@@ -52,21 +52,31 @@ typedef struct
     void (*const active_handler_pfv)	    (void);
     void (*const stop_pfv)				    (void);
     void (*const deinitalize_pfv)		    (void);
+    void (*const isr_handler_pfv)           (void);
     const PCC_driver_enable_union 		    driver_enable_u;
 } PCC_TopologyHandle_struct;
 
 typedef struct
 {
+<<<<<<< HEAD
     f32 amplitude_f32;
     f32 modulation_freq__Hz__f32;
     f32 switching_freq__Hz__f32;
 } PCC_SinePWM_Parameters_s;
+=======
+    f32 frequency__Hz__f32;
+    f32 duty__per_cent__f32;
+    f32 deadtime__s__f32;
+} PCC_FC_PWM_Params_s;
+>>>>>>> Feature/PCC_InterruptHandlingIntegration
 
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s;
+
+void PCC_InterruptHandler_v(void);
 
 #ifdef __cplusplus
 }
