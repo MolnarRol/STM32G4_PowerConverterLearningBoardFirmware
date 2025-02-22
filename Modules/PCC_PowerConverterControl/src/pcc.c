@@ -16,7 +16,10 @@ const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
     &PCC_Topology_SingleComplementaryPWM_s,
     &PCC_Topology_FullBridgePhaseShiftedPWM_s,
     &PCC_Topology_FullBridgeUnipolarPWM_s,
-    &PCC_Topology_FullBridgeBipolarPWM_s
+    &PCC_Topology_FullBridgeBipolarPWM_s,
+    &PCC_Topology_SinglePhaseUnipolarSinePWM_s,
+    &PCC_Topology_SinglePhaseBipolarSinePWM_s,
+    &PCC_Topology_ThreePhaseSinePWM_s
 };
 
 boolean pcc_start_test_b = False_b;
