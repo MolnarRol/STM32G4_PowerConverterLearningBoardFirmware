@@ -39,14 +39,15 @@ typedef enum
 
 typedef enum
 {
-	PCC_TOPO_SinglePWM_e	                = 0,
-	PCC_TOPO_SingleComplementaryPWM_e       = 1,
-	PCC_TOPO_FullBridgePhaseShiftedPWM_e    = 2,
-	PCC_TOPO_FullBridgeUnipolarPWM_e        = 3,
-	PCC_TOPO_FullBridgeBipolarPWM_e         = 4,
-	PCC_TOPO_SinglePhaseUnipolarSinePWM_e   = 5,
-	PCC_TOPO_SinglePhaseBipolarSinePWM_e    = 6,
-	PCC_TOPO_ThreePhaseSinePWM_e            = 7
+	PCC_TOPO_SinglePWM_e	                        = 0,
+	PCC_TOPO_SingleComplementaryPWM_e               = 1,
+	PCC_TOPO_FullBridgePhaseShiftedPWM_e            = 2,
+	PCC_TOPO_FullBridgeUnipolarPWM_e                = 3,
+	PCC_TOPO_FullBridgeBipolarPWM_e                 = 4,
+	PCC_TOPO_SinglePhaseUnipolarSinePWM_e           = 5,
+	PCC_TOPO_SinglePhaseBipolarSinePWM_e            = 6,
+	PCC_TOPO_ThreePhaseSinePWM_e                    = 7,
+	PCC_TOPO_SinglePhaseControlledRecttifier_e      = 8
 } PCC_Topologies_enum;
 
 #define PCC_NUMBER_OF_TOPOLOGIES_d          8U
@@ -79,6 +80,12 @@ typedef struct
     f32 deadtime__s__f32;
 } PCC_FC_PWM_Params_s;
 
+typedef struct
+{
+    f32 alpha__deg__f32;
+    f32 pulse_len__deg__f32;
+} PCC_LC_CommutationParams_s;
+
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s;
@@ -87,6 +94,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseBipolarSinePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseSinePWM_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SingleImpulseControlledRectifier_s;
 
 void PCC_InterruptHandler_v(void);
 

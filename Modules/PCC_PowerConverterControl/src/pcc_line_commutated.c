@@ -15,30 +15,30 @@ f32 PACZC_LineFrequency_Hz_f32;
 u32 freq;
 boolean freq_stabile_b = False_b;
 
-f32 ZC_CalculateFrequencyFromCaptureValue_Hz_f32(u16 capture_val_u16)
-{
-    if(capture_val_u16 == 0) return 0.0f;
-    return ((f32)ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / (f32)((u32)ZC_TIMER_PRESCALER_def)) / (f32)capture_val_u16;
-}
-
-void PCC_LC_InitZeroCrossingDetection_v(void)
-{
-    /* Timer TIM15 configuration. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM15EN;                                             /* Enable clocks for TIM15 */
-    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM15RST;                                           /* Force reset to defaults on TIM15. */
-    RCC->APB2RSTR               &= ~RCC_APB2RSTR_TIM15RST;                                          /* Release reset on TIM15. */
-
-    TIM15->PSC                  = (u16)(ZC_TIMER_PRESCALER_def - 1UL);                              /* Set prescaler to calculated value. */
-    TIM15->CR1                  |= TIM_CR1_OPM;                                                     /* Enable one pulse mode - stop counter on overflow. */
-    //TIM15->CR2                  |= TIM_CR2_MMS_2;
-    LL_TIM_IC_SetPolarity(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);                    /* Capture rising edge. LL_TIM_IC_POLARITY_BOTHEDGE / LL_TIM_IC_POLARITY_RISING */
-    LL_TIM_IC_SetActiveInput(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
-
-    LL_TIM_SetTriggerInput(TIM15, LL_TIM_TS_TI1FP1);                                                /* Trigger on input capture edge. */
-    LL_TIM_SetSlaveMode(TIM15, LL_TIM_SLAVEMODE_COMBINED_RESETTRIGGER);                             /* Reset + Trigger timer on input. */
-
-    TIM15->DIER                 |= TIM_DIER_CC1IE;                                                  /* Enable interrupt generation on capture/compare 1. */
-}
+//f32 ZC_CalculateFrequencyFromCaptureValue_Hz_f32(u16 capture_val_u16)
+//{
+//    if(capture_val_u16 == 0) return 0.0f;
+//    return ((f32)ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / (f32)((u32)ZC_TIMER_PRESCALER_def)) / (f32)capture_val_u16;
+//}
+//
+//void PCC_LC_InitZeroCrossingDetection_v(void)
+//{
+//    /* Timer TIM15 configuration. */
+//    RCC->APB2ENR                |= RCC_APB2ENR_TIM15EN;                                             /* Enable clocks for TIM15 */
+//    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM15RST;                                           /* Force reset to defaults on TIM15. */
+//    RCC->APB2RSTR               &= ~RCC_APB2RSTR_TIM15RST;                                          /* Release reset on TIM15. */
+//
+//    TIM15->PSC                  = (u16)(ZC_TIMER_PRESCALER_def - 1UL);                              /* Set prescaler to calculated value. */
+//    TIM15->CR1                  |= TIM_CR1_OPM;                                                     /* Enable one pulse mode - stop counter on overflow. */
+//    //TIM15->CR2                  |= TIM_CR2_MMS_2;
+//    LL_TIM_IC_SetPolarity(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);                    /* Capture rising edge. LL_TIM_IC_POLARITY_BOTHEDGE / LL_TIM_IC_POLARITY_RISING */
+//    LL_TIM_IC_SetActiveInput(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
+//
+//    LL_TIM_SetTriggerInput(TIM15, LL_TIM_TS_TI1FP1);                                                /* Trigger on input capture edge. */
+//    LL_TIM_SetSlaveMode(TIM15, LL_TIM_SLAVEMODE_COMBINED_RESETTRIGGER);                             /* Reset + Trigger timer on input. */
+//
+//    TIM15->DIER                 |= TIM_DIER_CC1IE;                                                  /* Enable interrupt generation on capture/compare 1. */
+//}
 
 inline void PCC_LC_ZeroCrossingDetection_Enable_v(void)
 {
@@ -56,23 +56,23 @@ inline void PCC_LC_ZeroCrossingDetection_Disable_v(void)
     NVIC_DisableIRQ(TIM1_BRK_TIM15_IRQn);                                                           /* Disable interrupt request on TIM15 IRQ line. */
 }
 
-static f32 ZC_CalculateAvgFreq_Hz_f32(u16* buffered_capture_arr_u16)
-{
-    u8 capture_index_u8;
-    u16 input_mean_u16;
-    u32 input_sum_u32 = (u32)0;
-
-    /* Calculate sum of capture values. */
-    for(capture_index_u8 = (u8)0;
-        capture_index_u8 < (u8)ZC_HALF_CAPTURE_BUFFER_SIZE_def_u16;
-        capture_index_u8++)
-    {
-        input_sum_u32 += (u32)buffered_capture_arr_u16[capture_index_u8];                               /* Accumulate. */
-    }
-    input_mean_u16 = (u16)(input_sum_u32 / ZC_HALF_CAPTURE_BUFFER_SIZE_def_u16);                    /* Calculate mean from accumulated sum. */
-
-    return ZC_CalculateFrequencyFromCaptureValue_Hz_f32(input_mean_u16);                            /* Return calculated frequency from mean input capture. */
-}
+//static f32 ZC_CalculateAvgFreq_Hz_f32(u16* buffered_capture_arr_u16)
+//{
+//    u8 capture_index_u8;
+//    u16 input_mean_u16;
+//    u32 input_sum_u32 = (u32)0;
+//
+//    /* Calculate sum of capture values. */
+//    for(capture_index_u8 = (u8)0;
+//        capture_index_u8 < (u8)ZC_HALF_CAPTURE_BUFFER_SIZE_def_u16;
+//        capture_index_u8++)
+//    {
+//        input_sum_u32 += (u32)buffered_capture_arr_u16[capture_index_u8];                               /* Accumulate. */
+//    }
+//    input_mean_u16 = (u16)(input_sum_u32 / ZC_HALF_CAPTURE_BUFFER_SIZE_def_u16);                    /* Calculate mean from accumulated sum. */
+//
+//    return ZC_CalculateFrequencyFromCaptureValue_Hz_f32(input_mean_u16);                            /* Return calculated frequency from mean input capture. */
+//}
 
 void PCC_InitPulseTimer1_v(void)
 {
@@ -118,20 +118,20 @@ void PCC_InitPulseTimer1_v(void)
 //    NVIC_ClearPendingIRQ(TIM1_BRK_TIM15_IRQn);
 //}
 
-void DMA1_Channel1_IRQHandler(void)
-{
-    if(LL_DMA_IsActiveFlag_HT1(DMA1))
-    {
-        PACZC_LineFrequency_Hz_f32 = ZC_CalculateAvgFreq_Hz_f32(&ZC_DMA_input_capture_buffer_stat_arr_u16[0]);
-        DMA1->IFCR |= DMA_IFCR_CHTIF1;
-    }
-    if(LL_DMA_IsActiveFlag_TC1(DMA1))
-    {
-        PACZC_LineFrequency_Hz_f32 = ZC_CalculateAvgFreq_Hz_f32(&ZC_DMA_input_capture_buffer_stat_arr_u16[16]);
-        DMA1->IFCR |= DMA_IFCR_CTCIF1;
-    }
-    freq = PACZC_LineFrequency_Hz_f32 * 1000.0f;
-
-    DMA1->IFCR |= DMA_IFCR_CGIF1;
-    NVIC_ClearPendingIRQ(DMA1_Channel1_IRQn);
-}
+//void DMA1_Channel1_IRQHandler(void)
+//{
+//    if(LL_DMA_IsActiveFlag_HT1(DMA1))
+//    {
+//        PACZC_LineFrequency_Hz_f32 = ZC_CalculateAvgFreq_Hz_f32(&ZC_DMA_input_capture_buffer_stat_arr_u16[0]);
+//        DMA1->IFCR |= DMA_IFCR_CHTIF1;
+//    }
+//    if(LL_DMA_IsActiveFlag_TC1(DMA1))
+//    {
+//        PACZC_LineFrequency_Hz_f32 = ZC_CalculateAvgFreq_Hz_f32(&ZC_DMA_input_capture_buffer_stat_arr_u16[16]);
+//        DMA1->IFCR |= DMA_IFCR_CTCIF1;
+//    }
+//    freq = PACZC_LineFrequency_Hz_f32 * 1000.0f;
+//
+//    DMA1->IFCR |= DMA_IFCR_CGIF1;
+//    NVIC_ClearPendingIRQ(DMA1_Channel1_IRQn);
+//}

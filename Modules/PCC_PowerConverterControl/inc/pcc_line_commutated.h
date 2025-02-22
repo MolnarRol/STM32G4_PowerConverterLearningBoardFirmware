@@ -18,14 +18,14 @@ extern "C"
 /*************************************************************************************************************************
         Zero crossing detection
 *************************************************************************************************************************/
-#define ZC_MIN_INPUT_FREQ_Hz_def                    40UL
-#define ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def        170000000UL
-#define ZC_TIMER_RESOLUTION_def                     (1UL << 16UL)
-
-#define ZC_TIMER_FREQUENCY_DIVISION_def             ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_MIN_INPUT_FREQ_Hz_def
-#define ZC_TIMER_PRESCALER_def                      ZC_TIMER_FREQUENCY_DIVISION_def / ZC_TIMER_RESOLUTION_def
-
-#define ZC_TIMER_INCREMENT_FREQ_HZ_def              ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_TIMER_PRESCALER_def
+//#define ZC_MIN_INPUT_FREQ_Hz_def                    40UL
+//#define ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def        170000000UL
+//#define ZC_TIMER_RESOLUTION_def                     (1UL << 16UL)
+//
+//#define ZC_TIMER_FREQUENCY_DIVISION_def             ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_MIN_INPUT_FREQ_Hz_def
+//#define ZC_TIMER_PRESCALER_def                      ZC_TIMER_FREQUENCY_DIVISION_def / ZC_TIMER_RESOLUTION_def
+//
+//#define ZC_TIMER_INCREMENT_FREQ_HZ_def              ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_TIMER_PRESCALER_def
 
 void PCC_LC_InitZeroCrossingDetection_v(void);
 void PCC_LC_ZeroCrossingDetection_Enable_v(void);
