@@ -85,9 +85,6 @@ static void PCC_LC_SingleImpulseControlledRectifier_Init_v(void)
 
     TIM1->SMCR                  |= TIM_SMCR_SMS_3 | TIM_SMCR_TS_3 | TIM_SMCR_TS_1;
 
-    TIM1->CCER                  |= TIM_CCER_CC1E | TIM_CCER_CC2E;
-
-
     PCC_LC_ZC_Init_v();
     PCC_LC_ZC_SetActiveLineCommutatedTopology_v(&s_PCC_LC_SingleImpulseControlledRectifier_ZeroCrossingControl_s);
 }
@@ -98,41 +95,45 @@ static void PCC_LC_SingleImpulseControlledRectifier_ActiveHandling_v(void)
 
 static void PCC_LC_SingleImpulseControlledRectifier_DeInit_v(void)
 {
-#if 0
     GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
 
     /* Reset timer 1 periphery. */
     RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
     RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
     RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
-#endif
 }
 
 static void PCC_LC_SingleImpulseControlledRectifier_StartPulses_v(void)
 {
+    PCC_LC_SingleImpulseControlledRectifier_OperationalHandler_v();
+    TIM1->CR1                   |= TIM_CR1_ARPE;
+    TIM1->CCMR1                 |= TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE;
+    TIM1->CCER                  |= TIM_CCER_CC1E | TIM_CCER_CC2E;
     TIM1->BDTR                  |= TIM_BDTR_MOE;                                            /* Master output enable */
 }
 
 static void PCC_LC_SingleImpulseControlledRectifier_InhibitPulses_v(void)
 {
-    TIM1->BDTR                  &= ~TIM_BDTR_MOE;                                            /* Master output enable */
+    TIM1->BDTR                  &= ~TIM_BDTR_MOE;                                           /* Master output enable */
+    TIM1->CR1                   &= ~TIM_CR1_ARPE;
+    TIM1->CCMR1                 &= (~TIM_CCMR1_OC1PE) & (~TIM_CCMR1_OC2PE);
+    TIM1->CCER                  &= (~TIM_CCER_CC1E) & (~TIM_CCER_CC2E);
 }
 
 static void PCC_LC_SingleImpulseControlledRectifier_OperationalHandler_v(void)
 {
     const f32 freq__hz__f32 = *PCC_LC_ZC_GetLineFreq__Hz__pf32();
-        UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, freq__hz__f32, &TIM1->ARR, &TIM1->PSC);
-        TIM1->CCR1 = (u16)UTIL_MapFloatToRange_f32(
-                        0.0f,
-                        (f32)TIM1->ARR,
-                        0.0f,
-                        360.0f,
-                        PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.alpha__deg__f32);
-        TIM1->CCR2 = (u16)UTIL_MapFloatToRange_f32(
-                        0.0f,
-                        (f32)TIM1->ARR,
-                        0.0f,
-                        360.0f,
-                        PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.alpha__deg__f32 + PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.pulse_len__deg__f32);
+    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, freq__hz__f32, &TIM1->ARR, &TIM1->PSC);
+    TIM1->CCR1 = (u16)UTIL_MapFloatToRange_f32(
+                    0.0f,
+                    (f32)TIM1->ARR,
+                    0.0f,
+                    360.0f,
+                    PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.alpha__deg__f32);
+    TIM1->CCR2 = (u16)UTIL_MapFloatToRange_f32(
+                    0.0f,
+                    (f32)TIM1->ARR,
+                    0.0f,
+                    360.0f,
+                    PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.alpha__deg__f32 + PCC_LC_SingleImpulseControlledRectifier_ActualParams_s.pulse_len__deg__f32);
 }
-
