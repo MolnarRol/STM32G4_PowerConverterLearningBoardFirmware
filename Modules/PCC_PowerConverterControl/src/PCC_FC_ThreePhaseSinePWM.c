@@ -7,25 +7,6 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
-//    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
-//
-//    arm_sin_cos_f32(    PCC_FC_SinglePhaseUnipolarSinePWM_CommutationAngle__deg__f32,
-//                        &sin_val_f32,
-//                        &cos_val_f32);
-//
-//    arm_inv_park_f32(   PCC_FC_SinglePhaseUnipolarSinePWM_ActualParameters_s.amplitude_f32,
-//                        0.0f,
-//                        &alpha_val_f32,
-//                        &beta_val_f32,
-//                        sin_val_f32,
-//                        cos_val_f32);
-//
-//    arm_inv_clarke_f32( alpha_val_f32,
-//                        beta_val_f32,
-//                        &u_val_f32,
-//                        &v_val_f32);
-//
-//    w_val_f32 = - u_val_f32 - v_val_f32;
 static void PCC_FC_ThreePhaseSinePWM_Init_v(void);
 static void PCC_FC_ThreePhaseSinePWM_Start_v(void);
 static void PCC_FC_ThreePhaseSinePWM_ActiveHandling_v(void);
@@ -193,6 +174,7 @@ static void PCC_FC_ThreePhaseSinePWM_ActiveHandling_v(void)
 {
 }
 
+f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
 static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
 {
     UTIL_TIM_SetTimerOverflowFrequency_v(   170.0e6f,
@@ -200,15 +182,33 @@ static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
                                             &TIM1->ARR,
                                             &TIM1->PSC);
 
-    const f32 sin_val_f32 = PCC_FC_ThreePhaseSinePWM_ActualParameters_s.amplitude_f32 * arm_sin_f32(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32);
-    const u32 compare_val_u32 = UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, sin_val_f32);
-    TIM1->CCR1 = TIM1->ARR - compare_val_u32;
-    TIM1->CCR3 = compare_val_u32;
+    arm_sin_cos_f32(    PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32,
+                        &sin_val_f32,
+                        &cos_val_f32);
 
-    PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (PI_d * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
+    arm_inv_park_f32(   PCC_FC_ThreePhaseSinePWM_ActualParameters_s.amplitude_f32,
+                        0.0f,
+                        &alpha_val_f32,
+                        &beta_val_f32,
+                        sin_val_f32,
+                        cos_val_f32);
+
+    arm_inv_clarke_f32( alpha_val_f32,
+                        beta_val_f32,
+                        &u_val_f32,
+                        &v_val_f32);
+
+    w_val_f32 = - u_val_f32 - v_val_f32;
+
+
+    TIM1->CCR1 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, u_val_f32);
+    TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, v_val_f32);
+    TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, w_val_f32);
+
+    PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (360.0 * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
                                                                                         PCC_FC_ThreePhaseSinePWM_ActualParameters_s.switching_freq__Hz__f32;
     PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 += PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32;
-    if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 >= TWO_PI_d) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 -= TWO_PI_d;
+    if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 >= 360.0) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 -= 360.0;
 
     TIM1->SR &= ~TIM_SR_UIF;
 }
@@ -217,7 +217,7 @@ static void PCC_FC_ThreePhaseSinePWM_Stop_v(void)
 {
     TIM1->BDTR                  &= ~TIM_BDTR_MOE;
     TIM1->CR1                   &= ~TIM_CR1_CEN;
-    TIM1->CCMR1                 &= ~TIM_CCMR1_OC1PE;
+    TIM1->CCMR1                 &= (~TIM_CCMR1_OC1PE) & (~TIM_CCMR1_OC2PE);
     TIM1->CCMR2                 &= ~TIM_CCMR2_OC3PE;
     TIM1->CR1                   &= ~TIM_CR1_ARPE;
 }
