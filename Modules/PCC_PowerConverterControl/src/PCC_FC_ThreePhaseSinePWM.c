@@ -186,8 +186,8 @@ static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
                         &sin_val_f32,
                         &cos_val_f32);
 
-    arm_inv_park_f32(   PCC_FC_ThreePhaseSinePWM_ActualParameters_s.amplitude_f32,
-                        0.0f,
+    arm_inv_park_f32(   0.0f,
+                        PCC_FC_ThreePhaseSinePWM_ActualParameters_s.amplitude_f32,
                         &alpha_val_f32,
                         &beta_val_f32,
                         sin_val_f32,
@@ -205,10 +205,11 @@ static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
     TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, v_val_f32);
     TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, w_val_f32);
 
-    PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (360.0 * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
+    PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (360.0f * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
                                                                                         PCC_FC_ThreePhaseSinePWM_ActualParameters_s.switching_freq__Hz__f32;
     PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 += PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32;
-    if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 >= 360.0) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 -= 360.0;
+    if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 >= 360.0f) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 -= 360.0f;
+    else if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 < 0.0f) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 += 360.0f;
 
     TIM1->SR &= ~TIM_SR_UIF;
 }
