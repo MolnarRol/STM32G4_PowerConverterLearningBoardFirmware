@@ -6,48 +6,60 @@
  */
 #include "PCC_LC_CommonZeroCrossingDetection.h"
 
-static volatile f32 PCC_LC_ZC_LineFreq__Hz__f32 = 0.0f;
-static PCC_LC_ZC_TopologyControlCallbacks_struct* s_PCC_LC_ZC_TopologyCallbacks_ps = NULL;
-static u32 s_PCC_LC_ZC_MaximumFrequencyCompareValue_u32;
-static boolean s_PCC_LC_ZC_LineFreqStable_b = False_b;
+volatile f32                                        PCC_LC_ZC_LineFreq__Hz__f32                     = 0.0f;
+static PCC_LC_ZC_TopologyControlCallbacks_struct*   s_PCC_LC_ZC_TopologyCallbacks_ps                = NULL;
+static u32                                          s_PCC_LC_ZC_MaximumFrequencyCompareValue_u32    = (u32)0;
+static boolean                                      s_PCC_LC_ZC_LineFreqStable_b                    = False_b;
 
-inline volatile f32* PCC_LC_ZC_GetLineFreq__Hz__pf32(void)
+void PCC_LC_ZC_Init_v(PCC_LC_ZC_TopologyControlCallbacks_struct* control_ps, u32 edge_sensitivity_u32)
 {
-    return &PCC_LC_ZC_LineFreq__Hz__f32;
-}
-
-void PCC_LC_ZC_Init_v(void)
-{
-    s_PCC_LC_ZC_MaximumFrequencyCompareValue_u32 = (u32)((f32)ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ((f32)ZC_MAX_INPUT_FREQ_Hz_def * ZC_TIMER_PRESCALER_def));
+    s_PCC_LC_ZC_TopologyCallbacks_ps = control_ps;
 
     /* Timer TIM15 configuration. */
     RCC->APB2ENR                |= RCC_APB2ENR_TIM15EN;                                             /* Enable clocks for TIM15 */
     RCC->APB2RSTR               |= RCC_APB2RSTR_TIM15RST;                                           /* Force reset to defaults on TIM15. */
     RCC->APB2RSTR               &= ~RCC_APB2RSTR_TIM15RST;                                          /* Release reset on TIM15. */
 
-    TIM15->PSC                  = (u16)(ZC_TIMER_PRESCALER_def - 1UL);                              /* Set prescaler to calculated value. */
+    UTIL_TIM_SetTimerOverflowFrequency_v(   (f32)SYS_APB2_CLOCK_FREQ__Hz__d,
+                                            PCC_LC_ZC_MINIMUM_INPUT_FREQUENCY_df32 *
+                                            (1.0f + (f32)edge_sensitivity_u32),
+                                            &TIM15->ARR,
+                                            &TIM15->PSC);
+
+    s_PCC_LC_ZC_MaximumFrequencyCompareValue_u32 = (u32)((((f32)TIM15->ARR + 1.0f) * PCC_LC_ZC_MINIMUM_INPUT_FREQUENCY_df32)  / PCC_LC_ZC_MAXIMUM_INPUT_FREQUENCY_df32);
+
     TIM15->CR1                  |= TIM_CR1_OPM;                                                     /* Enable one pulse mode - stop counter on overflow. */
 
-    LL_TIM_IC_SetPolarity(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);                    /* Capture rising edge. LL_TIM_IC_POLARITY_BOTHEDGE / LL_TIM_IC_POLARITY_RISING */
-    LL_TIM_IC_SetActiveInput(TIM15, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
+    TIM15->CCER                 |= (TIM_CCER_CC1P | TIM_CCER_CC1NP) * edge_sensitivity_u32;
+    TIM15->CCMR1                |= TIM_CCMR1_CC1S_0;
 
-    LL_TIM_SetTriggerInput(TIM15, LL_TIM_TS_TI1FP1);                                                /* Trigger on input capture edge. */
-    LL_TIM_SetSlaveMode(TIM15, LL_TIM_SLAVEMODE_COMBINED_RESETTRIGGER);                             /* Reset + Trigger timer on input. */
+    TIM15->SMCR                 |= TIM_SMCR_TS_2 | TIM_SMCR_TS_0 |                                  /* Trigger on input capture edge. */
+                                   TIM_SMCR_SMS_3;                                                  /* Reset + Trigger timer on input. */
 
     TIM15->DIER                 |= TIM_DIER_CC1IE;                                                  /* Enable interrupt generation on capture/compare 1. */
+}
+
+void PCC_LC_ZC_DeInit_v(void)
+{
+    PCC_LC_ZC_Disable_v();
+
+    /* Reset timer to defaults. */
+    RCC->APB2ENR                |= RCC_APB2ENR_TIM15EN;                                             /* Enable clocks for TIM15 */
+    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM15RST;                                           /* Force reset to defaults on TIM15. */
+    RCC->APB2RSTR               &= ~RCC_APB2RSTR_TIM15RST;                                          /* Release reset on TIM15. */
 }
 
 static inline f32 PCC_LC_ZC_CalculateFrequencyFromCaptureValue__Hz__f32(u16 capture_val_u16)
 {
     if(capture_val_u16 == 0) return 0.0f;
-    return ((f32)ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / (f32)((u32)ZC_TIMER_PRESCALER_def)) / (f32)capture_val_u16;
+    f32 unrounded_freq__Hz__f32;
+    f32 return_freq__Hz__f32;
+
+    unrounded_freq__Hz__f32 = (((f32)TIM15->ARR + 1.0f) * PCC_LC_ZC_MINIMUM_INPUT_FREQUENCY_df32) / (f32)capture_val_u16;
+    return_freq__Hz__f32 = (f32)((u32)(unrounded_freq__Hz__f32 * 100.0f + 0.5f)) / 100.0f;
+    return return_freq__Hz__f32;
 }
 
-void PCC_LC_ZC_SetActiveLineCommutatedTopology_v(PCC_LC_ZC_TopologyControlCallbacks_struct* control_ps)
-{
-    assert_param(control_ps != NULL);
-    s_PCC_LC_ZC_TopologyCallbacks_ps = control_ps;
-}
 
 void PCC_LC_ZC_IrqHandler_v(void)
 {

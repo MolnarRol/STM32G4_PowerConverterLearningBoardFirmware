@@ -12,7 +12,10 @@
 #include "stm32g4xx.h"
 #include "digital_interface_config.h"
 
-#define SYS_CPU_CLOCK_FREQ__Hz__d					170000000UL
+#define SYS_CPU_CLOCK_FREQ__Hz__d					( 170000000UL )
+#define SYS_AHB_CLOCK_FREQ__Hz__d                   ( 170000000UL )
+#define SYS_APB1_CLOCK_FREQ__Hz__d                  ( 170000000UL )
+#define SYS_APB2_CLOCK_FREQ__Hz__d                  ( 170000000UL )
 
 #define ENABLE_d                                    1U
 #define DISABLE_d                                   0U

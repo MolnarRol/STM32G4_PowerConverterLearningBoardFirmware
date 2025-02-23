@@ -9,16 +9,12 @@
 #define PCC_POWERCONVERTERCONTROL_INC_PCC_LC_COMMONZEROCROSSINGDETECTION_H_
 #include "PCC_private_interface.h"
 
-#define ZC_MIN_INPUT_FREQ_Hz_def                    40UL
-#define ZC_MAX_INPUT_FREQ_Hz_def                    70.0f
 
-#define ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def        170000000UL
-#define ZC_TIMER_RESOLUTION_def                     (1UL << 16UL)
+#define PCC_LC_ZC_MINIMUM_INPUT_FREQUENCY_df32      40.0f
+#define PCC_LC_ZC_MAXIMUM_INPUT_FREQUENCY_df32      70.0f
 
-#define ZC_TIMER_FREQUENCY_DIVISION_def             ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_MIN_INPUT_FREQ_Hz_def
-#define ZC_TIMER_PRESCALER_def                      ZC_TIMER_FREQUENCY_DIVISION_def / ZC_TIMER_RESOLUTION_def
-
-#define ZC_TIMER_INCREMENT_FREQ_HZ_def              ZC_TIMER_INPUT_INCREMENT_FREQ_Hz_def / ZC_TIMER_PRESCALER_def
+#define ZC_LC_ZC_SENSITIVE_TO_RISING_EDGE_d         0UL
+#define ZC_LC_ZC_SENSITIVE_TO_ANY_EDGE_d            1UL
 
 typedef struct
 {
@@ -27,11 +23,12 @@ typedef struct
     void (*operation_handler_pfv)(void);
 } PCC_LC_ZC_TopologyControlCallbacks_struct;
 
-void PCC_LC_ZC_Init_v(void);
+extern volatile f32 PCC_LC_ZC_LineFreq__Hz__f32;
+
+void PCC_LC_ZC_Init_v(PCC_LC_ZC_TopologyControlCallbacks_struct* control_ps, u32 edge_sensitivity_u32);
+void PCC_LC_ZC_DeInit_v(void);
 void PCC_LC_ZC_IrqHandler_v(void);
 void PCC_LC_ZC_Enable_v(void);
 void PCC_LC_ZC_Disable_v(void);
-volatile f32* PCC_LC_ZC_GetLineFreq__Hz__pf32(void);
-void PCC_LC_ZC_SetActiveLineCommutatedTopology_v(PCC_LC_ZC_TopologyControlCallbacks_struct* control_ps);
 
 #endif /* PCC_POWERCONVERTERCONTROL_INC_PCC_LC_COMMONZEROCROSSINGDETECTION_H_ */

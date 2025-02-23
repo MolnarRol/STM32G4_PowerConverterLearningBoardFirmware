@@ -85,8 +85,7 @@ static void PCC_LC_SingleImpulseControlledRectifier_Init_v(void)
 
     TIM1->SMCR                  |= TIM_SMCR_SMS_3 | TIM_SMCR_TS_3 | TIM_SMCR_TS_1;
 
-    PCC_LC_ZC_Init_v();
-    PCC_LC_ZC_SetActiveLineCommutatedTopology_v(&s_PCC_LC_SingleImpulseControlledRectifier_ZeroCrossingControl_s);
+    PCC_LC_ZC_Init_v(&s_PCC_LC_SingleImpulseControlledRectifier_ZeroCrossingControl_s, ZC_LC_ZC_SENSITIVE_TO_RISING_EDGE_d);
 }
 
 static void PCC_LC_SingleImpulseControlledRectifier_ActiveHandling_v(void)
@@ -122,8 +121,7 @@ static void PCC_LC_SingleImpulseControlledRectifier_InhibitPulses_v(void)
 
 static void PCC_LC_SingleImpulseControlledRectifier_OperationalHandler_v(void)
 {
-    const f32 freq__hz__f32 = *PCC_LC_ZC_GetLineFreq__Hz__pf32();
-    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, freq__hz__f32, &TIM1->ARR, &TIM1->PSC);
+    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, PCC_LC_ZC_LineFreq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
     TIM1->CCR1 = (u16)UTIL_MapFloatToRange_f32(
                     0.0f,
                     (f32)TIM1->ARR,

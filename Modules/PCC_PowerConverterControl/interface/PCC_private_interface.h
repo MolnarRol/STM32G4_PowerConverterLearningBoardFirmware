@@ -14,6 +14,9 @@ extern "C"
 #endif
 
 #include <app_types.h>
+#include <general_config.h>
+#include <UTIL_public_interface.h>
+
 #include <stm32g4xx.h>
 #include <stm32g4xx_ll_tim.h>
 #include <stm32g4xx_ll_dma.h>
