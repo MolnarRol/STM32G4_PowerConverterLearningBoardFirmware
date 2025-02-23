@@ -152,12 +152,20 @@ static void PCC_LC_DoubleImpulseControlledRectifier_ActiveHandling_v(void)
 
 static void PCC_LC_DoubleImpulseControlledRectifier_DeInit_v(void)
 {
-    GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
+    GPIOA->MODER                |= GPIO_MODER_MODE0_Msk |
+                                   GPIO_MODER_MODE2_Msk |
+                                   GPIO_MODER_MODE8_Msk |
+                                   GPIO_MODER_MODE10_Msk;                    /* Set pin mode to analog. */
 
     /* Reset timer 1 periphery. */
     RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
     RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+    RCC->APB2ENR                &= ~RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+
+    /* Reset timer 2 periphery. */
+    RCC->APB1RSTR1              |= RCC_APB1RSTR1_TIM2RST_Msk;
+    RCC->APB1RSTR1              &= ~RCC_APB1RSTR1_TIM2RST_Msk;
+    RCC->APB1ENR1               &= ~RCC_APB1ENR1_TIM2EN;
 }
 
 static void PCC_LC_DoubleImpulseControlledRectifier_StartPulses_v(void)
