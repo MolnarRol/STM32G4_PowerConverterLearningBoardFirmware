@@ -24,7 +24,8 @@ const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
     &PCC_Topology_SinglePhaseThyristorVoltageConverter_s,
     &PCC_Topology_SinglePhaseTriacVoltageConverter_s,
     &PCC_Topology_DoubleImpulseControlledRectifier_s,
-    &PCC_Topology_SixPulseThreePhaseControlledRectifier_s
+    &PCC_Topology_SixPulseThreePhaseControlledRectifier_s,
+    &PCC_Topology_ThreePulseThreePhaseControlledRectifier_s
 };
 
 boolean pcc_start_test_b = False_b;

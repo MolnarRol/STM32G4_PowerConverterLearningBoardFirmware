@@ -54,7 +54,8 @@ typedef enum
 	PCC_TOPO_SinglePhaseThyristorVoltageConverter_e     = 9,
 	PCC_TOPO_SinglePhaseTriacVoltageConverter_e         = 10,
 	PCC_TOPO_DoubleImpulseControlledRectifier_e         = 11,
-	PCC_TOPO_SixPulseThreePhaseControlledRectifier_e    = 12
+	PCC_TOPO_SixPulseThreePhaseControlledRectifier_e    = 12,
+	PCC_TOPO_ThreePulseThreePhaseControlledRectifier_e  = 13
 } PCC_Topologies_enum;
 
 #define PCC_NUMBER_OF_TOPOLOGIES_d          8U
@@ -106,6 +107,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseThyristorVoltageC
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseTriacVoltageConverter_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_DoubleImpulseControlledRectifier_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SixPulseThreePhaseControlledRectifier_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_ThreePulseThreePhaseControlledRectifier_s;
 
 void PCC_InterruptHandler_v(void);
 
