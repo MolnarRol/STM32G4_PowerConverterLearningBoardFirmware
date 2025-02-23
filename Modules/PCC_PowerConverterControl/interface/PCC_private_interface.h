@@ -50,7 +50,9 @@ typedef enum
 	PCC_TOPO_SinglePhaseUnipolarSinePWM_e           = 5,
 	PCC_TOPO_SinglePhaseBipolarSinePWM_e            = 6,
 	PCC_TOPO_ThreePhaseSinePWM_e                    = 7,
-	PCC_TOPO_SinglePhaseControlledRecttifier_e      = 8
+	PCC_TOPO_SinglePhaseControlledRectifier_e       = 8,
+	PCC_TOPO_SinglePhaseThyristorVoltageConverter_e = 9,
+	PCC_TOPO_SinglePhaseTriacVoltageConverter_e     = 10
 } PCC_Topologies_enum;
 
 #define PCC_NUMBER_OF_TOPOLOGIES_d          8U
@@ -98,6 +100,8 @@ extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseUnipolarSinePWM_s
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseBipolarSinePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseSinePWM_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SingleImpulseControlledRectifier_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseThyristorVoltageConverter_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseTriacVoltageConverter_s;
 
 void PCC_InterruptHandler_v(void);
 

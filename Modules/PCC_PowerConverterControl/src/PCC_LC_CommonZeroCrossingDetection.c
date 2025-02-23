@@ -63,7 +63,9 @@ static inline f32 PCC_LC_ZC_CalculateFrequencyFromCaptureValue__Hz__f32(u16 capt
 
 void PCC_LC_ZC_IrqHandler_v(void)
 {
-    static u8 good_input_freq_count_u8 = 0;
+    static u8 good_input_freq_count_u8 = (u8)0;
+    static u8 bad_input_freq_count_u8 = (u8)0;
+
     if(s_PCC_LC_ZC_LineFreqStable_b)
     {
         s_PCC_LC_ZC_TopologyCallbacks_ps->operation_handler_pfv();
@@ -77,6 +79,7 @@ void PCC_LC_ZC_IrqHandler_v(void)
         }
         else
         {
+            bad_input_freq_count_u8 = (u8)0;
             PCC_LC_ZC_LineFreq__Hz__f32 = PCC_LC_ZC_CalculateFrequencyFromCaptureValue__Hz__f32(TIM15->CCR1);
             s_PCC_LC_ZC_TopologyCallbacks_ps->start_pulses_pfv();
             s_PCC_LC_ZC_LineFreqStable_b = True_b;
@@ -84,9 +87,16 @@ void PCC_LC_ZC_IrqHandler_v(void)
     }
     else
     {
-        good_input_freq_count_u8 = (u8)0;
-        s_PCC_LC_ZC_TopologyCallbacks_ps->inhibit_pulses_pfv();
-        s_PCC_LC_ZC_LineFreqStable_b = False_b;
+        if(bad_input_freq_count_u8 < 10)
+        {
+            bad_input_freq_count_u8 += (u8)1;
+        }
+        else
+        {
+            good_input_freq_count_u8 = (u8)0;
+            s_PCC_LC_ZC_TopologyCallbacks_ps->inhibit_pulses_pfv();
+            s_PCC_LC_ZC_LineFreqStable_b = False_b;
+        }
     }
     TIM15->SR   &= ~TIM_SR_CC1IF;
 }

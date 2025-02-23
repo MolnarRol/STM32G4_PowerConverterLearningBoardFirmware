@@ -20,7 +20,9 @@ const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
     &PCC_Topology_SinglePhaseUnipolarSinePWM_s,
     &PCC_Topology_SinglePhaseBipolarSinePWM_s,
     &PCC_Topology_ThreePhaseSinePWM_s,
-    &PCC_Topology_SingleImpulseControlledRectifier_s
+    &PCC_Topology_SingleImpulseControlledRectifier_s,
+    &PCC_Topology_SinglePhaseThyristorVoltageConverter_s,
+    &PCC_Topology_SinglePhaseTriacVoltageConverter_s
 };
 
 boolean pcc_start_test_b = False_b;
