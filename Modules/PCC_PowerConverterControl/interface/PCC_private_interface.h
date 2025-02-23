@@ -42,18 +42,19 @@ typedef enum
 
 typedef enum
 {
-	PCC_TOPO_SinglePWM_e	                        = 0,
-	PCC_TOPO_SingleComplementaryPWM_e               = 1,
-	PCC_TOPO_FullBridgePhaseShiftedPWM_e            = 2,
-	PCC_TOPO_FullBridgeUnipolarPWM_e                = 3,
-	PCC_TOPO_FullBridgeBipolarPWM_e                 = 4,
-	PCC_TOPO_SinglePhaseUnipolarSinePWM_e           = 5,
-	PCC_TOPO_SinglePhaseBipolarSinePWM_e            = 6,
-	PCC_TOPO_ThreePhaseSinePWM_e                    = 7,
-	PCC_TOPO_SinglePhaseControlledRectifier_e       = 8,
-	PCC_TOPO_SinglePhaseThyristorVoltageConverter_e = 9,
-	PCC_TOPO_SinglePhaseTriacVoltageConverter_e     = 10,
-	PCC_TOPO_DoubleImpulseControlledRectifier_e     = 11
+	PCC_TOPO_SinglePWM_e	                            = 0,
+	PCC_TOPO_SingleComplementaryPWM_e                   = 1,
+	PCC_TOPO_FullBridgePhaseShiftedPWM_e                = 2,
+	PCC_TOPO_FullBridgeUnipolarPWM_e                    = 3,
+	PCC_TOPO_FullBridgeBipolarPWM_e                     = 4,
+	PCC_TOPO_SinglePhaseUnipolarSinePWM_e               = 5,
+	PCC_TOPO_SinglePhaseBipolarSinePWM_e                = 6,
+	PCC_TOPO_ThreePhaseSinePWM_e                        = 7,
+	PCC_TOPO_SinglePhaseControlledRectifier_e           = 8,
+	PCC_TOPO_SinglePhaseThyristorVoltageConverter_e     = 9,
+	PCC_TOPO_SinglePhaseTriacVoltageConverter_e         = 10,
+	PCC_TOPO_DoubleImpulseControlledRectifier_e         = 11,
+	PCC_TOPO_SixPulseThreePhaseControlledRectifier_e    = 12
 } PCC_Topologies_enum;
 
 #define PCC_NUMBER_OF_TOPOLOGIES_d          8U
@@ -104,6 +105,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_SingleImpulseControlledRecti
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseThyristorVoltageConverter_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseTriacVoltageConverter_s;
 extern const PCC_TopologyHandle_struct PCC_Topology_DoubleImpulseControlledRectifier_s;
+extern const PCC_TopologyHandle_struct PCC_Topology_SixPulseThreePhaseControlledRectifier_s;
 
 void PCC_InterruptHandler_v(void);
 
