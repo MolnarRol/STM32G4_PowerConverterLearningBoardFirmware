@@ -248,7 +248,7 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
  */
 static void PCC_FC_SingleComplementaryPWM_DeInit_v(void)
 {
-    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE8_Msk | GPIO_MODER_MODE8_Msk);                         /* Set pin modes to analog. */
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE7_Msk | GPIO_MODER_MODE8_Msk);                         /* Set pin modes to analog. */
 
     /* Reset timer 1 periphery. */
     SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */

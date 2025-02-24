@@ -3,136 +3,201 @@
 
 static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_Start_v(void);
-static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_Stop_v(void);
+static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v(void);
 
+/* TODO: Remove active handling. */
+static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void){};
+
+/**********************************************************************************************************************
+ * Topology handler structure.
+ **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
 {
-        .initialize_pfv     = PCC_FC_FullBridgePhaseShiftedPWM_Init_v,
-        .start_pf           = PCC_FC_FullBridgePhaseShiftedPWM_Start_v,
-        .active_handler_pfv = PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v,
-        .stop_pfv           = PCC_FC_FullBridgePhaseShiftedPWM_Stop_v,
-        .deinitalize_pfv    = PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v,
-        .driver_enable_u    =
+    .initialize_pfv     = PCC_FC_FullBridgePhaseShiftedPWM_Init_v,
+    .start_pf           = PCC_FC_FullBridgePhaseShiftedPWM_Start_v,
+    .active_handler_pfv = PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v,
+    .stop_pfv           = PCC_FC_FullBridgePhaseShiftedPWM_Stop_v,
+    .deinitalize_pfv    = PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v,
+    .isr_handler_pfv    = PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v,
+    .driver_enable_u    =
+                        {
+                            .drivers_s =
                             {
-                                .drivers_s =
-                                {
-                                        .gd1_f1 = 1,
-                                        .gd2_f1 = 1,
-                                        .gd3_f1 = 0,
-                                        .gd4_f1 = 1,
-                                        .gd5_f1 = 1,
-                                        .gd6_f1 = 0
-                                }
+                                    .gd1_f1 = 1,
+                                    .gd2_f1 = 1,
+                                    .gd3_f1 = 0,
+                                    .gd4_f1 = 1,
+                                    .gd5_f1 = 1,
+                                    .gd6_f1 = 0
                             }
+                        }
 };
 
-f32 PCC_FC_FullBridgePhaseShiftedPWM_freq__Hz__f32 = 100000.0f;
-f32 PCC_FC_FullBridgePhaseShiftedPWM_phaseshift__deg__f32 = 90.0f;
-f32 PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32 = 75.0e-9f;
+/**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s =
+{
+    .frequency__Hz__f32         = 100000.0f,
+    .phase_shift__deg__f32      = 0.0f,
+    .deadtime__s__f32           = 75.0e-9
+};
+static PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s;
 
+
+/**********************************************************************************************************************
+ * Topology control routines.
+ **********************************************************************************************************************/
+/**
+ *  @brief Initialization routine forphase shifted PWM generation with complementary signals.
+ *  @details
+ *      TIM1 configuration:
+ *          - Counting mode: Up down
+ *          - Interrupt on update event
+ *          - Outputs:
+ *              - TIM1_CH1:     Asymmetric PWM mode 2
+ *              - TIM1_CH1N:    Complementary to TIM1_CH1
+ *              - TIM1_CH3:     Asymmetric PWM mode 2
+ *              - TIM1_CH3N:    Complementary to TIM1_CH1
+ *      GPIO:
+ *          - TIM1_CH1:     PA8     [AF6] - Push-pull, high speed, pull-down
+ *          - TIM1_CH1N:    PA7     [AF6] - Push-pull, high speed, pull-down
+ *          - TIM1_CH3:     PA10    [AF6] - Push-pull, high speed, pull-down
+ *          - TIM1_CH3N:    PB1     [AF6] - Push-pull, high speed, pull-down
+ */
 static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
 {
-	/* TIM1 CH1 */
-	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;								        /* Enable clocks for TIM1 module. */
+    /***********************************************************************************
+     * GPIO pin configuration:
+     *  - CH1:  PA8     [AF6]
+     *  - CH1N: PA7     [AF6]
+     *  - CH3:  PA10    [AF6]
+     *  - CH3N: PB1     [AF6]
+     ***********************************************************************************/
+    MODIFY_REG(GPIOA->MODER,
+               GPIO_MODER_MODE7_Msk |
+               GPIO_MODER_MODE8_Msk |
+               GPIO_MODER_MODE10_Msk,
+               (2UL << GPIO_MODER_MODE7_Pos) |
+               (2UL << GPIO_MODER_MODE8_Pos) |
+               (2UL << GPIO_MODER_MODE10_Pos));                                                 /* Set mode to alternate function. */
 
-	/* GPIO pin configuration: PA8, PA10 - AF6 */
-	GPIOA->MODER				&= (~GPIO_MODER_MODE7_Msk)  &
-	                               (~GPIO_MODER_MODE8_Msk)  &
-	                               (~GPIO_MODER_MODE10_Msk);			    /* Reset pin mode. */
+    MODIFY_REG(GPIOA->PUPDR,
+               GPIO_PUPDR_PUPD7_Msk |
+               GPIO_PUPDR_PUPD8_Msk |
+               GPIO_PUPDR_PUPD10_Msk,
+               GPIO_PUPDR_PUPD7_1 |
+               GPIO_PUPDR_PUPD8_1 |
+               GPIO_PUPDR_PUPD10_1);                                                            /* Enable pull down. */
 
-	GPIOA->MODER				|= (2UL << GPIO_MODER_MODE7_Pos) |
-                                   (2UL << GPIO_MODER_MODE8_Pos) |
-                                   (2UL << GPIO_MODER_MODE10_Pos);		    /* Set mode to alternate function. */
+    CLEAR_BIT(GPIOA->OTYPER,
+              GPIO_OTYPER_OT7_Msk |
+              GPIO_OTYPER_OT8_Msk |
+              GPIO_OTYPER_OT10_Msk);                                                            /* Set output type to push-pull. */
 
-	GPIOA->PUPDR        		|= GPIO_PUPDR_PUPD7_1 |
-	                               GPIO_PUPDR_PUPD8_1 |
-	                               GPIO_PUPDR_PUPD10_1;                     /* Enable pull down. */
+    MODIFY_REG(GPIOA->OSPEEDR,
+               GPIO_OSPEEDR_OSPEED7_Msk |
+               GPIO_OSPEEDR_OSPEED8_Msk |
+               GPIO_OSPEEDR_OSPEED10_Msk,
+               (2UL << GPIO_OSPEEDR_OSPEED7_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED8_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED10_Pos));                                             /* Set pin speed to high. */
 
-	GPIOA->OTYPER				&= (~GPIO_OTYPER_OT7_Msk) |
-	                               (~GPIO_OTYPER_OT8_Msk) |
-	                               (~GPIO_OTYPER_OT10_Msk);			        /* Set output type to push-pull. */
+    MODIFY_REG(GPIOA->AFR[0],
+               GPIO_AFRL_AFSEL7_Msk,
+               6UL << GPIO_AFRL_AFSEL7_Pos);                                                    /* Set alternate function to AF6. */
 
-	GPIOA->OSPEEDR				&= (~GPIO_OSPEEDR_OSPEED7_Msk) &
-	                               (~GPIO_OSPEEDR_OSPEED8_Msk) &
-	                               (~GPIO_OSPEEDR_OSPEED10_Msk);	        /* Reset pin speed. */
+    MODIFY_REG(GPIOA->AFR[1],
+               GPIO_AFRH_AFSEL8_Msk |
+               GPIO_AFRH_AFSEL10_Msk,
+               (6UL << GPIO_AFRH_AFSEL8_Pos) |
+               (6UL << GPIO_AFRH_AFSEL10_Pos));                                                 /* Set alternate function to AF6. */
 
-	GPIOA->OSPEEDR				|= (2UL << GPIO_OSPEEDR_OSPEED7_Pos) |
-	                               (2UL << GPIO_OSPEEDR_OSPEED8_Pos) |
-	                               (2UL << GPIO_OSPEEDR_OSPEED10_Pos);	    /* Set pin speed to high. */
+    MODIFY_REG(GPIOB->MODER, GPIO_MODER_MODE1_Msk, 2UL << GPIO_MODER_MODE1_Pos);                /* Set mode to alternate function. */
+    MODIFY_REG(GPIOB->PUPDR, GPIO_PUPDR_PUPD1_Msk, GPIO_PUPDR_PUPD1_1);                         /* Enable pull down. */
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT1_Msk);                                              /* Set output type to push-pull. */
+    MODIFY_REG(GPIOB->OSPEEDR,
+               GPIO_OSPEEDR_OSPEED1_Msk,
+               2UL << GPIO_OSPEEDR_OSPEED1_Pos);                                                /* Set pin speed to high. */
 
-	GPIOA->AFR[0]               &= (~GPIO_AFRL_AFSEL7_Msk);
-	GPIOA->AFR[1]				&= (~GPIO_AFRH_AFSEL8_Msk) &
-	                               (~GPIO_AFRH_AFSEL10_Msk);			    /* Reset alternate function. */
+    MODIFY_REG(GPIOB->AFR[0], GPIO_AFRL_AFSEL1_Msk, 6UL << GPIO_AFRL_AFSEL1_Pos);               /* Set alternate function to AF6. */
 
-	GPIOA->AFR[0]               |= (6UL << GPIO_AFRL_AFSEL7_Pos);
-	GPIOA->AFR[1]				|= (6UL << GPIO_AFRH_AFSEL8_Pos) |
-	                               (6UL << GPIO_AFRH_AFSEL10_Pos);		        /* Set alternate function to AF6. */
+    /***********************************************************************************
+     * Timer TIM1 configuration:
+     *  - CH1/CH1N: Asymmetric PWM mode 2
+     *  - CH2:      No output PWM mode 2
+     *  - CH3/CH3N: Asymmetric PWM mode 2
+     *  - CH4:      No output PWM mode 2
+     ***********************************************************************************/
+    /* Reset timer 1 periphery. */
+    SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                              /* Enable clocks for TIM1. */
 
-	/* PB01 - AF6 */
-	GPIOB->MODER                &= ~GPIO_MODER_MODE1_Msk;
-    GPIOB->MODER                |= (2UL << GPIO_MODER_MODE1_Pos);          /* Set mode to alternate function. */
-    GPIOB->PUPDR                |= GPIO_PUPDR_PUPD1_1;                     /* Enable pull down. */
-    GPIOB->OTYPER               &= (~GPIO_OTYPER_OT1_Msk);                 /* Set output type to push-pull. */
-    GPIOB->OSPEEDR              &= (~GPIO_OSPEEDR_OSPEED1_Msk);            /* Reset pin speed. */
-    GPIOB->OSPEEDR              |= (2UL << GPIO_OSPEEDR_OSPEED1_Pos);      /* Set pin speed to high. */
-    GPIOB->AFR[0]               &= (~GPIO_AFRL_AFSEL1_Msk);
-    GPIOB->AFR[0]               |= (6UL << GPIO_AFRL_AFSEL1_Pos);
+    SET_BIT(TIM1->CR1, TIM_CR1_CMS_1);                                                          /* Center aligned mode 2. */
+    SET_BIT(TIM1->CCMR1,
+            TIM_CCMR1_OC1M_3 |
+            TIM_CCMR1_OC1M_2 |
+            TIM_CCMR1_OC1M_1 |
+            TIM_CCMR1_OC1M_0 |                                                                  /* OC1: Asymmetric PWM mode 2. */
+            TIM_CCMR1_OC2M_2 |
+            TIM_CCMR1_OC2M_1 |
+            TIM_CCMR1_OC2M_0);                                                                  /* OC2: PWM mode 2. */
 
-	/* Reset timer 1 periphery. */
-	RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
-	RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-	RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+    SET_BIT(TIM1->CCMR2,
+            TIM_CCMR2_OC3M_3 |
+            TIM_CCMR2_OC3M_2 |
+            TIM_CCMR2_OC3M_1 |
+            TIM_CCMR2_OC3M_0 |                                                                  /* OC3: Asymmetric PWM mode 2. */
+            TIM_CCMR2_OC4M_2 |
+            TIM_CCMR2_OC4M_1 |
+            TIM_CCMR2_OC4M_0);                                                                  /* OC2: PWM mode 2. */
 
-	TIM1->ARR                   = 1;
-
-	TIM1->CR1                   |= TIM_CR1_ARPE |                           /* Auto reload register pre-load enable. */
-	                               TIM_CR1_CMS_1;                           /* Center aligned mode 2. */
-
-	/* Timer configuration. */
-	TIM1->CCMR1                 |= TIM_CCMR1_OC1M_3 |
-	                               TIM_CCMR1_OC1M_2 |
-	                               TIM_CCMR1_OC1M_1 |
-	                               TIM_CCMR1_OC1M_0 |                       /* Asymmetric PWM mode 2. */
-	                               TIM_CCMR1_OC1PE  |                       /* Output compare 1 pre-load enable. */
-	                               TIM_CCMR1_OC2M_2 |
-                                   TIM_CCMR1_OC2M_1 |
-                                   TIM_CCMR1_OC2M_0 |                       /* PWM mode 2. */
-	                               TIM_CCMR1_OC2PE;                         /* Output compare 2 pre-load enable. */
-
-	TIM1->CCMR2                 |= TIM_CCMR2_OC3M_3 |
-	                               TIM_CCMR2_OC3M_2 |
-	                               TIM_CCMR2_OC3M_1 |
-	                               TIM_CCMR2_OC3M_0 |                       /* Asymmetric PWM mode 2. */
-	                               TIM_CCMR2_OC3PE  |                       /* Output compare 3 pre-load enable. */
-	                               TIM_CCMR2_OC4M_2 |
-	                               TIM_CCMR2_OC4M_1 |
-	                               TIM_CCMR2_OC4M_0 |                       /* PWM mode 2. */
-	                               TIM_CCMR2_OC4PE;                         /* Output compare 4 pre-load enable. */
-
-    /* Dead time configuration. */
-    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
-    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32);
+    SET_BIT(TIM1->DIER, TIM_DIER_UIE);                                                          /* Enable update interrupt flag generation. */
+    NVIC_SetPriority(TIM1_UP_TIM16_IRQn, CONFIG_PCC_IRQ_PRIORITY_d);                            /* Set correct NVIC interrupt priority. */
 }
 
+/**
+ * @brief Start routine for phase shifted PWM generation with complementary signals.
+ * @details
+ *  - calculates and writes correct registers for reference frequency and phase shift
+ *  - enables pre-load on ARR, CCR1, CCR2, CCR3 and CCR4
+ *  - enables CC1, CC1N, CC3, CC3N
+ *  - enables master output enable
+ *  - clears timer count
+ *  - enables timer and its overflow interrupt
+ */
 static void PCC_FC_FullBridgePhaseShiftedPWM_Start_v(void)
 {
-    TIM1->CCER                  |= TIM_CCER_CC1E    |                       /* Enable PWM channel: CH1. */
-                                   TIM_CCER_CC1NE   |                       /* Enable PWM channel: CH1N. */
-                                   TIM_CCER_CC3E    |                       /* Enable PWM channel: CH3. */
-                                   TIM_CCER_CC3NE;                          /* Enable PWM channel: CH3N. */
-    TIM1->BDTR                  |= TIM_BDTR_MOE;
-    TIM1->CR1                   |= TIM_CR1_CEN;
-}
+    /* Copy set parameters to actual parameters. */
+    PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.frequency__Hz__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.frequency__Hz__f32;
+    PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.phase_shift__deg__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32;
+    PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.deadtime__s__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.deadtime__s__f32;
 
-static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void)
-{
-    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, 2.0f * PCC_FC_FullBridgePhaseShiftedPWM_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
+    /* Dead time calculation and write to dead time register. */
+    MODIFY_REG(TIM1->BDTR,
+               TIM_BDTR_DTG_Msk,
+               (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+                                                        PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.deadtime__s__f32));
+
+    /* Calculate and write register values for set frequency. */
+    UTIL_TIM_SetTimerOverflowFrequency_v(
+            (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.frequency__Hz__f32,
+            &TIM1->ARR,
+            &TIM1->PSC
+            );
+
+    /* Set correct PWM duty and phase shift. */
     TIM1->CCR1 = 0;
     TIM1->CCR2 = TIM1->ARR - 1;
 
-    u32 shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_phaseshift__deg__f32 / 180.0f)) + 0.5f);
+    u32 shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32 / 180.0f)) + 0.5f);
 
     if(shift_u32 != (u32)0)
     {
@@ -145,23 +210,150 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void)
         TIM1->CCR4 = TIM1->ARR;
     }
 
-    /* Dead time configuration. */
-    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
-    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_FullBridgePhaseShiftedPWM_DeadTime__s__f32);
+    SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE);                                    /* Enable pre-load for 0C1 and OC2. */
+    SET_BIT(TIM1->CCMR2, TIM_CCMR2_OC3PE | TIM_CCMR2_OC4PE);                                    /* Enable pre-load for 0C3 and OC4. */
+    SET_BIT(TIM1->CCER,
+            TIM_CCER_CC1E    |                                                                  /* Enable PWM channel: CH1. */
+            TIM_CCER_CC1NE   |                                                                  /* Enable PWM channel: CH1N. */
+            TIM_CCER_CC3E    |                                                                  /* Enable PWM channel: CH3. */
+            TIM_CCER_CC3NE);                                                                    /* Enable PWM channel: CH3N. */
+
+    CLEAR_REG(TIM1->CNT);                                                                       /* Clear timer counter. */
+    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);                                                   /* Clear pending interrupt in NVIC. */
+    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);                                                         /* Enable update interrupt in NVIC. */
+    SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                          /* Enable master update. */
+    SET_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Enable pre-load for ARR. */
+            TIM_CR1_CEN);                                                                       /* Start the timer. */
 }
 
+/**
+ * @brief Stop routine for phase shifted PWM generation with complementary signals.
+ * @details
+ *  - disables pre-load on ARR, CCR1, CCR2, CCR3 and CCR4
+ *  - disables CC1, CC1N, CC3, CC3N
+ *  - disables master output enable
+ *  - clears timer count
+ *  - disables timer and its overflow interrupt
+ */
 static void PCC_FC_FullBridgePhaseShiftedPWM_Stop_v(void)
 {
-    TIM1->BDTR                  &= ~TIM_BDTR_MOE;
-    TIM1->CR1                   &= ~TIM_CR1_CEN;
+    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);                                                   /* Clear pending interrupt in NVIC. */
+    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);                                                         /* Disable update interrupt in NVIC. */
+    CLEAR_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                        /* Disable master update. */
+    CLEAR_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Disable pre-load for ARR. */
+            TIM_CR1_CEN);                                                                       /* Stop the timer. */
+
+    CLEAR_REG(TIM1->CNT);                                                                       /* Clear timer counter. */
+
+    CLEAR_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE);                                  /* Disable pre-load for 0C1 and OC2. */
+    CLEAR_BIT(TIM1->CCMR2, TIM_CCMR2_OC3PE | TIM_CCMR2_OC4PE);                                  /* Disable pre-load for 0C3 and OC4. */
+    CLEAR_BIT(TIM1->CCER,
+            TIM_CCER_CC1E    |                                                                  /* Disable PWM channel: CH1. */
+            TIM_CCER_CC1NE   |                                                                  /* Disable PWM channel: CH1N. */
+            TIM_CCER_CC3E    |                                                                  /* Disable PWM channel: CH3. */
+            TIM_CCER_CC3NE);                                                                    /* Disable PWM channel: CH3N. */
 }
 
+/**
+ * @brief Update interrupt handler for phase shifted PWM generation with complementary signals.
+ * @details Writes new frequency, phase shift and dead time whenever they are changed
+ */
+static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void)
+{
+    u32 shift_u32;
+
+    /* Check if new PWM frequency was set. */
+    if(PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.frequency__Hz__f32 !=
+      PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.frequency__Hz__f32)
+    {
+        /* Calculate and write register values for set frequency. */
+        UTIL_TIM_SetTimerOverflowFrequency_v(
+                (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+                UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.frequency__Hz__f32,
+                &TIM1->ARR,
+                &TIM1->PSC
+                );
+
+        /* Set correct PWM duty and phase shift. */
+        TIM1->CCR1 = 0;
+        TIM1->CCR2 = TIM1->ARR - 1;
+
+        shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32 / 180.0f)) + 0.5f);
+
+        if(shift_u32 != (u32)0)
+        {
+            TIM1->CCR3 = shift_u32 - 1;
+            TIM1->CCR4 = TIM1->ARR - shift_u32;
+        }
+        else
+        {
+            TIM1->CCR3 = 0;
+            TIM1->CCR4 = TIM1->ARR;
+        }
+        /* Copy set parameters to actual parameters. */
+        PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.frequency__Hz__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.frequency__Hz__f32;
+        PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.phase_shift__deg__f32 =
+                    PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32;
+    }
+
+    /* Check if new PWM phase shift was set. */
+    else if(PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32 !=
+       PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.phase_shift__deg__f32)
+    {
+        shift_u32 = (u32)(((f32)TIM1->ARR * (PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32 / 180.0f)) + 0.5f);
+
+        if(shift_u32 != (u32)0)
+        {
+            TIM1->CCR3 = shift_u32 - 1;
+            TIM1->CCR4 = TIM1->ARR - shift_u32;
+        }
+        else
+        {
+            TIM1->CCR3 = 0;
+            TIM1->CCR4 = TIM1->ARR;
+        }
+
+        /* Copy set parameters to actual parameters. */
+        PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.phase_shift__deg__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32;
+    }
+
+    /* Check if new dead time was set. */
+    if(PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.deadtime__s__f32 !=
+       PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.deadtime__s__f32)
+    {
+        /* Dead time calculation and write to dead time register. */
+        MODIFY_REG(TIM1->BDTR,
+                   TIM_BDTR_DTG_Msk,
+                   (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+                                                            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.deadtime__s__f32));
+
+        /* Copy set parameters to actual parameters. */
+        PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s.deadtime__s__f32 =
+            PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.deadtime__s__f32;
+    }
+
+    /* Clear interrupt flag. */
+    CLEAR_BIT(TIM1->SR, TIM_SR_UIF);
+}
+
+/**
+ *  @brief De-initialization routine for phase shifted PWM generation with complementary signals.
+ *  @details
+ *      TIM1 is reset.
+ *      GPIO pins are set to analog.
+ */
 static void PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v(void)
 {
-    GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
+    /* Set pin modes to analog. */
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE7_Msk | GPIO_MODER_MODE8_Msk | GPIO_MODER_MODE10_Msk);
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE1_Msk);
 
     /* Reset timer 1 periphery. */
-    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
-    RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+    SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);
 }
