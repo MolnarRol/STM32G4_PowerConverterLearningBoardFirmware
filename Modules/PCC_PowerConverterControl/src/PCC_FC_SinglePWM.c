@@ -3,10 +3,16 @@
 
 static void PCC_FC_SinglePWM_Init_v(void);
 static void PCC_FC_SinglePWM_Start_v(void);
-static void PCC_FC_SinglePWM_ActiveHandling_v(void);
 static void PCC_FC_SinglePWM_Stop_v(void);
+static void PCC_FC_SinglePWM_IrqHandler_v(void);
 static void PCC_FC_SinglePWM_DeInit_v(void);
 
+/* TODO: Remove active handling. */
+static void PCC_FC_SinglePWM_ActiveHandling_v(void) {};
+
+/**********************************************************************************************************************
+ * Topology handler structure.
+ **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
 {
         .initialize_pfv     = PCC_FC_SinglePWM_Init_v,
@@ -14,62 +20,185 @@ const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
         .active_handler_pfv = PCC_FC_SinglePWM_ActiveHandling_v,
         .stop_pfv           = PCC_FC_SinglePWM_Stop_v,
         .deinitalize_pfv    = PCC_FC_SinglePWM_DeInit_v,
+        .isr_handler_pfv    = PCC_FC_SinglePWM_IrqHandler_v,
         .driver_enable_u    = {.byte_val_u8 = (u8)0x1}
 };
 
-f32 PCC_Topology_SinglePWM_freq__Hz__f32 = 1000.0f;
-f32 PCC_Topology_SinglePWM_duty__per_cent__f32 = 0.0f;
+/**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+PCC_FC_PWM_Params_s PCC_FC_SinglePWM_SetParams_s =
+{
+    .frequency__Hz__f32     = 1000.0f,
+    .duty__per_cent__f32    = 10.0f,
+    .deadtime__s__f32       = 0.0f                                                              /* Irrelevant in this topology. */
+};
 
+static PCC_FC_PWM_Params_s s_PCC_FC_SinglePWM_ActualParams_s;
+
+/**********************************************************************************************************************
+ * Topology control routines.
+ **********************************************************************************************************************/
+/**
+ *  @brief Initialization routine for single PWM generation without complementary signal.
+ *  @details
+ *      TIM1 configuration:
+ *          - Counting mode: Up down
+ *          - Interrupt on update event
+ *          - Outputs:
+ *              - TIM1_CH1: PWM mode 1
+ *      GPIO:
+ *          - TIM1_CH1: PA8 [AF6] - Push-pull, high speed, pull-down
+ */
 static void PCC_FC_SinglePWM_Init_v(void)
 {
-	/* TIM1 CH1 */
-	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;								        /* Enable clocks for TIM1 module. */
+	/***********************************************************************************
+	 * GPIO pin configuration:
+	 *  - CH1: PA8 [AF6]
+	 ***********************************************************************************/
+    MODIFY_REG(GPIOA->MODER, GPIO_MODER_MODE8_Msk, (2UL << GPIO_MODER_MODE8_Pos));              /* Set mode to alternate function. */
+    MODIFY_REG(GPIOA->PUPDR, GPIO_PUPDR_PUPD8_Msk, GPIO_PUPDR_PUPD8_1);                         /* Enable pull down. */
+    CLEAR_BIT(GPIOA->OTYPER, GPIO_OTYPER_OT8_Msk);                                              /* Set output type to push-pull. */
+    MODIFY_REG(GPIOA->OSPEEDR, GPIO_OSPEEDR_OSPEED8_Msk, (2UL << GPIO_OSPEEDR_OSPEED8_Pos));    /* Set pin speed to high. */
+	MODIFY_REG(GPIOA->AFR[1], GPIO_AFRH_AFSEL8_Msk, (6UL << GPIO_AFRH_AFSEL8_Pos));             /* Set alternate function to AF6. */
 
-	/* GPIO pin configuration: PA8 - AF6 */
-	GPIOA->MODER				&= ~GPIO_MODER_MODE8_Msk;			        /* Reset pin mode. */
-	GPIOA->MODER				|= 2UL << GPIO_MODER_MODE8_Pos;		        /* Set mode to alternate function. */
-	GPIOA->PUPDR        		|= GPIO_PUPDR_PUPD8_1;                      /* Enable pull down. */
-	GPIOA->OTYPER				&= ~GPIO_OTYPER_OT8_Msk;			        /* Set output type to push-pull. */
-	GPIOA->OSPEEDR				&= ~GPIO_OSPEEDR_OSPEED8_Msk;		        /* Reset pin speed. */
-	GPIOA->OSPEEDR				|= 2UL << GPIO_OSPEEDR_OSPEED8_Pos;	        /* Set pin speed to high. */
-	GPIOA->AFR[1]				&= ~GPIO_AFRH_AFSEL8_Msk;			        /* Reset alternate function. */
-	GPIOA->AFR[1]				|= 6UL << GPIO_AFRH_AFSEL8_Pos;		        /* Set alternate function to AF6. */
-
+    /***********************************************************************************
+     * Timer TIM1 configuration:
+     *  - CH1: PWM mode 1.
+     ***********************************************************************************/
 	/* Reset timer 1 periphery. */
-	RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
-	RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-	RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+	SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+	CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                              /* Enable clocks for TIM1. */
 
 	/* Timer configuration. */
-	TIM1->CCMR1                 |= TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1;     /* PWM mode 1. */
-	TIM1->CCER                  |= TIM_CCER_CC1E;                           /* Enable CH1. */
-	TIM1->CNT                   = 0;
+	SET_BIT(TIM1->CR1, TIM_CR1_CMS_0);                                                          /* Set counting mode to up-down. */
+	SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1);                                  /* Set PWM mode 1 for CH1 */
+	SET_BIT(TIM1->DIER, TIM_DIER_UIE);                                                          /* Enable update interrupt flag generation. */
+	NVIC_SetPriority(TIM1_UP_TIM16_IRQn, CONFIG_PCC_IRQ_PRIORITY_d);                            /* Set correct NVIC interrupt priority. */
 }
 
+/**
+ * @brief Start routine for single PWM generation without complementary signal.
+ * @details
+ *  - calculates and writes correct registers for reference frequency and duty cycle
+ *  - enables pre-load on ARR and CCR1
+ *  - enables master output enable
+ *  - clears timer count
+ *  - enables timer and its overflow interrupt
+ */
 static void PCC_FC_SinglePWM_Start_v(void)
 {
-    TIM1->BDTR                  |= TIM_BDTR_MOE;
-    TIM1->CR1                   |= TIM_CR1_CEN;
+    /* Copy set parameters to actual parameters. */
+    s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 =
+            PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32;
+    s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
+            PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+
+    /* Calculate and set timer registers to get correct overflow frequency. */
+    UTIL_TIM_SetTimerOverflowFrequency_v(
+            (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32,
+            &TIM1->ARR,
+            &TIM1->PSC
+            );
+
+    /* Set correct PWM duty. */
+    TIM1->CCR1 = (u16)((s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 *
+                 ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+
+    SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE);                                                      /* Enable pre-load for capture compare 1. */
+    SET_BIT(TIM1->CCER, TIM_CCER_CC1E);                                                         /* Enable CH1. */
+    SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                          /* Enable master output. */
+    CLEAR_REG(TIM1->CNT);                                                                       /* Reset timer count. */
+
+    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);                                                   /* Clear pending interrupt in NVIC. */
+    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);                                                         /* Enable interrupt in NVIC. */
+
+    SET_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Enable pre-load for ARR. */
+            TIM_CR1_CEN);                                                                       /* Start the timer */
 }
 
-static void PCC_FC_SinglePWM_ActiveHandling_v(void)
-{
-    UTIL_TIM_SetTimerOverflowFrequency_v(170.0e6f, PCC_Topology_SinglePWM_freq__Hz__f32, &TIM1->ARR, &TIM1->PSC);
-    TIM1->CCR1 = (u16)((PCC_Topology_SinglePWM_duty__per_cent__f32 * ((f32)TIM1->ARR + 1.0f))/100.0f);
-}
-
+/**
+ * @brief Stop routine for single PWM generation without complementary signal.
+ * @details
+ *  - disables pre-load on ARR and CCR1
+ *  - disables master output enable
+ *  - clears timer count
+ *  - disables timer and its overflow interrupt
+ */
 static void PCC_FC_SinglePWM_Stop_v(void)
 {
-    TIM1->BDTR                  &= ~TIM_BDTR_MOE;
-    TIM1->CR1                   &= ~TIM_CR1_CEN;
+    NVIC_DisableIRQ(TIM1_UP_TIM16_IRQn);                                                        /* Enable interrupt in NVIC. */
+
+    CLEAR_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE);                                                    /* Disable pre-load for capture compare 1. */
+    CLEAR_BIT(TIM1->CCER, TIM_CCER_CC1E);                                                       /* Disable CH1. */
+    CLEAR_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                        /* Disable master output. */
+    CLEAR_REG(TIM1->CNT);                                                                       /* Reset timer count. */
+    CLEAR_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Disable pre-load for ARR. */
+            TIM_CR1_CEN);                                                                       /* Disable the timer */
 }
 
+/**
+ * @brief Update interrupt handler for single PWM generation without complementary signal.
+ * @details Writes new frequency and duty cycle whenever they are changed
+ */
+static void PCC_FC_SinglePWM_IrqHandler_v(void)
+{
+    /* Check if new PWM frequency was set. */
+    if(s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 !=
+       PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32)
+    {
+        /* Set new frequency. */
+        UTIL_TIM_SetTimerOverflowFrequency_v(
+            (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32,
+            &TIM1->ARR,
+            &TIM1->PSC
+            );
+
+        /* Set correct PWM duty. */
+        TIM1->CCR1 = (u16)((PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32 *
+                     ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+
+        /* Copy set parameters to actual parameters. */
+        s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 =
+                PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32;
+        s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
+                PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+    }
+
+    /* Check if new PWM duty was set. */
+    else if(s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 !=
+            PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32)
+    {
+        /* Set correct PWM duty. */
+        TIM1->CCR1 = (u16)((PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32 *
+                     ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+
+        /* Copy set parameters to actual parameters. */
+        s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
+                PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+    }
+
+    /* Clear interrupt flag. */
+    CLEAR_BIT(TIM1->SR, TIM_SR_UIF);
+}
+
+/**
+ *  @brief De-initialization routine for single PWM generation without complementary signal.
+ *  @details
+ *      TIM1 is reset.
+ *      GPIO pins are set to analog.
+ */
 static void PCC_FC_SinglePWM_DeInit_v(void)
 {
-    GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
+    SET_BIT(GPIOA->MODER, GPIO_MODER_MODE8_Msk);                                                /* Set pin mode to analog. */
 
     /* Reset timer 1 periphery. */
-    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
-    RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
+    SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                            /* Disable clocks for TIM1. */
 }

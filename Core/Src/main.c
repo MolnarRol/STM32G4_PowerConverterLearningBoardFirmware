@@ -25,7 +25,6 @@
 #include "general_config.h"
 #include "PUI_public_interface.h"
 #include <PCC_public_interface.h>
-#include <pcc_line_commutated.h>
 #include <sys_public_interface.h>
 #include <AINT_public_interface.h>
 #include <ATB_public_interface.h>
@@ -49,12 +48,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-u16 tim4_cnt;
-boolean zc_en_b = False_b;
-boolean prev_zc_en_b = False_b;
 u32 blink_tick_u32 = 0;
 u32 pcc_handler_task__ticks__u32 = (u32)0;
-PCC_driver_enable_union en_u = {.byte_val_u8 = 0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,9 +109,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-#if 0
-  PCC_LC_InitZeroCrossingDetection_v();
-#endif
   ATB_Init_v();
   /* USER CODE END 2 */
 
@@ -129,17 +121,6 @@ int main(void)
       {
           PCC_Handler_v();
       }
-#endif
-
-#if 0
-	  if(zc_en_b)
-	  {
-		  PCC_LC_ZeroCrossingDetection_Enable_v();
-	  }
-	  else
-	  {
-		  PCC_LC_ZeroCrossingDetection_Disable_v();
-	  }
 #endif
 
 #if 1

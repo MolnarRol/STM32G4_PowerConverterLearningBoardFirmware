@@ -12,6 +12,8 @@
 #include "stm32g4xx.h"
 #include "digital_interface_config.h"
 
+#define GEN_DEF_PER_CENT_MAX_df32                   (f32)100.0f
+
 #define SYS_CPU_CLOCK_FREQ__Hz__d					( 170000000UL )
 #define SYS_AHB_CLOCK_FREQ__Hz__d                   ( 170000000UL )
 #define SYS_APB1_CLOCK_FREQ__Hz__d                  ( 170000000UL )
@@ -25,5 +27,7 @@
 /* IWDG - Independent watchdog. */
 #define CONFIG_SYS_IWDG_ENABLE_MODULE_d             DISABLE_d
 #define CONFIG_SYS_IWDG_MAX_RESET_PERIOD__us__d     1500UL
+
+#define CONFIG_PCC_IRQ_PRIORITY_d                   2
 
 #endif /* GENERAL_CONFIG_H_ */
