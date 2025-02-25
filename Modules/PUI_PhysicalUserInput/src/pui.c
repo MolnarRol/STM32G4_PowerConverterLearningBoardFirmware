@@ -11,6 +11,8 @@ extern "C"
 {
 #endif
 
+u32 dbg_pui_enc_cnt_u32;
+
 typedef struct
 {
     const GPIO_TypeDef* port_ps;
@@ -87,33 +89,50 @@ void PUI_IrqButtonLongPressHandler_v(PUI_IrqButton_struct* btn_handle_ps)
 
 void PUI_Init(void)
 {
-//    /*
-//     *  Incremental encoder initialization.
-//     */
-//    RCC->APB1RSTR1  |= RCC_APB1RSTR1_TIM4RST;                                   /* Reset TIM4 to default. */
-//    RCC->APB1RSTR1  &= ~RCC_APB1RSTR1_TIM4RST;                                  /* Release reset of TIM4. */
-//    RCC->APB1ENR1   |= RCC_APB1ENR1_TIM4EN;                                     /* Enable clocks for TIM4 */
-//
-//    TIM4->SMCR      |= TIM_SMCR_SMS_0;                                          /* Encoder mode 1 - Counter counts up/down on tim_ti1fp1 edge depending on tim_ti2fp2 level.  */
-//
-//    TIM4->CCMR1     |=  TIM_CCMR1_CC1S_0 |                                      /* Set channel 1 as input. */
-//                        TIM_CCMR1_CC2S_0;                                       /* Set channel 2 as input. */
-//
-//    TIM4->CCER      |=  TIM_CCER_CC1E |                                         /* Enable capture channel 1. */
-//                        TIM_CCER_CC2E ;                                         /* Enable capture channel 2. */
-//
-//    GPIOB->AFR[0]   |= GPIO_AFRL_AFSEL6_1 | GPIO_AFRL_AFSEL7_1;                 /* Set alternate function 2 to pins PB6 and PB7. */
-//    GPIOB->MODER    &=  ~(GPIO_MODER_MODE6_Msk  |
-//                        GPIO_MODER_MODE7_Msk    |
-//                        GPIO_MODER_MODE13_Msk   );                              /* Clear any mode configuration on PB6, PB7 and PB13. */
-//    GPIOB->MODER    |= GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1;                 /* Set GPIO pins PB6 and PB7 as alternate function pins. */
-//
-//    TIM4->CR1       |= TIM_CR1_CEN;                                             /* Enable timer. */
+    /**********************************************************************************************************************
+     * Incremental encoder initialization.
+     *  - Button:   PB5     [input]
+     *  - ENC A:    PB6     [AF2]
+     *  - ENC B:    PB7     [AF2]
+     **********************************************************************************************************************/
+    /* Rotary encoder GPIO pin configuration. */
+    MODIFY_REG(GPIOB->MODER,
+               GPIO_MODER_MODE5_Msk |                                               /* Set PB5 mode to input. */
+               GPIO_MODER_MODE6_Msk |
+               GPIO_MODER_MODE7_Msk,
+               (2UL << GPIO_MODER_MODE6_Pos) |                                      /* Set PB6 mode to alternate function. */
+               (2UL << GPIO_MODER_MODE7_Pos));                                      /* Set PB7 mode to alternate function. */
+
+    MODIFY_REG(GPIOB->AFR[0],
+               GPIO_AFRL_AFSEL6_Msk |
+               GPIO_AFRL_AFSEL7_Msk,
+               (2UL << GPIO_AFRL_AFSEL6_Pos) |                                      /* Set PB6 alternate function to AF2. */
+               (2UL << GPIO_AFRL_AFSEL7_Pos));                                      /* Set PB7 alternate function to AF2. */
+
+    /* Rotary encoder timer configuration. */
+    SET_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM4RST);                                 /* Reset TIM4 to default. */
+    CLEAR_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM4RST);                               /* Release reset of TIM4 */
+    SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM4EN);                                    /* Enable clocks for TIM4 */
+    SET_BIT(TIM4->SMCR,
+            TIM_SMCR_SMS_0 |
+            TIM_SMCR_SMS_1 |
+            TIM_SMCR_SMS_2 |
+            TIM_SMCR_SMS_3);                                                        /* Quadrature encoder mode: x1 mode, counting on tim_ti2fp2 edges only, edge sensitivity is set by CC2P. */
+
+    SET_BIT(TIM4->CCMR1,
+            TIM_CCMR1_CC1S_0 |                                                      /* Set channel 1 as input. */
+            TIM_CCMR1_CC2S_0);                                                      /* Set channel 2 as input. */
+
+   SET_BIT(TIM4->CCER,
+           TIM_CCER_CC1E |                                                          /* Enable capture channel 1. */
+           TIM_CCER_CC2E);                                                          /* Enable capture channel 2. */
+
+   SET_BIT(TIM4->CR1, TIM_CR1_CEN);                                                 /* Enable timer. */
 
     /**********************************************************************************************************************
-     * External button with EXTI.
-     *  - PB12
-     **********************************************************************************************************************/
+    * External button with EXTI.
+    *  - PB12
+    **********************************************************************************************************************/
     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);                                    /* Enable clocks for SYSCFG. */
     CLEAR_BIT(GPIOB->MODER, GPIO_MODER_MODE12_Msk);                                 /* Set GPIO pin mode to input. */
     SET_BIT(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_PB);                           /* Enable EXTI request from PB12 line. */
@@ -122,11 +141,10 @@ void PUI_Init(void)
     SET_BIT(EXTI->FTSR1, EXTI_FTSR1_FT12);                                          /* Enable falling trigger. */
     NVIC_ClearPendingIRQ(EXTI15_10_IRQn);                                           /* Clear potentionally pending interrupt in NVIC. */
     NVIC_SetPriority(EXTI15_10_IRQn, 0);                                            /* Set highest priority to this interrupt. Rationale: Button is used also as on/off. */
-    NVIC_EnableIRQ(EXTI15_10_IRQn);                                                 /* Enable interupt in NVIC. */
+    NVIC_EnableIRQ(EXTI15_10_IRQn);                                                 /* Enable interrupt in NVIC. */
 
 }
 
-//EXTI15_10_IRQHandler
 void EXTI15_10_IRQHandler(void)
 {
     if(READ_BIT(EXTI->PR1, EXTI_PR1_PIF12) != 0){
@@ -138,6 +156,14 @@ void EXTI15_10_IRQHandler(void)
 
 void PUI_Handler(void)
 {
+#if 1
+    if((GPIOB->IDR & (1UL << 5)) == (u32)0 )
+    {
+        CLEAR_REG(TIM4->CNT);
+    }
+    dbg_pui_enc_cnt_u32 = TIM4->CNT;
+#endif
+
     PUI_IrqButtonLongPressHandler_v(&PUI_StartStopBtn_s);
 }
 
