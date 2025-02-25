@@ -101,7 +101,7 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
   GPIO_Init();
-#if 0
+#if 1
   PUI_Init();
 #endif
   /* USER CODE END SysInit */
@@ -122,6 +122,7 @@ int main(void)
           PCC_Handler_v();
       }
 #endif
+      PUI_Handler();
 
 #if 1
 	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))
