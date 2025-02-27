@@ -25,6 +25,7 @@
 #include "general_config.h"
 #include "PUI_public_interface.h"
 #include <PCC_public_interface.h>
+#include <PCC_private_interface.h>
 #include <sys_public_interface.h>
 #include <AINT_public_interface.h>
 #include <ATB_public_interface.h>
@@ -50,6 +51,9 @@
 /* USER CODE BEGIN PV */
 u32 blink_tick_u32 = 0;
 u32 pcc_handler_task__ticks__u32 = (u32)0;
+extern boolean pcc_start_test_b;
+extern PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s;
+extern PUI_IrqButton_struct PUI_StartStopBtn_s;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,7 +65,15 @@ void GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void start_topo_v(void)
+{
+    pcc_start_test_b = 1;
+}
 
+void stop_topo_v(void)
+{
+    pcc_start_test_b = 0;
+}
 /* USER CODE END 0 */
 
 /**
@@ -114,6 +126,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  PCC_SetTopology_b(PCC_TOPO_FullBridgePhaseShiftedPWM_e);
+  PUI_StartStopBtn_s.btn_short_press_callback_pvf = stop_topo_v;
+  PUI_StartStopBtn_s.btn_long_press_callback_pvf = start_topo_v;
+  f32 phase_shift_f32;
   while (1)
   {
 #if 1
@@ -123,7 +139,9 @@ int main(void)
       }
 #endif
       PUI_Handler();
-
+      phase_shift_f32 = (f32)TIM4->CNT;
+      if(phase_shift_f32 > 180.0f) phase_shift_f32 = 180.0f;
+      PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s.phase_shift__deg__f32 = phase_shift_f32;
 #if 1
 	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))
 	  {

@@ -117,6 +117,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_SixPulseThreePhaseControlled
 extern const PCC_TopologyHandle_struct PCC_Topology_ThreePulseThreePhaseControlledRectifier_s;
 
 void PCC_InterruptHandler_v(void);
+boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e);
 
 #ifdef __cplusplus
 }
