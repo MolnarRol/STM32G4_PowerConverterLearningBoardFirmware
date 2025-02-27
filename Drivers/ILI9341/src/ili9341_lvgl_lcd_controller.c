@@ -46,6 +46,7 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
  *  STATIC VARIABLES
  **********************/
 static lv_disp_drv_t disp_drv;                         /*Descriptor of a display driver*/
+extern SPI_HandleTypeDef hspi3;
 /**********************
  *      MACROS
  **********************/
@@ -93,9 +94,9 @@ void lv_port_disp_init(void)
 
 //    /* Example for 2) */
 //    static lv_disp_draw_buf_t draw_buf_dsc_2;
-//    static lv_color_t buf_2_1[MY_DISP_HOR_RES * 10];                        /*A buffer for 10 rows*/
-//    static lv_color_t buf_2_2[MY_DISP_HOR_RES * 10];                        /*An other buffer for 10 rows*/
-//    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * 10);   /*Initialize the display buffer*/
+//    static lv_color_t buf_2_1[MY_DISP_HOR_RES * 40];                        /*A buffer for 10 rows*/
+//    static lv_color_t buf_2_2[MY_DISP_HOR_RES * 40];                        /*An other buffer for 10 rows*/
+//    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * 40);   /*Initialize the display buffer*/
 //
 //    /* Example for 3) also set disp_drv.full_refresh = 1 below*/
 //    static lv_disp_draw_buf_t draw_buf_dsc_3;
@@ -171,8 +172,18 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
     int height = area->y2 - area->y1 + 1;
     int width = area->x2 - area->x1 + 1;
 
-    ILI9341_DrawBitmap(width, height, (uint8_t *)color_p);
+//    ILI9341_DrawBitmap(width, height, (uint8_t *)color_p);
+    ILI9341_DrawBitmapDMA(width, height, (uint8_t *)color_p);
     /*IMPORTANT!!!
      *Inform the graphics library that you are ready with the flushing*/
-    lv_disp_flush_ready(disp_drv);
+//    lv_disp_flush_ready(disp_drv);
 }
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if(hspi == &hspi3)
+    {
+        lv_disp_flush_ready(&disp_drv);
+    }
+}
+
