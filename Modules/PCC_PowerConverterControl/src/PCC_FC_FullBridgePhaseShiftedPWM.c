@@ -153,7 +153,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
             TIM_CCMR2_OC3M_0 |                                                                  /* OC3: Asymmetric PWM mode 2. */
             TIM_CCMR2_OC4M_2 |
             TIM_CCMR2_OC4M_1 |
-            TIM_CCMR2_OC4M_0);                                                                  /* OC2: PWM mode 2. */
+            TIM_CCMR2_OC4M_0);                                                                  /* OC4: PWM mode 2. */
 
     SET_BIT(TIM1->DIER, TIM_DIER_UIE);                                                          /* Enable update interrupt flag generation. */
     NVIC_SetPriority(TIM1_UP_TIM16_IRQn, CONFIG_PCC_IRQ_PRIORITY_d);                            /* Set correct NVIC interrupt priority. */
