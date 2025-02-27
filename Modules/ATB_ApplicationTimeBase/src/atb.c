@@ -27,7 +27,6 @@ RAM_FUNC void TIM6_DAC_IRQHandler(void)
 {
 	s_ATB_TimerOverflowCounter_u32 += (u32)1;
 	TIM6->SR &= ~(TIM_SR_UIF);										/* Clear interrupt flag. */
-	LL_GPIO_TogglePin(GPIOB, LL_GPIO_PIN_8);
 }
 
 RAM_FUNC u32 ATB_GetCurrentTicks_u32(void)

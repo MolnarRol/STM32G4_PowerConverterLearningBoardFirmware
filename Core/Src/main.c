@@ -41,7 +41,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define LVGL_EN 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -61,6 +61,9 @@ u32 blink_tick_u32 = 0;
 u32 pcc_handler_task__ticks__u32 = (u32)0;
 PCC_driver_enable_union en_u = {.byte_val_u8 = 0};
 u32 lvgl_task_tick_u32 = 0;
+
+u8 spi_data_u8[] = {0, 1, 2};
+HAL_StatusTypeDef spi_stat;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,7 +104,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  GPIO_Init();
+
 #if 0
   PUI_Init();
 #endif
@@ -112,6 +115,9 @@ int main(void)
   MX_DMA_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
+  GPIO_Init();
+#if LVGL_EN
+
   lv_init();
   lv_port_disp_init();
 
@@ -123,6 +129,7 @@ int main(void)
   lv_obj_t * spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
   lv_obj_set_size(spinner, 64, 64);
   lv_obj_align(spinner, LV_ALIGN_BOTTOM_MID, 0, 0);
+#endif
 
   ATB_Init_v();
   /* USER CODE END 2 */
@@ -131,7 +138,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-#if 1
+#if 0
       if(ATB_CheckIfPeriodHasElapsed_b(&pcc_handler_task__ticks__u32, ATB__ms__TO__ticks__du32(1)))
       {
           PCC_Handler_v();
@@ -149,15 +156,20 @@ int main(void)
 	  }
 #endif
 
-	  if(ATB_CheckIfPeriodHasElapsed_b(&lvgl_task_tick_u32, ATB__ms__TO__ticks__du32(5)))
-	  {
-	      lv_timer_handler();
-	  }
+#if LVGL_EN
+//	  if(ATB_CheckIfPeriodHasElapsed_b(&lvgl_task_tick_u32, ATB__ms__TO__ticks__du32(5)))
+//	  {
+//	      lv_timer_handler();
+//	  }
+	  lv_timer_handler();
+	  HAL_Delay(5);
+#endif
 
-#if 1
+#if 0
 	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))
 	  {
 		  LL_GPIO_TogglePin(GPIOD, LL_GPIO_PIN_2);
+//		  spi_stat = HAL_SPI_Transmit(&hspi3, spi_data_u8, 3, 10);
 	  }
 #endif
     /* USER CODE END WHILE */
@@ -239,7 +251,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -391,6 +403,7 @@ void GPIO_Init(void)
    	*************************************************************************************************/
 	GPIOB->MODER					&= ~GPIO_MODER_MODE8_Msk;
 	GPIOB->MODER					|= 1UL << GPIO_MODER_MODE8_Pos;
+	SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
 
 	/*************************************************************************************************
 	* Gate driver enable pins.
