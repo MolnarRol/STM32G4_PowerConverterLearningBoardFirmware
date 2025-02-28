@@ -475,6 +475,16 @@ void GPIO_Init(void)
 	           (6UL << GPIO_AFRH_AFSEL11_Pos) |                                                     /* PC10 - AF6 */
 	           (6UL << GPIO_AFRH_AFSEL12_Pos));                                                     /* PC10 - AF6 */
 
+
+	/* Touch interrupt request external line. */
+	SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN);
+	MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI15_Msk, SYSCFG_EXTICR4_EXTI15_PC);
+	SET_BIT(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI15_PC);
+	SET_BIT(EXTI->IMR1, EXTI_IMR1_IM15);                                                            /* Unmask interrupt from PC15. */
+	SET_BIT(EXTI->FTSR1, EXTI_FTSR1_FT15);                                                          /* Set falling edge as interrupt trigger. */
+	NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
+    NVIC_SetPriority(EXTI15_10_IRQn, 0);                                            /* Set highest priority to this interrupt. Rationale: Button is used also as on/off. */
+    NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
 int _write(int file, char *ptr, int len)

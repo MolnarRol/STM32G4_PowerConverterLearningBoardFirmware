@@ -1,0 +1,15 @@
+/*
+ * TD_SPI_public_interface.h
+ *
+ *  Created on: Feb 28, 2025
+ *      Author: molnar
+ */
+
+#ifndef TOUCHDISPLAYSPIDRIVER_INTERFACES_TD_SPI_PUBLIC_INTERFACE_H_
+#define TOUCHDISPLAYSPIDRIVER_INTERFACES_TD_SPI_PUBLIC_INTERFACE_H_
+
+void TD_SPI_Init_v(void);
+
+
+
+#endif /* TOUCHDISPLAYSPIDRIVER_INTERFACES_TD_SPI_PUBLIC_INTERFACE_H_ */
