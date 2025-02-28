@@ -138,6 +138,15 @@ void PUI_Init(void)
 //    NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
 //}
 
+void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
+{
+    static u16 s_prev_enc_cnt_u16 = 0;
+    data->enc_diff = (s16)TIM4->CNT - (s16)s_prev_enc_cnt_u16;
+    s_prev_enc_cnt_u16 = TIM4->CNT;
+    if((GPIOB->IDR & (1UL << 5)) == (u32)0) data->state = LV_INDEV_STATE_PRESSED;
+    else data->state = LV_INDEV_STATE_RELEASED;
+}
+
 void PUI_Handler(void)
 {
 #if 1

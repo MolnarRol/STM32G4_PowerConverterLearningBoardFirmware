@@ -21,6 +21,7 @@ void lv_example_btn_1(void)
     lv_obj_add_event_cb(btn1, event_handler, LV_EVENT_ALL, NULL);
     lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
 
+
     label = lv_label_create(btn1);
     lv_label_set_text(label, "Button");
     lv_obj_center(label);

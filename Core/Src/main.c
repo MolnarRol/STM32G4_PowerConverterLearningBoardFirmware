@@ -31,7 +31,7 @@
 
 #include <lvgl.h>
 #include "ili9341_lvgl_lcd_controller.h"
-
+#include <UI_public_interface.h>
 #include <TD_SPI_public_interface.h>
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
@@ -118,14 +118,7 @@ int main(void)
   lv_init();
   lv_port_disp_init();
 
-//  // Change the active screen's background color
-  lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x000000), LV_PART_MAIN);
-  lv_obj_set_style_text_color(lv_scr_act(), lv_color_hex(0xffffff), LV_PART_MAIN);
-
-  /*Create a spinner*/
-  lv_obj_t * spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
-  lv_obj_set_size(spinner, 64, 64);
-  lv_obj_align(spinner, LV_ALIGN_BOTTOM_MID, 0, 0);
+  UI_Init_v();
 
 #endif
 

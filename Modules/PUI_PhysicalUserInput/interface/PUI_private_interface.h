@@ -15,6 +15,7 @@ extern "C"
 #include <app_types.h>
 #include <stm32g4xx.h>
 #include <PUI_public_interface.h>
+#include <lvgl.h>
 
 typedef struct
 {
@@ -34,6 +35,7 @@ typedef struct
 
 extern PUI_IrqButton_struct PUI_StartStopBtn_s;
 void PUI_IrqButtonIsrHandler_v(PUI_IrqButton_struct* btn_handle_ps);
+void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data);
 #ifdef __cplusplus
 }
 #endif

@@ -11,6 +11,7 @@
 #include "ili9341_lvgl_lcd_controller.h"
 #include <stdbool.h>
 #include <main.h>
+#include <PUI_private_interface.h>
 #include "ili9341.h"
 
 /*********************
@@ -44,6 +45,7 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
  *  STATIC VARIABLES
  **********************/
 static lv_disp_drv_t disp_drv;                         /*Descriptor of a display driver*/
+lv_indev_t* encoder_input_device_ps;
 extern SPI_HandleTypeDef hspi3;
 /**********************
  *      MACROS
@@ -116,6 +118,14 @@ void lv_port_disp_init(void)
 
     /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
+
+    static lv_indev_drv_t indev_drv;
+    lv_indev_drv_init(&indev_drv);
+    indev_drv.type = LV_INDEV_TYPE_ENCODER;
+    indev_drv.read_cb = PUI_RotaryEncoderReadCallback_v;
+    /* Callback? */
+    encoder_input_device_ps = lv_indev_drv_register(&indev_drv);
+
 }
 
 /**********************
