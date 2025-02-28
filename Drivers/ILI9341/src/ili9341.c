@@ -34,6 +34,7 @@ SOFTWARE.
  */
 
 #include "ili9341.h"
+#include <TD_SPI_public_interface.h>
 #include "main.h" // Hardware setting
 
 #define ILI9341_DC_L_d                              SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8)
@@ -65,7 +66,8 @@ static void LCD_direction(LCD_Horizontal_t direction);
 
 void sendSPI (uint8_t *data, int size)
 {
-	HAL_SPI_Transmit(&hspi3, data, size, HAL_MAX_DELAY);
+//	HAL_SPI_Transmit(&hspi3, data, size, HAL_MAX_DELAY);
+    TD_SPI_TransferInBlockingMode_v(data, (u32)size);
 }
 
 void Delay (uint16_t ms)
@@ -249,19 +251,19 @@ void ILI9341_DrawBitmap(uint16_t w, uint16_t h, uint8_t *s)
 	sendSPI((uint8_t*)s, w * h *2);
 }
 
-void ILI9341_DrawBitmapDMA(uint16_t w, uint16_t h, uint8_t *s)
-{
-	// Enable to access GRAM
-	LCD_WR_REG(0x2c);
-
-	ILI9341_DC_H_d;
-	ConvHL(s, (int32_t)w*h*2);
-	HAL_SPI_Transmit_DMA(&hspi3, (uint8_t*)s, w * h *2);
-}
+//void ILI9341_DrawBitmapDMA(uint16_t w, uint16_t h, uint8_t *s)
+//{
+//	// Enable to access GRAM
+//	LCD_WR_REG(0x2c);
+//
+//	ILI9341_DC_H_d;
+//	ConvHL(s, (int32_t)w*h*2);
+//	HAL_SPI_Transmit_DMA(&hspi3, (uint8_t*)s, w * h *2);
+//}
 
 void ILI9341_EndOfDrawBitmap(void)
 {
-// do something here
+//    ILI9341_CS_H_d;
 }
 
 void ILI9341_Reset(void)

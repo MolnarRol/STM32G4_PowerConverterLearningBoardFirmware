@@ -17,7 +17,6 @@ void EXTI15_10_IRQHandler(void)
     }
 
     if(READ_BIT(EXTI->PR1, EXTI_PR1_PIF15) != 0){
-//        PUI_IrqButtonIsrHandler_v(&PUI_StartStopBtn_s);
         irq_count++;
         SET_BIT(EXTI->PR1, EXTI_PR1_PIF15);
     }

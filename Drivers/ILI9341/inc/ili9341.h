@@ -37,6 +37,7 @@ SOFTWARE.
 #endif
 
 #include "main.h" // For STM32F4
+#include <app_types.h>
 
 #define GUI_WIDTH 320
 #define GUI_HEIGHT 240

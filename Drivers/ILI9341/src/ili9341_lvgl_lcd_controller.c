@@ -155,8 +155,10 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
     int height = area->y2 - area->y1 + 1;
     int width = area->x2 - area->x1 + 1;
 
-//    ILI9341_DrawBitmap(width, height, (uint8_t *)color_p);
-    ILI9341_DrawBitmapDMA(width, height, (uint8_t *)color_p);
+    ILI9341_DrawBitmap(width, height, (uint8_t *)color_p);
+//    ILI9341_DrawBitmapDMA(width, height, (uint8_t *)color_p);
+
+    lv_disp_flush_ready(disp_drv);
     /*IMPORTANT!!!
      *Inform the graphics library that you are ready with the flushing*/
 //    lv_disp_flush_ready(disp_drv);
@@ -166,6 +168,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
     if(hspi == &hspi3)
     {
+        ILI9341_EndOfDrawBitmap();
         lv_disp_flush_ready(&disp_drv);
     }
 }

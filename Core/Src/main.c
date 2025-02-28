@@ -32,6 +32,8 @@
 
 #include <lvgl.h>
 #include "ili9341_lvgl_lcd_controller.h"
+
+#include <TD_SPI_public_interface.h>
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 
@@ -117,6 +119,7 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   GPIO_Init();
+  TD_SPI_Init_v();
 #if LVGL_EN
 
   lv_init();
