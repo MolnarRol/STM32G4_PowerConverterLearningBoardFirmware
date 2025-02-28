@@ -76,6 +76,13 @@ typedef struct
 
 typedef struct
 {
+    f32 frequency__Hz__f32;
+    f32 phase_shift__deg__f32;
+    f32 deadtime__s__f32;
+} PCC_PhaseShiftedPWM_Parameters_s;
+
+typedef struct
+{
     f32 amplitude_f32;
     f32 modulation_freq__Hz__f32;
     f32 switching_freq__Hz__f32;

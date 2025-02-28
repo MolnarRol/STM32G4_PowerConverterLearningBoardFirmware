@@ -8,6 +8,7 @@
 #ifndef PUI_PHYSICALUSERINPUT_INC_PUI_H_
 #define PUI_PHYSICALUSERINPUT_INC_PUI_H_
 #include <PUI_private_interface.h>
+#include <ATB_public_interface.h>
 
 #ifdef __cplusplus
 extern "C"

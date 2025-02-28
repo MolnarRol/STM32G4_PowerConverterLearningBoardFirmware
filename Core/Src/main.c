@@ -25,7 +25,6 @@
 #include "general_config.h"
 #include "PUI_public_interface.h"
 #include <PCC_public_interface.h>
-#include <pcc_line_commutated.h>
 #include <sys_public_interface.h>
 #include <AINT_public_interface.h>
 #include <ATB_public_interface.h>
@@ -57,16 +56,9 @@ SPI_HandleTypeDef hspi3;
 DMA_HandleTypeDef hdma_spi3_tx;
 
 /* USER CODE BEGIN PV */
-u16 tim4_cnt;
-boolean zc_en_b = False_b;
-boolean prev_zc_en_b = False_b;
-u32 blink_tick_u32 = 0;
-u32 pcc_handler_task__ticks__u32 = (u32)0;
-PCC_driver_enable_union en_u = {.byte_val_u8 = 0};
-u32 lvgl_task_tick_u32 = 0;
-
-u8 spi_data_u8[] = {0, 1, 2};
-HAL_StatusTypeDef spi_stat;
+u32 blink_tick_u32                  = 0;
+u32 pcc_handler_task__ticks__u32    = (u32)0;
+u32 lvgl_task_tick_u32              = (u32)0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,9 +100,6 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-#if 0
-  PUI_Init();
-#endif
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -119,6 +108,10 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   GPIO_Init();
+#if 1
+  PUI_Init();
+#endif
+
   TD_SPI_Init_v();
 #if LVGL_EN
 
@@ -157,6 +150,7 @@ int main(void)
 	  }
 
 #endif
+      PUI_Handler();
 
 #if 1
 	  if(ATB_CheckIfPeriodHasElapsed_b(&blink_tick_u32, ATB__ms__TO__ticks__du32(250)))

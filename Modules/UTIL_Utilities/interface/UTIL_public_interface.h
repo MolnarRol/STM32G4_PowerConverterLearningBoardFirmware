@@ -13,6 +13,8 @@ extern "C"
 {
 #endif
 
+#define UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32              (f32)2.0f
+
 typedef enum
 {
 	UTIL_OK_e,
