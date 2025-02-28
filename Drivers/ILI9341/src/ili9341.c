@@ -36,6 +36,14 @@ SOFTWARE.
 #include "ili9341.h"
 #include "main.h" // Hardware setting
 
+#define ILI9341_DC_L_d                              SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR8)
+#define ILI9341_DC_H_d                              SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS8)
+#define ILI9341_RST_L_d                             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR9)
+#define ILI9341_RST_H_d                             SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS9)
+#define ILI9341_CS_L_d                              SET_BIT(GPIOC->BSRR, GPIO_BSRR_BR13)
+#define ILI9341_CS_H_d                              SET_BIT(GPIOC->BSRR, GPIO_BSRR_BS13)
+#define ILI9341_LED_H_d                             SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
+
 // This function is for compatible HiLetgo ILI9341
 
 typedef enum {
@@ -54,14 +62,6 @@ void ILI9341_SoftReset(void);
 void LCD_WR_REG(uint8_t data);
 static void LCD_WR_DATA(uint8_t data);
 static void LCD_direction(LCD_Horizontal_t direction);
-static void RESET_L(void);
-static void RESET_H(void);
-static void CS_L(void);
-static void DC_L(void);
-static void DC_H(void);
-static void LED_H(void);
-
-
 
 void sendSPI (uint8_t *data, int size)
 {
@@ -71,36 +71,6 @@ void sendSPI (uint8_t *data, int size)
 void Delay (uint16_t ms)
 {
 	HAL_Delay(ms);
-}
-
-static void RESET_L(void)
-{
-	HAL_GPIO_WritePin(RESET_GPIO_Port, RESET_Pin, GPIO_PIN_RESET);
-}
-
-static void RESET_H(void)
-{
-	HAL_GPIO_WritePin(RESET_GPIO_Port, RESET_Pin, GPIO_PIN_SET);
-}
-
-static void CS_L(void)
-{
-	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
-}
-
-static void DC_L(void)
-{
-	HAL_GPIO_WritePin(DC_GPIO_Port, DC_Pin, GPIO_PIN_RESET);
-}
-
-static void DC_H(void)
-{
-	HAL_GPIO_WritePin(DC_GPIO_Port, DC_Pin, GPIO_PIN_SET);
-}
-
-static void LED_H(void)
-{
-	//HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 }
 
 /*******************************************************************************************************/
@@ -253,7 +223,7 @@ void ILI9341_WritePixel(uint16_t x, uint16_t y, uint16_t color)
 	ILI9341_SetWindow(x, y, x, y);
 	// Enable to access GRAM
 	LCD_WR_REG(0x2c);
-	DC_H();
+	ILI9341_DC_H_d;
 	sendSPI (data, 2);
 }
 
@@ -269,13 +239,12 @@ static void ConvHL(uint8_t *s, int32_t l)
 	}
 }
 
-
 void ILI9341_DrawBitmap(uint16_t w, uint16_t h, uint8_t *s)
 {
 	// Enable to access GRAM
 	LCD_WR_REG(0x2c);
 
-	DC_H();
+	ILI9341_DC_H_d;
 	ConvHL(s, (int32_t)w*h*2);
 	sendSPI((uint8_t*)s, w * h *2);
 }
@@ -285,7 +254,7 @@ void ILI9341_DrawBitmapDMA(uint16_t w, uint16_t h, uint8_t *s)
 	// Enable to access GRAM
 	LCD_WR_REG(0x2c);
 
-	DC_H();
+	ILI9341_DC_H_d;
 	ConvHL(s, (int32_t)w*h*2);
 	HAL_SPI_Transmit_DMA(&hspi3, (uint8_t*)s, w * h *2);
 }
@@ -297,32 +266,32 @@ void ILI9341_EndOfDrawBitmap(void)
 
 void ILI9341_Reset(void)
 {
-	RESET_L();
+    ILI9341_RST_L_d;
 	Delay(100);
-	RESET_H();
+	ILI9341_RST_H_d;
 	Delay(100);
-	CS_L();
-	LED_H();
+	ILI9341_CS_L_d;
+	ILI9341_LED_H_d;
 }
 
 void ILI9341_SoftReset(void)
 {
 	uint8_t cmd;
 	cmd = 0x01; //Software reset
-	DC_L();
+	ILI9341_DC_L_d;
 	sendSPI (&cmd, 1);
 }
 
 
 void LCD_WR_REG(uint8_t data)
 {
-	DC_L();
+	ILI9341_DC_L_d;
 	sendSPI  (&data, 1);
 }
 
 static void LCD_WR_DATA(uint8_t data)
 {
-	DC_H();
+    ILI9341_DC_H_d;
 	sendSPI (&data, 1);
 }
 

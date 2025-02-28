@@ -447,6 +447,34 @@ void GPIO_Init(void)
 	GPIOB->OTYPER                &= ~(GPIO_OTYPER_OT15);                                             /* Set output as Push-pull. */
 	GPIOB->PUPDR                 &= ~(GPIO_PUPDR_PUPD15_Msk);
 
+    /*************************************************************************************************
+    * Display + touch
+    *************************************************************************************************/
+	MODIFY_REG(GPIOC->MODER,
+	           GPIO_MODER_MODE8_Msk |
+	           GPIO_MODER_MODE9_Msk |
+	           GPIO_MODER_MODE10_Msk |
+	           GPIO_MODER_MODE11_Msk |
+	           GPIO_MODER_MODE12_Msk |
+	           GPIO_MODER_MODE13_Msk |
+	           GPIO_MODER_MODE14_Msk |
+	           GPIO_MODER_MODE15_Msk,                                                               /* PC15 - TOUCH IRQ [External interrupt] */
+	           (1UL << GPIO_MODER_MODE8_Pos) |                                                      /* PC8 - LCD DC [Output] */
+	           (1UL << GPIO_MODER_MODE9_Pos) |                                                      /* PC9 - LCD RST [Output] */
+	           (2UL << GPIO_MODER_MODE10_Pos) |                                                     /* PC10 - SPI3 SCK [AF] */
+	           (2UL << GPIO_MODER_MODE11_Pos) |                                                     /* PC11 - SPI3 MISO [AF] */
+	           (2UL << GPIO_MODER_MODE12_Pos) |                                                     /* PC12 - SPI3 MOSI [AF] */
+	           (1UL << GPIO_MODER_MODE13_Pos) |                                                     /* PC13 - LCD CS [Output] */
+	           (1UL << GPIO_MODER_MODE14_Pos));
+
+	MODIFY_REG(GPIOC->AFR[1],
+	           GPIO_AFRH_AFSEL10_Msk |
+	           GPIO_AFRH_AFSEL11_Msk |
+	           GPIO_AFRH_AFSEL12_Msk,
+	           (6UL << GPIO_AFRH_AFSEL10_Pos) |                                                     /* PC10 - AF6 */
+	           (6UL << GPIO_AFRH_AFSEL11_Pos) |                                                     /* PC10 - AF6 */
+	           (6UL << GPIO_AFRH_AFSEL12_Pos));                                                     /* PC10 - AF6 */
+
 }
 
 int _write(int file, char *ptr, int len)

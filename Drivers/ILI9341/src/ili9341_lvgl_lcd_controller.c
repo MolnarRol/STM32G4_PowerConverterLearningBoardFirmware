@@ -116,8 +116,6 @@ void lv_port_disp_init(void)
 
     /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
-
-    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
 }
 
 /**********************
