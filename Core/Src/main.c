@@ -130,6 +130,7 @@ int main(void)
   lv_obj_t * spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
   lv_obj_set_size(spinner, 64, 64);
   lv_obj_align(spinner, LV_ALIGN_BOTTOM_MID, 0, 0);
+
 #endif
 
   ATB_Init_v();
@@ -391,7 +392,6 @@ void GPIO_Init(void)
    	*************************************************************************************************/
 	GPIOB->MODER					&= ~GPIO_MODER_MODE8_Msk;
 	GPIOB->MODER					|= 1UL << GPIO_MODER_MODE8_Pos;
-	SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
 
 	/*************************************************************************************************
 	* Gate driver enable pins.

@@ -39,8 +39,6 @@
 static void disp_init(void);
 
 static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p);
-//static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t dest_width,
-//        const lv_area_t * fill_area, lv_color_t color);
 
 /**********************
  *  STATIC VARIABLES
@@ -97,13 +95,6 @@ void lv_port_disp_init(void)
 //    static lv_color_t buf_2_1[MY_DISP_HOR_RES * 40];                        /*A buffer for 10 rows*/
 //    static lv_color_t buf_2_2[MY_DISP_HOR_RES * 40];                        /*An other buffer for 10 rows*/
 //    lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2, MY_DISP_HOR_RES * 40);   /*Initialize the display buffer*/
-//
-//    /* Example for 3) also set disp_drv.full_refresh = 1 below*/
-//    static lv_disp_draw_buf_t draw_buf_dsc_3;
-//    static lv_color_t buf_3_1[MY_DISP_HOR_RES * MY_DISP_VER_RES];            /*A screen sized buffer*/
-//    static lv_color_t buf_3_2[MY_DISP_HOR_RES * MY_DISP_VER_RES];            /*Another screen sized buffer*/
-//    lv_disp_draw_buf_init(&draw_buf_dsc_3, buf_3_1, buf_3_2,
-//                          MY_DISP_VER_RES * LV_VER_RES_MAX);   /*Initialize the display buffer*/
 
     /*-----------------------------------
      * Register the display in LVGL
@@ -123,16 +114,10 @@ void lv_port_disp_init(void)
     /*Set a display buffer*/
     disp_drv.draw_buf = &draw_buf_dsc_1;
 
-    /*Required for Example 3)*/
-    //disp_drv.full_refresh = 1;
-
-    /* Fill a memory array with a color if you have GPU.
-     * Note that, in lv_conf.h you can enable GPUs that has built-in support in LVGL.
-     * But if you have a different GPU you can use with this callback.*/
-    //disp_drv.gpu_fill_cb = gpu_fill;
-
     /*Finally register the driver*/
     lv_disp_drv_register(&disp_drv);
+
+    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BS8);
 }
 
 /**********************
