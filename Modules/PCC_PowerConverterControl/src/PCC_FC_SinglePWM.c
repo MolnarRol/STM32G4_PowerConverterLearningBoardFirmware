@@ -1,6 +1,9 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
+#define _SET_FREQ_d                 _s_set_params_s.PWM_struct.frequency__Hz__s.val_f32
+#define _SET_DUTY_d                 _s_set_params_s.PWM_struct.duty_cycle__per_cent__s.val_f32
+
 static void PCC_FC_SinglePWM_Init_v(void);
 static void PCC_FC_SinglePWM_Start_v(void);
 static void PCC_FC_SinglePWM_Stop_v(void);
@@ -11,10 +14,25 @@ static void PCC_FC_SinglePWM_DeInit_v(void);
 static void PCC_FC_SinglePWM_ActiveHandling_v(void) {};
 
 /**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+static PCC_Params_struct _s_set_params_s = {
+        .type_e = PCC_ParamType_PWM_e,
+        .PWM_struct = {
+                .frequency__Hz__s               = {.min_f32 = 10.0f, .max_f32 = 250.0e6f, .val_f32 = 1000.0f},
+                .duty_cycle__per_cent__s        = {.min_f32 = 0.0f, .max_f32 = 100.0f, .val_f32 = 0.0f}
+        }
+};
+
+static f32 _s_freq__Hz__f32;
+static f32 _s_duty__per_cent__f32;
+
+/**********************************************************************************************************************
  * Topology handler structure.
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
 {
+        .ctrl_params_pv     = &_s_set_params_s,
         .initialize_pfv     = PCC_FC_SinglePWM_Init_v,
         .start_pf           = PCC_FC_SinglePWM_Start_v,
         .active_handler_pfv = PCC_FC_SinglePWM_ActiveHandling_v,
@@ -23,18 +41,6 @@ const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
         .isr_handler_pfv    = PCC_FC_SinglePWM_IrqHandler_v,
         .driver_enable_u    = {.byte_val_u8 = (u8)0x1}
 };
-
-/**********************************************************************************************************************
- * Topology control parameters.
- **********************************************************************************************************************/
-PCC_FC_PWM_Params_s PCC_FC_SinglePWM_SetParams_s =
-{
-    .frequency__Hz__f32     = 1000.0f,
-    .duty__per_cent__f32    = 10.0f,
-    .deadtime__s__f32       = 0.0f                                                              /* Irrelevant in this topology. */
-};
-
-static PCC_FC_PWM_Params_s s_PCC_FC_SinglePWM_ActualParams_s;
 
 /**********************************************************************************************************************
  * Topology control routines.
@@ -90,21 +96,19 @@ static void PCC_FC_SinglePWM_Init_v(void)
 static void PCC_FC_SinglePWM_Start_v(void)
 {
     /* Copy set parameters to actual parameters. */
-    s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 =
-            PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32;
-    s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
-            PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+    _s_freq__Hz__f32        = _SET_FREQ_d;
+    _s_duty__per_cent__f32  = _SET_DUTY_d;
 
     /* Calculate and set timer registers to get correct overflow frequency. */
     UTIL_TIM_SetTimerOverflowFrequency_v(
             (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32,
+            _SET_FREQ_d,
             &TIM1->ARR,
             &TIM1->PSC
             );
 
     /* Set correct PWM duty. */
-    TIM1->CCR1 = (u16)((s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 *
+    TIM1->CCR1 = (u16)((_SET_DUTY_d *
                  ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
     SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE);                                                      /* Enable pre-load for capture compare 1. */
@@ -148,39 +152,34 @@ static void PCC_FC_SinglePWM_Stop_v(void)
 static void PCC_FC_SinglePWM_IrqHandler_v(void)
 {
     /* Check if new PWM frequency was set. */
-    if(s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 !=
-       PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32)
+    if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
         /* Set new frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
             (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * _SET_FREQ_d,
             &TIM1->ARR,
             &TIM1->PSC
             );
 
         /* Set correct PWM duty. */
-        TIM1->CCR1 = (u16)((PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32 *
+        TIM1->CCR1 = (u16)((_SET_DUTY_d *
                      ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
         /* Copy set parameters to actual parameters. */
-        s_PCC_FC_SinglePWM_ActualParams_s.frequency__Hz__f32 =
-                PCC_FC_SinglePWM_SetParams_s.frequency__Hz__f32;
-        s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
-                PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+        _s_freq__Hz__f32        = _SET_FREQ_d;
+        _s_duty__per_cent__f32  = _SET_DUTY_d;
     }
 
     /* Check if new PWM duty was set. */
-    else if(s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 !=
-            PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32)
+    else if(_s_duty__per_cent__f32 != _SET_DUTY_d)
     {
         /* Set correct PWM duty. */
-        TIM1->CCR1 = (u16)((PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32 *
+        TIM1->CCR1 = (u16)((_SET_DUTY_d *
                      ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
         /* Copy set parameters to actual parameters. */
-        s_PCC_FC_SinglePWM_ActualParams_s.duty__per_cent__f32 =
-                PCC_FC_SinglePWM_SetParams_s.duty__per_cent__f32;
+        _s_duty__per_cent__f32 = _SET_DUTY_d;
     }
 
     /* Clear interrupt flag. */
