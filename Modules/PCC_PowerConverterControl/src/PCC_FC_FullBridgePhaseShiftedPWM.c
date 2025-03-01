@@ -11,10 +11,34 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void){};
 
 /**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+//PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s =
+//{
+//    .frequency__Hz__f32         = 100000.0f,
+//    .phase_shift__deg__f32      = 0.0f,
+//    .deadtime__s__f32           = 75.0e-9
+//};
+//static PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s;
+static PCC_Params_struct _s_set_params_s = {
+        .type_e = PCC_ParamType_PhaseShiftedPWM_e,
+        .PhaseShiftedPWM_struct = {
+                .frequency__Hz__s               = {.min_f32 = 10.0f, .max_f32 = 250.0e6f, .val_f32 = 100.0e6f},
+                .phase_shift__deg__s            = {.min_f32 = 0.0f, .max_f32 = 180.0f, .val_f32 = 0.0f},
+                .dead_time__s__s                = {.min_f32 = 0.0f, .max_f32 = 5000.0e-9f, .val_f32 = 75.0e-9f}
+        }
+};
+
+static f32 _s_freq__Hz__f32;
+static f32 _s_phase_shift__deg__f32;
+
+
+/**********************************************************************************************************************
  * Topology handler structure.
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
 {
+    .ctrl_params_pv     = &_s_set_params_s,
     .initialize_pfv     = PCC_FC_FullBridgePhaseShiftedPWM_Init_v,
     .start_pf           = PCC_FC_FullBridgePhaseShiftedPWM_Start_v,
     .active_handler_pfv = PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v,
@@ -34,18 +58,6 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
                             }
                         }
 };
-
-/**********************************************************************************************************************
- * Topology control parameters.
- **********************************************************************************************************************/
-PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_SetParams_s =
-{
-    .frequency__Hz__f32         = 100000.0f,
-    .phase_shift__deg__f32      = 0.0f,
-    .deadtime__s__f32           = 75.0e-9
-};
-static PCC_PhaseShiftedPWM_Parameters_s PCC_FC_FullBridgePhaseShiftedPWM_ActualParams_s;
-
 
 /**********************************************************************************************************************
  * Topology control routines.

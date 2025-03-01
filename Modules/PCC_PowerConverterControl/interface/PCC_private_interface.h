@@ -95,7 +95,7 @@ typedef struct {
         struct {
             PCC_Param_struct    frequency__Hz__s;
             PCC_Param_struct    phase_shift__deg__s;
-
+            PCC_Param_struct    dead_time__s__s;
         } PhaseShiftedPWM_struct;
 
         struct {
