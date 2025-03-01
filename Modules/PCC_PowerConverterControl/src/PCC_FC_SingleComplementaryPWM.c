@@ -33,9 +33,9 @@ static PCC_Params_struct _s_set_params_s = {
         }
 };
 
-static f32 _s_freq__Hz__f32;
-static f32 _s_duty__per_cent__f32;
-static f32 _s_dead_time__s__f32;
+static volatile f32 _s_freq__Hz__f32;
+static volatile f32 _s_duty__per_cent__f32;
+static volatile f32 _s_dead_time__s__f32;
 
 /**********************************************************************************************************************
  * Topology handler structure.
@@ -129,6 +129,8 @@ static void PCC_FC_SingleComplementaryPWM_Init_v(void)
  */
 static void PCC_FC_SingleComplementaryPWM_Start_v(void)
 {
+    PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+
     /* Copy set parameters to actual parameters. */
     _s_freq__Hz__f32            = _SET_FREQ_d;
     _s_duty__per_cent__f32      = _SET_DUTY_d;
@@ -193,6 +195,8 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new PWM frequency was set. */
     if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
+        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+
         /* Set new frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
             (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
@@ -212,6 +216,8 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new PWM duty was set. */
     else if(_s_duty__per_cent__f32 != _SET_DUTY_d)
     {
+        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+
         /* Set correct PWM duty. */
         TIM1->CCR1 = (u16)((_SET_DUTY_d *((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
@@ -222,6 +228,8 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new dead time was set. */
     if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
     {
+        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+
         /* Calculate and write new dead time. */
         MODIFY_REG(TIM1->BDTR,
                    TIM_BDTR_DTG_Msk,

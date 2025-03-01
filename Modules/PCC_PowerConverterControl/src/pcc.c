@@ -127,3 +127,17 @@ void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u)
 	/* PA5 */
 	GPIOA->BSRR				|= 1UL << (5UL + 16UL * !enable_states_u.drivers_s.gd6_f1);
 }
+
+void PCC_CheckAndCorrentIncorrectParameters_v(PCC_Params_struct* param_ps)
+{
+    register u32            iteration_iu32;
+    PCC_Param_struct*       data_ps;
+    for(iteration_iu32 = (u32)0; iteration_iu32 < 3U; iteration_iu32 += (u32)1) {
+        data_ps = &param_ps->data_as[iteration_iu32];
+
+        if(data_ps->val_f32 > data_ps->max_f32)
+            data_ps->val_f32 = data_ps->max_f32;
+        else if(data_ps->val_f32 < data_ps->min_f32)
+            data_ps->val_f32 = data_ps->min_f32;
+    }
+}

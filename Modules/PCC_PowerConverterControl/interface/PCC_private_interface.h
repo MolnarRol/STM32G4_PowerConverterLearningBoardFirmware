@@ -73,13 +73,13 @@ typedef enum
 
 typedef struct
 {
-    f32             val_f32;
+    volatile f32    val_f32;
     const f32       min_f32;
     const f32       max_f32;
 } PCC_Param_struct;
 
 typedef struct {
-    PCC_ParamType_enum          type_e;
+    const PCC_ParamType_enum    type_e;
     union {
         struct {
             PCC_Param_struct    frequency__Hz__s;
@@ -109,8 +109,9 @@ typedef struct {
             PCC_Param_struct    pulse_len__deg__s;
         } LineCommutation_struct;
 
+        PCC_Param_struct        data_as[3U];
     };
-} PCC_Params_struct ;
+} PCC_Params_struct;
 
 
 typedef struct
@@ -170,6 +171,7 @@ extern const PCC_TopologyHandle_struct PCC_Topology_ThreePulseThreePhaseControll
 
 void PCC_InterruptHandler_v(void);
 
+void PCC_CheckAndCorrentIncorrectParameters_v(PCC_Params_struct* param_ps);
 #ifdef __cplusplus
 }
 #endif
