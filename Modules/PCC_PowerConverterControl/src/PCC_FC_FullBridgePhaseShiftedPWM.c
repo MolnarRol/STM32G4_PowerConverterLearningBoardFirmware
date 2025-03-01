@@ -180,7 +180,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_Init_v(void)
  */
 static void PCC_FC_FullBridgePhaseShiftedPWM_Start_v(void)
 {
-    PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+    PCC_CheckAndCorrectIncorrectParameters_v();
 
     /* Copy set parameters to actual parameters. */
     _s_freq__Hz__f32            = _SET_FREQ_d;
@@ -274,7 +274,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void)
     /* Check if new PWM frequency was set. */
     if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Calculate and write register values for set frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
@@ -308,7 +308,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void)
     /* Check if new PWM phase shift was set. */
     else if(_s_phase_shift__deg__f32 != _SET_PHASE_SHIFT_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         shift_u32 = (u32)(((f32)TIM1->ARR * (_SET_PHASE_SHIFT_d / 180.0f)) + 0.5f);
 
@@ -330,7 +330,7 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void)
     /* Check if new dead time was set. */
     if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Dead time calculation and write to dead time register. */
         MODIFY_REG(TIM1->BDTR,

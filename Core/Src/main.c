@@ -51,6 +51,8 @@ CRC_HandleTypeDef hcrc;
 /* USER CODE BEGIN PV */
 u32 blink_tick_u32 = 0;
 u32 pcc_handler_task__ticks__u32 = (u32)0;
+
+boolean ret_val_b;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -105,6 +107,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  ret_val_b = PCC_SetTopology_b(PCC_TOPO_FullBridgePhaseShiftedPWM_e);
+  ret_val_b = PCC_InitializeActiveTopology_b();
+  ret_val_b = PCC_StartActiveTopology_v();
+
   while (1)
   {
 #if 1

@@ -95,7 +95,7 @@ static void PCC_FC_SinglePWM_Init_v(void)
  */
 static void PCC_FC_SinglePWM_Start_v(void)
 {
-    PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+    PCC_CheckAndCorrectIncorrectParameters_v();
 
     /* Copy set parameters to actual parameters. */
     _s_freq__Hz__f32        = _SET_FREQ_d;
@@ -156,7 +156,7 @@ static void PCC_FC_SinglePWM_IrqHandler_v(void)
     /* Check if new PWM frequency was set. */
     if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Set new frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
@@ -178,7 +178,7 @@ static void PCC_FC_SinglePWM_IrqHandler_v(void)
     /* Check if new PWM duty was set. */
     else if(_s_duty__per_cent__f32 != _SET_DUTY_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Set correct PWM duty. */
         TIM1->CCR1 = (u16)((_SET_DUTY_d *

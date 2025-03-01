@@ -129,7 +129,7 @@ static void PCC_FC_SingleComplementaryPWM_Init_v(void)
  */
 static void PCC_FC_SingleComplementaryPWM_Start_v(void)
 {
-    PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+    PCC_CheckAndCorrectIncorrectParameters_v();
 
     /* Copy set parameters to actual parameters. */
     _s_freq__Hz__f32            = _SET_FREQ_d;
@@ -195,7 +195,7 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new PWM frequency was set. */
     if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Set new frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
@@ -216,7 +216,7 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new PWM duty was set. */
     else if(_s_duty__per_cent__f32 != _SET_DUTY_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Set correct PWM duty. */
         TIM1->CCR1 = (u16)((_SET_DUTY_d *((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
@@ -228,7 +228,7 @@ static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
     /* Check if new dead time was set. */
     if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
     {
-        PCC_CheckAndCorrentIncorrectParameters_v(&_s_set_params_s);
+        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Calculate and write new dead time. */
         MODIFY_REG(TIM1->BDTR,

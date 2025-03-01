@@ -6,11 +6,17 @@
  */
 #include <pcc.h>
 
+#define _INIT_TOPOLOGY_dpf              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->initialize_pfv)
+#define _START_TOPOLOGY_dpf             (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->start_pf)
+#define _STOP_TOPOLOGY_dpf              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->stop_pfv)
+#define _DEINIT_TOPOLOGY_dpf            (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->deinitalize_pfv)
+#define _ISR_HANDLER_TOPOLOGY_dpf       (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->isr_handler_pfv)
+#define _DRIVER_EN_ds                   (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->driver_enable_u)
+#define _PARAMS_dps                     (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->ctrl_params_pv)
 
-PCC_TopologyHandleState_enum PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-PCC_Topologies_enum	PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
-
-const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
+static PCC_TopologyHandleState_enum     s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
+static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
+static const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
 {
     &PCC_Topology_SinglePWM_s,
     &PCC_Topology_SingleComplementaryPWM_s,
@@ -28,87 +34,63 @@ const PCC_TopologyHandle_struct* const PCC_Topologies_as[] =
     &PCC_Topology_ThreePulseThreePhaseControlledRectifier_s
 };
 
-boolean pcc_start_test_b = False_b;
-
-RAM_FUNC void PCC_Handler_v(void)
+boolean PCC_InitializeActiveTopology_b(void)
 {
-	static boolean switch_delay_active_b = False_b;
-	static u32 switch_delay_active_timestamp_u32;
-	switch(PCC_TopologyState_e)
-	{
-		case PCC_UNINITIALIZED_e:
-		{
-			break;
-		};
+    assert_param(_INIT_TOPOLOGY_dpf != NULL);
+    if(s_PCC_TopologyState_e != PCC_UNINITIALIZED_e)
+        return False_b;
 
-		case PCC_INITIALIZATION_e:
-		{
-		    PCC_Topologies_as[PCC_ActiveTopology_e]->initialize_pfv();
-			PCC_TopologyState_e = PCC_INITIALIZED_e;
-		};
+    _INIT_TOPOLOGY_dpf();
+    s_PCC_TopologyState_e = PCC_INITIALIZED_e;
+    return True_b;
+}
 
-		case PCC_INITIALIZED_e:
-		{
-		    PCC_Topologies_as[PCC_ActiveTopology_e]->active_handler_pfv();
-		    if(pcc_start_test_b)
-		    {
-		        PCC_TopologyState_e = PCC_ACTIVE_e;
-		        switch_delay_active_b = True_b;
-		        PCC_SetGateDriverPowerStates(PCC_Topologies_as[PCC_ActiveTopology_e]->driver_enable_u);
-		        switch_delay_active_timestamp_u32 = ATB_GetCurrentTicks_u32();
-		    }
-			break;
-		}
+boolean PCC_DeinitializeActiveTopology_v(void)
+{
+    assert_param(_DEINIT_TOPOLOGY_dpf != NULL);
+    if(s_PCC_TopologyState_e != PCC_INITIALIZED_e)
+        return False_b;
 
-		case PCC_ACTIVE_e:
-		{
-		    if(switch_delay_active_b)
-		    {
-		        if(ATB_CheckIfPeriodHasElapsed_b(&switch_delay_active_timestamp_u32, ATB__ms__TO__ticks__du32(500)))
-		        {
-		            switch_delay_active_b = False_b;
-	                PCC_Topologies_as[PCC_ActiveTopology_e]->start_pf();
-		        }
-		    }
-		    else
-		    {
-                PCC_Topologies_as[PCC_ActiveTopology_e]->active_handler_pfv();
-                if(!pcc_start_test_b)
-                {
-                    PCC_Topologies_as[PCC_ActiveTopology_e]->stop_pfv();
-                    PCC_TopologyState_e = PCC_INITIALIZED_e;
-                    const PCC_driver_enable_union stop_drivers_s = {.byte_val_u8 = 0};
-                    PCC_SetGateDriverPowerStates(stop_drivers_s);
-                }
-		    }
-			break;
-		}
+    _DEINIT_TOPOLOGY_dpf();
+    s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
+    return True_b;
+}
 
-		case PCC_UNINITIALIZATION_e:
-		default:
-		{
-		    const PCC_driver_enable_union stop_drivers_s = {.byte_val_u8 = 0};
-		    PCC_SetGateDriverPowerStates(stop_drivers_s);
-		    PCC_Topologies_as[PCC_ActiveTopology_e]->deinitalize_pfv();
-			PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-			break;
-		}
-	}
+boolean PCC_StartActiveTopology_v(void)
+{
+    assert_param(_START_TOPOLOGY_dpf != NULL);
+    if(s_PCC_TopologyState_e != PCC_INITIALIZED_e)
+        return False_b;
+
+    s_PCC_TopologyState_e = PCC_ACTIVE_e;
+    return True_b;
+}
+
+boolean PCC_StopActiveTopology_v(void)
+{
+    assert_param(_STOP_TOPOLOGY_dpf != NULL);
+    if(s_PCC_TopologyState_e != PCC_ACTIVE_e)
+        return False_b;
+
+    _STOP_TOPOLOGY_dpf();
+    PCC_SetGateDriverPowerStates((PCC_driver_enable_union){.byte_val_u8 = (u8)0});
+    s_PCC_TopologyState_e = PCC_INITIALIZED_e;
+    return True_b;
 }
 
 void PCC_InterruptHandler_v(void)
 {
-    assert_param(PCC_Topologies_as[PCC_ActiveTopology_e]->isr_handler_pfv != NULL);
-    PCC_Topologies_as[PCC_ActiveTopology_e]->isr_handler_pfv();
+    assert_param(_ISR_HANDLER_TOPOLOGY_dpf != NULL);
+    _ISR_HANDLER_TOPOLOGY_dpf();
 }
 
 boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e)
 {
 	boolean return_status_b = False_b;
-	if((PCC_TopologyState_e == PCC_UNINITIALIZED_e) && PCC_IS_VALID_TOPOLOGY(topology_e))
+	assert_param(topology_e < (sizeof(s_PCC_Topologies_aps) / sizeof(s_PCC_Topologies_aps[0])));
+	if(s_PCC_TopologyState_e == PCC_UNINITIALIZED_e)
 	{
-		PCC_ActiveTopology_e = topology_e;
-		PCC_TopologyState_e = PCC_INITIALIZATION_e;
+		s_PCC_ActiveTopology_e = topology_e;
 		return_status_b = True_b;
 	}
 	return return_status_b;
@@ -128,16 +110,45 @@ void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u)
 	GPIOA->BSRR				|= 1UL << (5UL + 16UL * !enable_states_u.drivers_s.gd6_f1);
 }
 
-void PCC_CheckAndCorrentIncorrectParameters_v(PCC_Params_struct* param_ps)
+void PCC_CheckAndCorrectIncorrectParameters_v(void)
 {
     register u32            iteration_iu32;
     PCC_Param_struct*       data_ps;
     for(iteration_iu32 = (u32)0; iteration_iu32 < 3U; iteration_iu32 += (u32)1) {
-        data_ps = &param_ps->data_as[iteration_iu32];
+        data_ps = &_PARAMS_dps->data_as[iteration_iu32];
 
         if(data_ps->val_f32 > data_ps->max_f32)
             data_ps->val_f32 = data_ps->max_f32;
         else if(data_ps->val_f32 < data_ps->min_f32)
             data_ps->val_f32 = data_ps->min_f32;
     }
+}
+
+PCC_Params_struct* PCC_GetActiveTopologyParameters_ps(void)
+{
+    return (PCC_Params_struct*)_PARAMS_dps;
+}
+
+RAM_FUNC void PCC_Handler_v(void)
+{
+  static boolean s_switch_delay_active_b = False_b;
+  static u32 s_switch_delay_active_timestamp_u32;
+
+  if(s_PCC_TopologyState_e == PCC_ACTIVE_e)
+  {
+      if(s_switch_delay_active_b)
+      {
+          if(ATB_CheckIfPeriodHasElapsed_b(&s_switch_delay_active_timestamp_u32,  ATB__ms__TO__ticks__du32(500)))
+          {
+              _START_TOPOLOGY_dpf();
+              s_switch_delay_active_b = False_b;
+          }
+      }
+      else
+      {
+          s_switch_delay_active_b = True_b;
+          s_switch_delay_active_timestamp_u32 = ATB_GetCurrentTicks_u32();
+          PCC_SetGateDriverPowerStates(_DRIVER_EN_ds);
+      }
+  }
 }
