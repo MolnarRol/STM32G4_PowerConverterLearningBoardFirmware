@@ -31,7 +31,6 @@
 
 #include <lvgl.h>
 #include "ili9341_lvgl_lcd_controller.h"
-#include <UI_public_interface.h>
 #include <TD_SPI_public_interface.h>
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
@@ -117,8 +116,6 @@ int main(void)
 
   lv_init();
   lv_port_disp_init();
-
-  UI_Init_v();
 
 #endif
 

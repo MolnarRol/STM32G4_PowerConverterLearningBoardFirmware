@@ -13,6 +13,8 @@
 #include <main.h>
 #include <PUI_private_interface.h>
 #include "ili9341.h"
+#include "ui.h"
+#include "screens.h"
 
 /*********************
  *      DEFINES
@@ -123,8 +125,13 @@ void lv_port_disp_init(void)
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_ENCODER;
     indev_drv.read_cb = PUI_RotaryEncoderReadCallback_v;
-    /* Callback? */
     encoder_input_device_ps = lv_indev_drv_register(&indev_drv);
+
+    ui_create_groups();
+
+    lv_indev_set_group(encoder_input_device_ps, groups.MainGroup);
+
+    ui_init();
 
 }
 
