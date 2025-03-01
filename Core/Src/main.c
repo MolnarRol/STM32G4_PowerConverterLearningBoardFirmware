@@ -107,9 +107,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  ret_val_b = PCC_SetTopology_b(PCC_TOPO_FullBridgePhaseShiftedPWM_e);
-  ret_val_b = PCC_InitializeActiveTopology_b();
-  ret_val_b = PCC_StartActiveTopology_v();
 
   while (1)
   {
