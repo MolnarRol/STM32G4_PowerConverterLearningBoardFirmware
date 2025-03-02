@@ -47,7 +47,9 @@ static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px
 /**********************
  *  STATIC VARIABLES
  **********************/
-static lv_display_t* lcd_disp_ps;
+static lv_display_t*    lcd_disp_ps;
+lv_indev_t *            input_encoder_ps;
+lv_indev_t *            input_push_btn_ps;
 /**********************
  *      MACROS
  **********************/
@@ -85,7 +87,22 @@ void lv_port_disp_init(void)
 //    static uint8_t buf_2_2[MY_DISP_HOR_RES * 10 * BYTE_PER_PIXEL];
 //    lv_display_set_buffers(disp, buf_2_1, buf_2_2, sizeof(buf_2_1), LV_DISPLAY_RENDER_MODE_PARTIAL);
 
+    /*
+     * Input devices configuration.
+     */
+    input_encoder_ps = lv_indev_create();
+    lv_indev_set_type(input_encoder_ps, LV_INDEV_TYPE_ENCODER);
+    lv_indev_set_read_cb(input_encoder_ps, PUI_RotaryEncoderReadCallback_v);
+
+    input_push_btn_ps = lv_indev_create();
+    lv_indev_set_type(input_push_btn_ps, LV_INDEV_TYPE_BUTTON);
+    lv_indev_set_read_cb(input_push_btn_ps, PUI_PushBtnReadCallback_v);
+
+    /*
+     * UI initialization.
+     */
     ui_create_groups();
+    lv_indev_set_group(input_encoder_ps, groups.MainGroup);
     ui_init();
 }
 
