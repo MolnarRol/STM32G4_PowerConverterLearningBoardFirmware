@@ -29,7 +29,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 extern lv_indev_t* encoder_input_device_ps;
-//extern lv_indev_t* btn_input_device_ps;
+extern lv_indev_t* btn_input_device_ps;
 
 /* Initialize low level display driver */
 void lv_port_disp_init(void);

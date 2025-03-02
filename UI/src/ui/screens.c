@@ -132,7 +132,18 @@ static void event_handler_cb_simple_pwm_param_spinbox(lv_event_t *e) {
         lv_obj_t *ta = lv_event_get_target(e);
         if (tick_value_change_obj != ta) {
             int32_t value = lv_spinbox_get_value(ta);
-            set_var_slider_val(value);
+            set_var_pcc_param_freq_val_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_simple_pwm_freq_editable_btn_1(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            set_var_simple_pwm_duty_edit_enable_b(value);
         }
     }
 }
@@ -363,7 +374,6 @@ void create_screen_simple_pwm() {
                     objects.freq_editable_btn = obj;
                     lv_obj_set_pos(obj, 251, 3);
                     lv_obj_set_size(obj, 40, 20);
-                    lv_obj_add_event_cb(obj, action_change_active_state_of_frequency_parameters, LV_EVENT_VALUE_CHANGED, (void *)0);
                     lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_freq_editable_btn, LV_EVENT_ALL, 0);
                 }
                 {
@@ -461,6 +471,7 @@ void create_screen_simple_pwm() {
                     objects.freq_editable_btn_1 = obj;
                     lv_obj_set_pos(obj, 251, 3);
                     lv_obj_set_size(obj, 40, 20);
+                    lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_freq_editable_btn_1, LV_EVENT_ALL, 0);
                 }
                 {
                     lv_obj_t *obj = lv_obj_create(parent_obj);
@@ -568,11 +579,31 @@ void tick_screen_simple_pwm() {
         }
     }
     {
-        int32_t new_val = get_var_slider_val();
+        int32_t new_val = get_var_pcc_param_freq_val_f32();
         int32_t cur_val = lv_spinbox_get_value(objects.param_spinbox);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.param_spinbox;
             lv_spinbox_set_value(objects.param_spinbox, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_simple_pwm_duty_edit_enable_b();
+        bool cur_val = lv_obj_has_state(objects.freq_editable_btn_1, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.freq_editable_btn_1;
+            if (new_val) lv_obj_add_state(objects.freq_editable_btn_1, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.freq_editable_btn_1, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_simple_pwm_duty_edit_enable_flag_b();
+        bool cur_val = lv_obj_has_state(objects.param_slider_1, LV_STATE_DISABLED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.param_slider_1;
+            if (new_val) lv_obj_add_state(objects.param_slider_1, LV_STATE_DISABLED);
+            else lv_obj_clear_state(objects.param_slider_1, LV_STATE_DISABLED);
             tick_value_change_obj = NULL;
         }
     }
@@ -582,6 +613,16 @@ void tick_screen_simple_pwm() {
         if (new_val != cur_val) {
             tick_value_change_obj = objects.param_slider_1;
             lv_slider_set_value(objects.param_slider_1, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_simple_pwm_duty_edit_enable_flag_b();
+        bool cur_val = lv_obj_has_state(objects.param_spinbox_1, LV_STATE_DISABLED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.param_spinbox_1;
+            if (new_val) lv_obj_add_state(objects.param_spinbox_1, LV_STATE_DISABLED);
+            else lv_obj_clear_state(objects.param_spinbox_1, LV_STATE_DISABLED);
             tick_value_change_obj = NULL;
         }
     }

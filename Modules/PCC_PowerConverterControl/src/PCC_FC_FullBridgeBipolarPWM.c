@@ -8,6 +8,9 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
+#define _SET_FREQ_d                 _s_set_params_s.ab.frequency__Hz__s.val_f32
+#define _SET_DUTY_d                 _s_set_params_s.ab.duty_cycle__per_cent__s.val_f32
+
 static void PCC_FC_FullBridgeBipolarPWM_Init_v(void);
 static void PCC_FC_FullBridgeBipolarPWM_Start_v(void);
 static void PCC_FC_FullBridgeBipolarPWM_ActiveHandling_v(void);
@@ -38,6 +41,8 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgeBipolarPWM_s =
 volatile f32 PCC_FC_FullBridgeBipolarPWM_freq__Hz__f32 = 10000.0f;
 volatile f32 PCC_FC_FullBridgeBipolarPWM_duty__per_cent__f32 = 0.0f;
 volatile f32 PCC_FC_FullBridgeBipolarPWM_DeadTime__s__f32 = 75.0e-9f;
+
+static f32 _freq__Hz__f32;
 
 static void PCC_FC_FullBridgeBipolarPWM_Init_v(void)
 {

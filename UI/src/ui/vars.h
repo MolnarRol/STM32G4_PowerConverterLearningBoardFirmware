@@ -19,7 +19,10 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_TOPOLOGY_CTRL_NAME = 1,
     FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_FREQ_EDIT_ENABLE_B = 2,
     FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_FREQ_FREQ_EDIT_ENABLE_FLAG_B = 3,
-    FLOW_GLOBAL_VARIABLE_STATUS_VAR_STR = 4
+    FLOW_GLOBAL_VARIABLE_STATUS_VAR_STR = 4,
+    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_DUTY_EDIT_ENABLE_B = 5,
+    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_DUTY_EDIT_ENABLE_FLAG_B = 6,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FREQ_VAL_F32 = 7
 };
 
 // Native global variables
@@ -34,6 +37,12 @@ extern bool get_var_simple_pwm_freq_freq_edit_enable_flag_b();
 extern void set_var_simple_pwm_freq_freq_edit_enable_flag_b(bool value);
 extern const char *get_var_status_var_str();
 extern void set_var_status_var_str(const char *value);
+extern bool get_var_simple_pwm_duty_edit_enable_b();
+extern void set_var_simple_pwm_duty_edit_enable_b(bool value);
+extern bool get_var_simple_pwm_duty_edit_enable_flag_b();
+extern void set_var_simple_pwm_duty_edit_enable_flag_b(bool value);
+extern float get_var_pcc_param_freq_val_f32();
+extern void set_var_pcc_param_freq_val_f32(float value);
 
 
 #ifdef __cplusplus

@@ -129,15 +129,6 @@ void PUI_Init(void)
 
 }
 
-//void EXTI15_10_IRQHandler(void)
-//{
-//    if(READ_BIT(EXTI->PR1, EXTI_PR1_PIF12) != 0){
-//        PUI_IrqButtonIsrHandler_v(&PUI_StartStopBtn_s);
-//        SET_BIT(EXTI->PR1, EXTI_PR1_PIF12);
-//    }
-//    NVIC_ClearPendingIRQ(EXTI15_10_IRQn);
-//}
-
 void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
     static u16 s_prev_enc_cnt_u16 = 0;
@@ -149,9 +140,9 @@ void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_inde
 
 void PUI_PushBtnReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
-//    if(PUI_StartStopBtn_s.state_b)  data->state = LV_INDEV_STATE_PRESSED;
-//    else                            data->state = LV_INDEV_STATE_RELEASED;
-//    data->btn = 0;
+    if(PUI_StartStopBtn_s.state_b)  data->state = LV_INDEV_STATE_PRESSED;
+    else                            data->state = LV_INDEV_STATE_RELEASED;
+    data->btn_id = 0;
 }
 
 void PUI_Handler(void)

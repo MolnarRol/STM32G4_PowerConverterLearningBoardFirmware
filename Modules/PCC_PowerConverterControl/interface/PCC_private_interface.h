@@ -34,36 +34,28 @@ extern "C"
 typedef enum
 {
 	PCC_UNINITIALIZED_e		= 0,
-	PCC_INITIALIZATION_e,
 	PCC_INITIALIZED_e,
-	PCC_ACTIVE_e,
-	PCC_UNINITIALIZATION_e
+	PCC_ACTIVE_e
 } PCC_TopologyHandleState_enum;
 
-typedef enum
+typedef union
 {
-	PCC_TOPO_SinglePWM_e	                            = 0,
-	PCC_TOPO_SingleComplementaryPWM_e                   = 1,
-	PCC_TOPO_FullBridgePhaseShiftedPWM_e                = 2,
-	PCC_TOPO_FullBridgeUnipolarPWM_e                    = 3,
-	PCC_TOPO_FullBridgeBipolarPWM_e                     = 4,
-	PCC_TOPO_SinglePhaseUnipolarSinePWM_e               = 5,
-	PCC_TOPO_SinglePhaseBipolarSinePWM_e                = 6,
-	PCC_TOPO_ThreePhaseSinePWM_e                        = 7,
-	PCC_TOPO_SinglePhaseControlledRectifier_e           = 8,
-	PCC_TOPO_SinglePhaseThyristorVoltageConverter_e     = 9,
-	PCC_TOPO_SinglePhaseTriacVoltageConverter_e         = 10,
-	PCC_TOPO_DoubleImpulseControlledRectifier_e         = 11,
-	PCC_TOPO_SixPulseThreePhaseControlledRectifier_e    = 12,
-	PCC_TOPO_ThreePulseThreePhaseControlledRectifier_e  = 13
-} PCC_Topologies_enum;
-
-#define PCC_NUMBER_OF_TOPOLOGIES_d          8U
-#define PCC_IS_VALID_TOPOLOGY(topology_e)	(topology_e >= 0) && (topology_e < PCC_NUMBER_OF_TOPOLOGIES_d)
+    struct
+    {
+        u8 gd1_f1           : 1;
+        u8 gd2_f1           : 1;
+        u8 gd3_f1           : 1;
+        u8 gd4_f1           : 1;
+        u8 gd5_f1           : 1;
+        u8 gd6_f1           : 1;
+        u8 _reserved        : 2;
+    } drivers_s;
+    u8 byte_val_u8;
+} PCC_driver_enable_union;
 
 typedef struct
 {
-	const PCC_Topologies_enum 			    c_topology_e;
+    PCC_Params_struct * const               ctrl_params_pv;
     void (*const initialize_pfv)		    (void);
     void (*const initialized_pfv)           (void);
     void (*const start_pf)				    (void);
@@ -118,6 +110,8 @@ extern const PCC_TopologyHandle_struct PCC_Topology_ThreePulseThreePhaseControll
 
 void PCC_InterruptHandler_v(void);
 
+void PCC_CheckAndCorrectIncorrectParameters_v(void);
+void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u);
 #ifdef __cplusplus
 }
 #endif

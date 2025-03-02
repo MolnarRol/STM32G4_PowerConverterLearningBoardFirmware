@@ -8,6 +8,10 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
+#define _SET_FREQ_d                 _s_set_params_s.ComplementaryPWM_struct.frequency__Hz__s.val_f32
+#define _SET_DUTY_d                 _s_set_params_s.ComplementaryPWM_struct.duty_cycle__per_cent__s.val_f32
+#define _SET_DEADTIME_d             _s_set_params_s.ComplementaryPWM_struct.dead_time__s__s.val_f32
+
 static void PCC_FC_SingleComplementaryPWM_Init_v(void);
 static void PCC_FC_SingleComplementaryPWM_Start_v(void);
 static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void);
@@ -18,10 +22,27 @@ static void PCC_FC_SingleComplementaryPWM_DeInit_v(void);
 static void PCC_FC_SingleComplementaryPWM_ActiveHandling_v(void) {};
 
 /**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+static PCC_Params_struct _s_set_params_s = {
+        .type_e = PCC_ParamType_PWM_e,
+        .ComplementaryPWM_struct = {
+                .frequency__Hz__s               = {.min_f32 = 10.0f, .max_f32 = 250.0e6f, .val_f32 = 1000.0f},
+                .duty_cycle__per_cent__s        = {.min_f32 = 0.0f, .max_f32 = 100.0f, .val_f32 = 0.0f},
+                .dead_time__s__s                = {.min_f32 = 0.0f, .max_f32 = 5000.0e-9f, .val_f32 = 200.0e-9f}
+        }
+};
+
+static volatile f32 _s_freq__Hz__f32;
+static volatile f32 _s_duty__per_cent__f32;
+static volatile f32 _s_dead_time__s__f32;
+
+/**********************************************************************************************************************
  * Topology handler structure.
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s =
 {
+        .ctrl_params_pv     = &_s_set_params_s,
         .initialize_pfv     = PCC_FC_SingleComplementaryPWM_Init_v,
         .start_pf           = PCC_FC_SingleComplementaryPWM_Start_v,
         .active_handler_pfv = PCC_FC_SingleComplementaryPWM_ActiveHandling_v,
@@ -41,17 +62,6 @@ const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s =
                                 }
                             }
 };
-
-/**********************************************************************************************************************
- * Topology control parameters.
- **********************************************************************************************************************/
-PCC_FC_PWM_Params_s PCC_FC_SingleComplementaryPWM_SetParams_s =
-{
-        .duty__per_cent__f32    = 0.0f,
-        .frequency__Hz__f32     = 1000.0f,
-        .deadtime__s__f32       = 75.0e-9f
-};
-static PCC_FC_PWM_Params_s s_PCC_FC_SingleComplementaryPWM_ActualParams_s;
 
 /**********************************************************************************************************************
  * Topology control routines.
@@ -119,30 +129,27 @@ static void PCC_FC_SingleComplementaryPWM_Init_v(void)
  */
 static void PCC_FC_SingleComplementaryPWM_Start_v(void)
 {
+    PCC_CheckAndCorrectIncorrectParameters_v();
+
     /* Copy set parameters to actual parameters. */
-    s_PCC_FC_SingleComplementaryPWM_ActualParams_s.frequency__Hz__f32 =
-            PCC_FC_SingleComplementaryPWM_SetParams_s.frequency__Hz__f32;
-    s_PCC_FC_SingleComplementaryPWM_ActualParams_s.duty__per_cent__f32 =
-                PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32;
-    s_PCC_FC_SingleComplementaryPWM_ActualParams_s.deadtime__s__f32 =
-                PCC_FC_SingleComplementaryPWM_SetParams_s.deadtime__s__f32;
+    _s_freq__Hz__f32            = _SET_FREQ_d;
+    _s_duty__per_cent__f32      = _SET_DUTY_d;
+    _s_dead_time__s__f32        = _SET_DEADTIME_d;
 
     /* Dead time calculation and write to dead time register. */
     MODIFY_REG(TIM1->BDTR,
                TIM_BDTR_DTG_Msk,
-               (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-                                                        PCC_FC_SingleComplementaryPWM_SetParams_s.deadtime__s__f32));
+               (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d, _s_dead_time__s__f32));
 
     UTIL_TIM_SetTimerOverflowFrequency_v(
         (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-        UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_SingleComplementaryPWM_SetParams_s.frequency__Hz__f32,
+        UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * _s_freq__Hz__f32,
         &TIM1->ARR,
         &TIM1->PSC
         );
 
     /* Set correct PWM duty. */
-    TIM1->CCR1 = (u16)((s_PCC_FC_SingleComplementaryPWM_ActualParams_s.duty__per_cent__f32 *
-                 ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+    TIM1->CCR1 = (u16)((_s_duty__per_cent__f32 * ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
     SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE);                                                      /* Enable pre-load for capture compare 1. */
     SET_BIT(TIM1->CCER, TIM_CCER_CC1E | TIM_CCER_CC1NE);                                        /* Enable CH1. */
@@ -186,54 +193,50 @@ static void PCC_FC_SingleComplementaryPWM_Stop_v(void)
 static void PCC_FC_SingleComplementaryPWM_IrqHandler_v(void)
 {
     /* Check if new PWM frequency was set. */
-    if(s_PCC_FC_SingleComplementaryPWM_ActualParams_s.frequency__Hz__f32 !=
-       PCC_FC_SingleComplementaryPWM_SetParams_s.frequency__Hz__f32)
+    if(_s_freq__Hz__f32 != _SET_FREQ_d)
     {
+        PCC_CheckAndCorrectIncorrectParameters_v();
+
         /* Set new frequency. */
         UTIL_TIM_SetTimerOverflowFrequency_v(
             (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * PCC_FC_SingleComplementaryPWM_SetParams_s.frequency__Hz__f32,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * _SET_FREQ_d,
             &TIM1->ARR,
             &TIM1->PSC
             );
 
         /* Set correct PWM duty. */
-        TIM1->CCR1 = (u16)((PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32 *
-                     ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+        TIM1->CCR1 = (u16)((_SET_FREQ_d * ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
         /* Copy set parameters to actual parameters. */
-        s_PCC_FC_SingleComplementaryPWM_ActualParams_s.frequency__Hz__f32 =
-                PCC_FC_SingleComplementaryPWM_SetParams_s.frequency__Hz__f32;
-        s_PCC_FC_SingleComplementaryPWM_ActualParams_s.duty__per_cent__f32 =
-                PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32;
+        _s_freq__Hz__f32            = _SET_FREQ_d;
+        _s_duty__per_cent__f32      = _SET_DUTY_d;
     }
 
     /* Check if new PWM duty was set. */
-    else if(s_PCC_FC_SingleComplementaryPWM_ActualParams_s.duty__per_cent__f32 !=
-            PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32)
+    else if(_s_duty__per_cent__f32 != _SET_DUTY_d)
     {
+        PCC_CheckAndCorrectIncorrectParameters_v();
+
         /* Set correct PWM duty. */
-        TIM1->CCR1 = (u16)((PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32 *
-                 ((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
+        TIM1->CCR1 = (u16)((_SET_DUTY_d *((f32)TIM1->ARR + 1.0f))/GEN_DEF_PER_CENT_MAX_df32);
 
         /* Copy set parameters to actual parameters. */
-        s_PCC_FC_SingleComplementaryPWM_ActualParams_s.duty__per_cent__f32 =
-                PCC_FC_SingleComplementaryPWM_SetParams_s.duty__per_cent__f32;
+        _s_duty__per_cent__f32 = _SET_DUTY_d;
     }
 
     /* Check if new dead time was set. */
-    if(s_PCC_FC_SingleComplementaryPWM_ActualParams_s.deadtime__s__f32 !=
-       PCC_FC_SingleComplementaryPWM_SetParams_s.deadtime__s__f32)
+    if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
     {
+        PCC_CheckAndCorrectIncorrectParameters_v();
+
         /* Calculate and write new dead time. */
         MODIFY_REG(TIM1->BDTR,
                    TIM_BDTR_DTG_Msk,
-                   (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d,
-                                                            PCC_FC_SingleComplementaryPWM_SetParams_s.deadtime__s__f32));
+                   (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d, _SET_DEADTIME_d));
 
         /* Copy set parameters to actual parameters. */
-        s_PCC_FC_SingleComplementaryPWM_ActualParams_s.deadtime__s__f32 =
-                        PCC_FC_SingleComplementaryPWM_SetParams_s.deadtime__s__f32;
+        _s_dead_time__s__f32 = _SET_DEADTIME_d;
     }
 
     /* Clear interrupt flag. */
