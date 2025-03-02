@@ -138,6 +138,7 @@ int main(void)
 	  if(ATB_CheckIfPeriodHasElapsed_b(&lvgl_task_tick_u32, ATB__ms__TO__ticks__du32(5)))
 	  {
 	      lv_timer_handler();
+//	      lv_task_handler();
 	      ui_tick();
 	  }
 

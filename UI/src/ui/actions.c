@@ -13,11 +13,19 @@ extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
 
 void action_back_to_main_menu(lv_event_t *e) {
+    lv_indev_set_group(input_encoder_ps, groups.MainGroup);
     loadScreen(SCREEN_ID_MAIN);
+}
+
+void action_start_topology(lv_event_t *e) {
+    __NOP();
 }
 
 void action_go_to_power_topology_menu(lv_event_t * e)
 {
+    lv_indev_add_event_cb(input_push_btn_ps, action_back_to_main_menu, LV_EVENT_PRESSED, NULL);
+    lv_indev_add_event_cb(input_push_btn_ps, action_start_topology, LV_EVENT_LONG_PRESSED, NULL);
+
     lv_indev_set_group(input_encoder_ps, groups.param_selector);
 
     PCC_SetTopology_b(PCC_TOPO_SinglePWM_e);

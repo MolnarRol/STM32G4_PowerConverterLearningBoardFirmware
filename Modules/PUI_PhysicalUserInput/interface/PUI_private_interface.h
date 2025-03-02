@@ -36,7 +36,6 @@ typedef struct
 extern PUI_IrqButton_struct PUI_StartStopBtn_s;
 void PUI_IrqButtonIsrHandler_v(PUI_IrqButton_struct* btn_handle_ps);
 void PUI_RotaryEncoderReadCallback_v(lv_indev_t * indev, lv_indev_data_t*data);
-void PUI_PushBtnReadCallback_v(lv_indev_t * indev, lv_indev_data_t*data);
 
 #ifdef __cplusplus
 }

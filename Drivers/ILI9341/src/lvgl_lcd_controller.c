@@ -15,6 +15,7 @@
 #include "ili9341.h"
 #include "ui.h"
 #include "screens.h"
+#include "actions.h"
 /*********************
  *      DEFINES
  *********************/
@@ -43,6 +44,9 @@
 static void disp_init(void);
 
 static void disp_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * px_map);
+
+static void pui_lvgl_btn_long_press_cb_v(void);
+static void pui_lvgl_btn_short_press_cb_v(void);
 
 /**********************
  *  STATIC VARIABLES
@@ -96,7 +100,7 @@ void lv_port_disp_init(void)
 
     input_push_btn_ps = lv_indev_create();
     lv_indev_set_type(input_push_btn_ps, LV_INDEV_TYPE_BUTTON);
-    lv_indev_set_read_cb(input_push_btn_ps, PUI_PushBtnReadCallback_v);
+    lv_indev_set_mode(input_push_btn_ps, LV_INDEV_MODE_EVENT);
 
     /*
      * UI initialization.
@@ -104,11 +108,23 @@ void lv_port_disp_init(void)
     ui_create_groups();
     lv_indev_set_group(input_encoder_ps, groups.MainGroup);
     ui_init();
+
+    PUI_StartStopBtn_s.btn_short_press_callback_pvf = pui_lvgl_btn_short_press_cb_v;
+    PUI_StartStopBtn_s.btn_long_press_callback_pvf = pui_lvgl_btn_long_press_cb_v;
 }
 
 /**********************
  *   STATIC FUNCTIONS
  **********************/
+static void pui_lvgl_btn_long_press_cb_v(void)
+{
+    lv_indev_send_event(input_push_btn_ps, LV_EVENT_LONG_PRESSED, NULL);
+}
+
+static void pui_lvgl_btn_short_press_cb_v(void)
+{
+    lv_indev_send_event(input_push_btn_ps, LV_EVENT_PRESSED, NULL);
+}
 
 /*Initialize your display and the required peripherals.*/
 static void disp_init(void)
