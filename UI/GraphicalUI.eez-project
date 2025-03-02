@@ -7,7 +7,7 @@
       "objID": "fd434352-2277-c4a8-e87e-e96cfcbf2305",
       "projectVersion": "v3",
       "projectType": "lvgl",
-      "lvglVersion": "8.3",
+      "lvglVersion": "9.0",
       "extensions": [],
       "imports": [],
       "flowSupport": false,
@@ -1755,7 +1755,7 @@
           "type": "LVGLLabelWidget",
           "left": 0,
           "top": 224,
-          "width": 59,
+          "width": 49,
           "height": 16,
           "customInputs": [],
           "customOutputs": [],
@@ -1788,7 +1788,7 @@
           "group": "",
           "groupIndex": 0,
           "text": "READY",
-          "textType": "expression",
+          "textType": "literal",
           "longMode": "WRAP",
           "recolor": false
         },
@@ -1885,22 +1885,7 @@
     "defaultGroupForEncoderInSimulator": ""
   },
   "fonts": [],
-  "bitmaps": [
-    {
-      "objID": "f492c68e-3a6a-4dc2-fe28-5de2ebf1ecf2",
-      "name": "unlocked",
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAChElEQVRYhe2Wz0sUYRzGP+/uuOqCYKIFsvRDYkmFMjLXQ2tQ0ELC7LVLhw6xh+wP2XN0Wqhr59HWZskQ6bAO0i9KQ6RClg3DFJaWVl3n7eCoq/tjZgfXOvTAsvN+53mf52He77zvCOrE0C11BLgHjACnrfIyMAM8NVLaTD16wilxOKJ2m5IEcNuGmvQI7qd1LXtkAUIRNSglU0CgpLwGzFvXfUBHyb2MENyc1bVFO22PA/N2KZksMV8SEPU3m11GSgsbKS3sbza7BESBJYsTkJLJUERtt9NX7AhSEgd6rOFrIRid1bVcKWd6fMIEtFBEnZaS58A1oMeaG6ulX3MJQhE1ICVfraA/PIL+tK6t1pozHFE7Tckn4CRQFIJzs7qWqcavuQRScscyR0DczhwgrWurAuLWULE0qsKuB8K7F0LIZ3bmVbjhqkQHAc5a/2tpfdzRawVgcT8DWcBfi2vXhD4AIfjl1HwXRkrrdcKzfQ0bjf8BKvbA5vxgS7FI99140VfcFni9Usl/uNpTiesEAomikPX1zRXK7x1CcWGwA3jPwX3/KJABLim9c2ulxbIlkJKBBpjDzvkwcLhYFkA4PqDrRyXtf7MJnWBl3curd60A3Bj4zakT28cXYDHTxINHneQLO8/0yYs2Hj9cJRjYqlvL1RIkkm175gD5giCRbHMj5S7AyrrXUa1hAS6f33RUa1iA2GiOoQsbe+MrwQ1io7kaM444gL9Fcv3i/q7af2YLf4s8vgAAE+n974yXb1rdyrgL8OW7wsJy0944+9PLx2++4wuQNPx4PRz4Tb119xRcbURj0RxjUXdNdxh//SyoFMBsoF+ZdlmAbRMDMBpgnra0D+APiRXDEViiskcAAAAASUVORK5CYII=",
-      "bpp": 32,
-      "alwaysBuild": false
-    },
-    {
-      "objID": "64107e54-94f8-4669-ee46-0bf7403f3d43",
-      "name": "locked",
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAA7EAAAOxAGVKw4bAAACqklEQVRYhcWXwUsUURzHP2/d3RwTQVzYUKEOiSkdYrVtCYqCXCNqi0IIIjpFt07ewg79Cx07hQRdCpsocDwUBaGbK2GxhkYlKShpyoaoq87r0NMd3Z3d2WFXv5d57/t+v9/3u7+defNGUASOd8Q8QnABuAFEgEa1NAUMAk8kvP5o6KbTmsJpYDgaawceAccKhH4CbscNfbhkBsLR2HXgMeDfsZRW11z8rbihPy1U2+NA/DzQaxH5A/QIaNb8pqb5TU1AM9Cj1jYN9arcvMjbgXA0FgDGgICi4kJweahfn8kVf6IzdkBKXgBhRc0BLXFDn7PTKNSBexbxcSHotBMHGOrXZ4SgExhXVEDVsIVtB8LRWCUwC9Qo6mzc0N8WMLyZewZ4o6YpIBg39JVcsfk6cNoiPuJUHEDFjqhpjaqVE/kMhCxjw6m4TU7ILiifgaBl/MOFAWtO0C4onwGvZbzuwoA1x2sXVHAfKDeynoK1ZPtVIbiUmNgXmV2oOALQ1LD2oalh7VsxhSemfYcnpn0nAYK1G1/bmlYHpeSlr3X4ua2BdLK90SOYpHydMU3JQX/r8NQmsU1ICAJlFAfwKI0MUUYxR9hzA7aPRyF8+elnIKEB0NG2zNFD6QIZJTRgJDQe9NZiyv/zZ+/3c//mAtG25aJrFf0XSAkP+2q2xAFMxUlpn1cyA0srHuZTFVn8fKqCpZXib6miM6o1k/q6jSy+vm6Das3xWdS9AYDurkX83ky//V5Jd9eim1LuDERaVrlz8e/W/NqpJSItq7tnAODdaGVm/LkSF/efewO/fnsZ/Z45iU/PeRmb9O2egVdDVVm/eCBR5cqAq40ovQ7nQjs2HcffWCUwcPdKyp1aDuz5y2j7ecDd2a8o7NTYZsCUMimhr1ziEvpMKZNW7h91hsHEyDnaGwAAAABJRU5ErkJggg==",
-      "bpp": 32,
-      "alwaysBuild": false
-    }
-  ],
+  "bitmaps": [],
   "colors": [],
   "themes": [
     {

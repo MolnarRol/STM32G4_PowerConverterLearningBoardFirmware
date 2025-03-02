@@ -129,7 +129,7 @@ void PUI_Init(void)
 
 }
 
-void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
+void PUI_RotaryEncoderReadCallback_v(lv_indev_t * indev, lv_indev_data_t*data)
 {
     static u16 s_prev_enc_cnt_u16 = 0;
     data->enc_diff = (s16)TIM4->CNT - (s16)s_prev_enc_cnt_u16;
@@ -138,7 +138,7 @@ void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_inde
     else data->state = LV_INDEV_STATE_RELEASED;
 }
 
-void PUI_PushBtnReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
+void PUI_PushBtnReadCallback_v(lv_indev_t * indev, lv_indev_data_t*data)
 {
     if(PUI_StartStopBtn_s.state_b)  data->state = LV_INDEV_STATE_PRESSED;
     else                            data->state = LV_INDEV_STATE_RELEASED;
