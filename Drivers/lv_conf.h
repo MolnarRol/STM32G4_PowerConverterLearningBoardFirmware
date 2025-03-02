@@ -593,7 +593,7 @@
 
 #define LV_USE_BUTTONMATRIX  1
 
-#define LV_USE_CALENDAR   1
+#define LV_USE_CALENDAR   0
 #if LV_USE_CALENDAR
     #define LV_CALENDAR_WEEK_STARTS_MONDAY 0
     #if LV_CALENDAR_WEEK_STARTS_MONDAY
@@ -608,9 +608,9 @@
     #define LV_USE_CALENDAR_CHINESE 0
 #endif  /*LV_USE_CALENDAR*/
 
-#define LV_USE_CANVAS     1
+#define LV_USE_CANVAS     0
 
-#define LV_USE_CHART      1
+#define LV_USE_CHART      0
 
 #define LV_USE_CHECKBOX   1
 
@@ -620,7 +620,7 @@
 
 #define LV_USE_IMAGEBUTTON     1
 
-#define LV_USE_KEYBOARD   1
+#define LV_USE_KEYBOARD   0
 
 #define LV_USE_LABEL      1
 #if LV_USE_LABEL
@@ -868,7 +868,7 @@
 
     /*1: Show CPU usage and FPS count
      * Requires `LV_USE_SYSMON = 1`*/
-    #define LV_USE_PERF_MONITOR 0
+    #define LV_USE_PERF_MONITOR 1
     #if LV_USE_PERF_MONITOR
         #define LV_USE_PERF_MONITOR_POS LV_ALIGN_BOTTOM_RIGHT
 

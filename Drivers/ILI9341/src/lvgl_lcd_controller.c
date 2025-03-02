@@ -78,7 +78,7 @@ void lv_port_disp_init(void)
     /* Example 1
      * One buffer for partial rendering*/
     LV_ATTRIBUTE_MEM_ALIGN
-    static uint8_t buf_1_1[MY_DISP_HOR_RES * 20 * BYTE_PER_PIXEL];            /*A buffer for 10 rows*/
+    static uint8_t buf_1_1[MY_DISP_HOR_RES * 40 * BYTE_PER_PIXEL];            /*A buffer for 10 rows*/
     lv_display_set_buffers(lcd_disp_ps, buf_1_1, NULL, sizeof(buf_1_1), LV_DISPLAY_RENDER_MODE_PARTIAL);
 
     /* Example 2

@@ -6,9 +6,6 @@
 #include <app_types.h>
 #include <PCC_public_interface.h>
 
-//extern lv_indev_t* encoder_input_device_ps;
-//extern lv_indev_t* btn_input_device_ps;
-
 extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
 
