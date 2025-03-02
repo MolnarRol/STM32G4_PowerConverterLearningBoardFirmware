@@ -48,6 +48,7 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
  **********************/
 static lv_disp_drv_t disp_drv;                         /*Descriptor of a display driver*/
 lv_indev_t* encoder_input_device_ps;
+//lv_indev_t* btn_input_device_ps;
 extern SPI_HandleTypeDef hspi3;
 /**********************
  *      MACROS
@@ -126,6 +127,11 @@ void lv_port_disp_init(void)
     indev_drv.type = LV_INDEV_TYPE_ENCODER;
     indev_drv.read_cb = PUI_RotaryEncoderReadCallback_v;
     encoder_input_device_ps = lv_indev_drv_register(&indev_drv);
+
+//    lv_indev_drv_init(&indev_drv);
+//    indev_drv.type = LV_INDEV_TYPE_BUTTON;
+//    indev_drv.read_cb = PUI_PushBtnReadCallback_v;
+//    btn_input_device_ps = lv_indev_drv_register(&indev_drv);
 
     ui_create_groups();
 

@@ -147,6 +147,13 @@ void PUI_RotaryEncoderReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_inde
     else data->state = LV_INDEV_STATE_RELEASED;
 }
 
+void PUI_PushBtnReadCallback_v(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
+{
+//    if(PUI_StartStopBtn_s.state_b)  data->state = LV_INDEV_STATE_PRESSED;
+//    else                            data->state = LV_INDEV_STATE_RELEASED;
+//    data->btn = 0;
+}
+
 void PUI_Handler(void)
 {
 #if 1

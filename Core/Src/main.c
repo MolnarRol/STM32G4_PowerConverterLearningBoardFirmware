@@ -32,6 +32,7 @@
 #include <lvgl.h>
 #include "ili9341_lvgl_lcd_controller.h"
 #include <TD_SPI_public_interface.h>
+#include "ui.h"
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 
@@ -137,6 +138,7 @@ int main(void)
 	  if(ATB_CheckIfPeriodHasElapsed_b(&lvgl_task_tick_u32, ATB__ms__TO__ticks__du32(5)))
 	  {
 	      lv_timer_handler();
+	      ui_tick();
 	  }
 
 #endif
