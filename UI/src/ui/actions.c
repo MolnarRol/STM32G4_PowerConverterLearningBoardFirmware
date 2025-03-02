@@ -3,6 +3,7 @@
 #include "screens.h"
 #include <stm32g4xx.h>
 #include <lvgl.h>
+#include <PCC_public_interface.h>
 
 extern lv_indev_t* encoder_input_device_ps;
 extern lv_indev_t* btn_input_device_ps;
@@ -15,6 +16,7 @@ void action_go_to_power_topology_menu(lv_event_t * e)
 {
     lv_indev_set_group(encoder_input_device_ps, groups.param_selector);
     loadScreen(SCREEN_ID_SIMPLE_PWM);
+//    PCC_
 }
 
 void action_change_active_state_of_frequency_parameters(lv_event_t *e) {

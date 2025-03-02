@@ -118,6 +118,22 @@
         "defaultValue": "\"\"",
         "persistent": false,
         "native": false
+      },
+      {
+        "objID": "24c07530-35ee-4b05-be30-d561c550166f",
+        "name": "simple_pwm_freq_edit_enable_b",
+        "type": "boolean",
+        "defaultValue": "false",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "3d8e72cd-7d91-4ab8-fb4d-568bb9b40b9c",
+        "name": "simple_pwm_freq_freq_edit_enable_flag_b",
+        "type": "boolean",
+        "defaultValue": "false",
+        "persistent": false,
+        "native": false
       }
     ],
     "structures": [],
@@ -133,12 +149,20 @@
       "name": "GoToPowerTopologyMenu"
     },
     {
-      "objID": "c9a13563-a6d3-4ede-df67-a92ea693d7c2",
+      "objID": "5edd60a4-7554-4876-cd10-410ce3fc2883",
       "components": [],
       "connectionLines": [],
       "localVariables": [],
       "userProperties": [],
-      "name": "ChengeEnableStatedOfLocalElements"
+      "name": "ChangeActiveStateOfFrequencyParameters"
+    },
+    {
+      "objID": "24c2dc60-3429-4742-a73a-ad34785c7ca5",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "BackToMainMenu"
     }
   ],
   "userPages": [
@@ -918,7 +942,7 @@
                       "objID": "f966d2ab-4be3-4d47-a660-1b5660686186",
                       "eventName": "VALUE_CHANGED",
                       "handlerType": "action",
-                      "action": "ChengeEnableStatedOfLocalElements",
+                      "action": "ChangeActiveStateOfFrequencyParameters",
                       "userData": 0
                     }
                   ],
@@ -936,7 +960,9 @@
                   "flagScrollDirection": "",
                   "scrollSnapX": "",
                   "scrollSnapY": "",
-                  "checkedStateType": "literal",
+                  "checkedState": "simple_pwm_freq_edit_enable_b",
+                  "checkedStateType": "expression",
+                  "disabledState": false,
                   "disabledStateType": "literal",
                   "states": "",
                   "localStyles": {
@@ -990,7 +1016,7 @@
                       "widthUnit": "%",
                       "heightUnit": "px",
                       "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "widgetFlags": "",
                       "hiddenFlagType": "literal",
                       "clickableFlag": true,
                       "clickableFlagType": "literal",
@@ -999,10 +1025,23 @@
                       "scrollSnapX": "",
                       "scrollSnapY": "",
                       "checkedStateType": "literal",
-                      "disabledStateType": "literal",
+                      "disabledState": "simple_pwm_freq_freq_edit_enable_flag_b",
+                      "disabledStateType": "expression",
                       "states": "",
                       "localStyles": {
-                        "objID": "e0009e2f-23e0-4fb5-b50f-783c63f9eba2"
+                        "objID": "e0009e2f-23e0-4fb5-b50f-783c63f9eba2",
+                        "definition": {
+                          "KNOB": {
+                            "DISABLED": {
+                              "bg_color": "#a8a8a8"
+                            }
+                          },
+                          "INDICATOR": {
+                            "DISABLED": {
+                              "bg_color": "#a8a8a8"
+                            }
+                          }
+                        }
                       },
                       "group": "param_selector",
                       "groupIndex": 0,
@@ -1168,7 +1207,8 @@
                   "scrollSnapX": "",
                   "scrollSnapY": "",
                   "checkedStateType": "literal",
-                  "disabledStateType": "literal",
+                  "disabledState": "simple_pwm_freq_freq_edit_enable_flag_b",
+                  "disabledStateType": "expression",
                   "states": "",
                   "localStyles": {
                     "objID": "ec12e238-44fd-4af2-f1de-1316978c2b07",

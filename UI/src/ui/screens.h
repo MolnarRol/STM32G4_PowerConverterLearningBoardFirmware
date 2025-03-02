@@ -37,9 +37,8 @@ typedef struct _objects_t {
     lv_obj_t *param_slider_1;
     lv_obj_t *param_spinbox_1;
     lv_obj_t *obj5;
-    lv_obj_t *obj6;
     lv_obj_t *power_topology_control_btn;
-    lv_obj_t *obj7;
+    lv_obj_t *obj6;
     lv_obj_t *label_topology_name;
     lv_obj_t *param_cnt_freq;
     lv_obj_t *param_cnt_label;
@@ -67,6 +66,9 @@ void tick_screen_power_topology_menu();
 
 void create_screen_simple_pwm();
 void tick_screen_simple_pwm();
+
+void create_user_widget_status_bar(lv_obj_t *parent_obj, int startWidgetIndex);
+void tick_user_widget_status_bar(int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);

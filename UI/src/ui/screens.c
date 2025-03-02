@@ -104,6 +104,17 @@ static void event_handler_cb_simple_pwm_simple_pwm(lv_event_t *e) {
     }
 }
 
+static void event_handler_cb_simple_pwm_freq_editable_btn(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            set_var_simple_pwm_freq_edit_enable_b(value);
+        }
+    }
+}
+
 static void event_handler_cb_simple_pwm_param_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -148,10 +159,6 @@ static void event_handler_cb_simple_pwm_param_spinbox_1(lv_event_t *e) {
     }
 }
 
-static void event_handler_cb_simple_pwm_obj5(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-}
-
 void create_screen_main() {
     lv_obj_t *obj = lv_obj_create(0);
     objects.main = obj;
@@ -163,7 +170,7 @@ void create_screen_main() {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.obj6 = obj;
+            objects.obj5 = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, LV_PCT(100), 25);
             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
@@ -232,7 +239,7 @@ void create_screen_power_topology_menu() {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.obj7 = obj;
+            objects.obj6 = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, LV_PCT(100), 25);
             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
@@ -357,6 +364,7 @@ void create_screen_simple_pwm() {
                     lv_obj_set_pos(obj, 251, 3);
                     lv_obj_set_size(obj, 40, 20);
                     lv_obj_add_event_cb(obj, action_change_active_state_of_frequency_parameters, LV_EVENT_VALUE_CHANGED, (void *)0);
+                    lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_freq_editable_btn, LV_EVENT_ALL, 0);
                 }
                 {
                     lv_obj_t *obj = lv_obj_create(parent_obj);
@@ -378,6 +386,7 @@ void create_screen_simple_pwm() {
                             lv_obj_set_pos(obj, LV_PCT(5), 9);
                             lv_obj_set_size(obj, LV_PCT(90), 12);
                             lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_param_slider, LV_EVENT_ALL, 0);
+                            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
                             lv_obj_set_style_bg_color(obj, lv_color_hex(0xffa8a8a8), LV_PART_KNOB | LV_STATE_DISABLED);
                             lv_obj_set_style_bg_color(obj, lv_color_hex(0xffa8a8a8), LV_PART_INDICATOR | LV_STATE_DISABLED);
                         }
@@ -513,13 +522,6 @@ void create_screen_simple_pwm() {
                 }
             }
         }
-        {
-            lv_obj_t *obj = lv_bar_create(parent_obj);
-            objects.obj5 = obj;
-            lv_obj_set_pos(obj, 7, 206);
-            lv_obj_set_size(obj, 300, 10);
-            lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_obj5, LV_EVENT_ALL, 0);
-        }
     }
     
     tick_screen_simple_pwm();
@@ -527,11 +529,41 @@ void create_screen_simple_pwm() {
 
 void tick_screen_simple_pwm() {
     {
+        bool new_val = get_var_simple_pwm_freq_edit_enable_b();
+        bool cur_val = lv_obj_has_state(objects.freq_editable_btn, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.freq_editable_btn;
+            if (new_val) lv_obj_add_state(objects.freq_editable_btn, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.freq_editable_btn, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_simple_pwm_freq_freq_edit_enable_flag_b();
+        bool cur_val = lv_obj_has_state(objects.param_slider, LV_STATE_DISABLED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.param_slider;
+            if (new_val) lv_obj_add_state(objects.param_slider, LV_STATE_DISABLED);
+            else lv_obj_clear_state(objects.param_slider, LV_STATE_DISABLED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
         int32_t new_val = get_var_slider_val();
         int32_t cur_val = lv_slider_get_value(objects.param_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.param_slider;
             lv_slider_set_value(objects.param_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_simple_pwm_freq_freq_edit_enable_flag_b();
+        bool cur_val = lv_obj_has_state(objects.param_spinbox, LV_STATE_DISABLED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.param_spinbox;
+            if (new_val) lv_obj_add_state(objects.param_spinbox, LV_STATE_DISABLED);
+            else lv_obj_clear_state(objects.param_spinbox, LV_STATE_DISABLED);
             tick_value_change_obj = NULL;
         }
     }
@@ -562,12 +594,51 @@ void tick_screen_simple_pwm() {
             tick_value_change_obj = NULL;
         }
     }
+}
+
+void create_user_widget_status_bar(lv_obj_t *parent_obj, int startWidgetIndex) {
+    lv_obj_t *obj = parent_obj;
     {
-        int32_t new_val = get_var_slider_val();
-        int32_t cur_val = lv_bar_get_value(objects.obj5);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj5;
-            lv_bar_set_value(objects.obj5, new_val, LV_ANIM_OFF);
+        lv_obj_t *parent_obj = obj;
+        {
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            ((lv_obj_t **)&objects)[startWidgetIndex + 0] = obj;
+            lv_obj_set_pos(obj, 0, 224);
+            lv_obj_set_size(obj, 320, 16);
+            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xff000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
+            lv_obj_set_pos(obj, 0, 224);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_label_set_text(obj, "");
+        }
+        {
+            lv_obj_t *obj = lv_led_create(parent_obj);
+            ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
+            lv_obj_set_pos(obj, 58, 227);
+            lv_obj_set_size(obj, 10, 10);
+            lv_led_set_color(obj, lv_color_hex(0xff01791d));
+            lv_led_set_brightness(obj, 255);
+        }
+    }
+}
+
+void tick_user_widget_status_bar(int startWidgetIndex) {
+    {
+        const char *new_val = get_var_ready();
+        const char *cur_val = lv_label_get_text(((lv_obj_t **)&objects)[startWidgetIndex + 2]);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = ((lv_obj_t **)&objects)[startWidgetIndex + 2];
+            lv_label_set_text(((lv_obj_t **)&objects)[startWidgetIndex + 2], new_val);
             tick_value_change_obj = NULL;
         }
     }
