@@ -248,7 +248,6 @@ static void _s_irq_handler_v(void)
 
     if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
     {
-        PCC_CheckAndCorrectIncorrectParameters_v();
 
         /* Calculate and write new dead time. */
         MODIFY_REG(TIM1->BDTR,
