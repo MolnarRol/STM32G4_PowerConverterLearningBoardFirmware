@@ -7,21 +7,54 @@
 #include "PCC_private_interface.h"
 #include "UTIL_public_interface.h"
 
-static void PCC_FC_ThreePhaseSinePWM_Init_v(void);
-static void PCC_FC_ThreePhaseSinePWM_Start_v(void);
-static void PCC_FC_ThreePhaseSinePWM_ActiveHandling_v(void);
-static void PCC_FC_ThreePhaseSinePWM_Stop_v(void);
-static void PCC_FC_ThreePhaseSinePWM_DeInit_v(void);
-static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void);
+/**********************************************************************************************************************
+ * Defines.
+ **********************************************************************************************************************/
+#define _SET_SW_FREQ_d              _s_set_params_s.SinePWM_struct.switching_frequency__Hz__s.val_f32
+#define _SET_MOD_FREQ_d             _s_set_params_s.SinePWM_struct.modulation_frequency__Hz__s.val_f32
+#define _SET_AMPLIDTUDE_d           _s_set_params_s.SinePWM_struct.amplitude__per_cent__s.val_f32
+#define _SET_DEADTIME_d             _s_set_params_s.SinePWM_struct.dead_time__s__s.val_f32
 
+/**********************************************************************************************************************
+ * Static prototypes.
+ **********************************************************************************************************************/
+static void _s_init_v(void);
+static void _s_start_v(void);
+static void _s_stop_v(void);
+static void _s_irq_handler_v(void);
+static void _s_deinit_v(void);
+
+/**********************************************************************************************************************
+ * Topology control parameters.
+ **********************************************************************************************************************/
+static PCC_Params_struct _s_set_params_s = {
+    .type_e = PCC_ParamType_SinePWM_e,
+    .SinePWM_struct = {
+        .switching_frequency__Hz__s = {.min_f32 = 1000.0f, .max_f32 = 100e3f, .val_f32 = 10.0e3f},
+        .modulation_frequency__Hz__s = {.min_f32 = 0.0f, .max_f32 = 1000.0f, .val_f32 = 0.0f},
+        .amplitude__per_cent__s = {.min_f32 = -100.0f, .max_f32 = 100.0f, .val_f32 = 0.0f},
+        .dead_time__s__s = {.min_f32 = 0.0f, .max_f32 = 5000.0e-9f, .val_f32 = 200.0e-9f}
+    }
+};
+
+static volatile f32 _s_switching_freq__Hz__f32;
+static volatile f32 _s_modulation_freq__Hz__f32;
+static volatile f32 _s_amplitude__per_cent__f32;
+static volatile f32 _s_dead_time__s__f32;
+static volatile f32 _s_commutation_angle__rad__f32 = 0.0f;
+static volatile f32 _s_commutation_angle_step_per_period__rad__f32;
+
+/**********************************************************************************************************************
+ * Topology handler structure.
+ **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseSinePWM_s =
 {
-        .initialize_pfv     = PCC_FC_ThreePhaseSinePWM_Init_v,
-        .start_pf           = PCC_FC_ThreePhaseSinePWM_Start_v,
-        .active_handler_pfv = PCC_FC_ThreePhaseSinePWM_ActiveHandling_v,
-        .stop_pfv           = PCC_FC_ThreePhaseSinePWM_Stop_v,
-        .deinitalize_pfv    = PCC_FC_ThreePhaseSinePWM_DeInit_v,
-        .isr_handler_pfv    = PCC_FC_ThreePhaseSinePWM_InterruptHandler_v,
+        .ctrl_params_pv     = &_s_set_params_s,
+        .initialize_pfv     = _s_init_v,
+        .start_pf           = _s_start_v,
+        .stop_pfv           = _s_stop_v,
+        .deinitalize_pfv    = _s_deinit_v,
+        .isr_handler_pfv    = _s_irq_handler_v,
         .driver_enable_u    =
                             {
                                 .drivers_s =
@@ -36,158 +69,230 @@ const PCC_TopologyHandle_struct PCC_Topology_ThreePhaseSinePWM_s =
                             }
 };
 
-PCC_SinePWM_Parameters_s PCC_FC_ThreePhaseSinePWM_ActualParameters_s =
+/**********************************************************************************************************************
+ * Topology control routines.
+ **********************************************************************************************************************/
+static void _s_init_v(void)
 {
-        .amplitude_f32                  = 0.0f,
-        .modulation_freq__Hz__f32       = 50.0f,
-        .switching_freq__Hz__f32        = 10000.0f,
-};
-f32 PCC_FC_ThreePhaseSinePWM_DeadTime__s__f32 = 75.0e-9f;
+    /***********************************************************************************
+     * GPIO pin configuration:
+     *  - CH1:  PA8     [AF6]
+     *  - CH1N: PA7     [AF6]
+     *  - CH3:  PA10    [AF6]
+     *  - CH3N: PB1     [AF6]
+     *  - CH2:  PA9     [AF6]
+     *  - CH2N: PB0     [AF6]
+     ***********************************************************************************/
+    MODIFY_REG(GPIOA->MODER,
+               GPIO_MODER_MODE7_Msk |
+               GPIO_MODER_MODE8_Msk |
+               GPIO_MODER_MODE9_Msk |
+               GPIO_MODER_MODE10_Msk,
+               (2UL << GPIO_MODER_MODE7_Pos) |
+               (2UL << GPIO_MODER_MODE8_Pos) |
+               (2UL << GPIO_MODER_MODE9_Pos) |
+               (2UL << GPIO_MODER_MODE10_Pos));                                                 /* Set mode to alternate function. */
 
-f32 PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 = 0.0f;
-f32 PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 = 0.0f;
+    MODIFY_REG(GPIOB->MODER,
+               GPIO_MODER_MODE0_Msk |
+               GPIO_MODER_MODE1_Msk,
+               (2UL << GPIO_MODER_MODE0_Pos) |
+               (2UL << GPIO_MODER_MODE1_Pos));                                                  /* Set mode to alternate function. */
 
-static void PCC_FC_ThreePhaseSinePWM_Init_v(void)
-{
-    /* TIM1 CH1 */
-    RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;                                         /* Enable clocks for TIM1 module. */
+    MODIFY_REG(GPIOA->PUPDR,
+               GPIO_PUPDR_PUPD7_Msk |
+               GPIO_PUPDR_PUPD8_Msk |
+               GPIO_PUPDR_PUPD9_Msk |
+               GPIO_PUPDR_PUPD10_Msk,
+               GPIO_PUPDR_PUPD7_1 |
+               GPIO_PUPDR_PUPD8_1 |
+               GPIO_PUPDR_PUPD9_1 |
+               GPIO_PUPDR_PUPD10_1);                                                            /* Enable pull down. */
 
-    /* GPIO pin configuration: PA8, PA10 - AF6 */
-    GPIOA->MODER                &= (~GPIO_MODER_MODE7_Msk)  &
-                                   (~GPIO_MODER_MODE8_Msk)  &
-                                   (~GPIO_MODER_MODE9_Msk)  &
-                                   (~GPIO_MODER_MODE10_Msk);                    /* Reset pin mode. */
+    MODIFY_REG(GPIOB->PUPDR,
+               GPIO_PUPDR_PUPD0_Msk |
+               GPIO_PUPDR_PUPD1_Msk,
+               GPIO_PUPDR_PUPD2_1 |
+               GPIO_PUPDR_PUPD1_1);                                                             /* Enable pull down. */
 
-    GPIOA->MODER                |= (2UL << GPIO_MODER_MODE7_Pos) |
-                                   (2UL << GPIO_MODER_MODE8_Pos) |
-                                   (2UL << GPIO_MODER_MODE9_Pos) |
-                                   (2UL << GPIO_MODER_MODE10_Pos);              /* Set mode to alternate function. */
+    CLEAR_BIT(GPIOA->OTYPER,
+              GPIO_OTYPER_OT7_Msk |
+              GPIO_OTYPER_OT8_Msk |
+              GPIO_OTYPER_OT9_Msk |
+              GPIO_OTYPER_OT10_Msk);                                                            /* Set output type to push-pull. */
 
-    GPIOA->PUPDR                |= GPIO_PUPDR_PUPD7_1 |
-                                   GPIO_PUPDR_PUPD8_1 |
-                                   GPIO_PUPDR_PUPD9_1 |
-                                   GPIO_PUPDR_PUPD10_1;                         /* Enable pull down. */
+    CLEAR_BIT(GPIOB->OTYPER,
+              GPIO_OTYPER_OT0_Msk |
+              GPIO_OTYPER_OT1_Msk);                                                             /* Set output type to push-pull. */
 
-    GPIOA->OTYPER               &= (~GPIO_OTYPER_OT7_Msk) |
-                                   (~GPIO_OTYPER_OT8_Msk) |
-                                   (~GPIO_OTYPER_OT9_Msk) |
-                                   (~GPIO_OTYPER_OT10_Msk);                     /* Set output type to push-pull. */
+    MODIFY_REG(GPIOA->OSPEEDR,
+               GPIO_OSPEEDR_OSPEED7_Msk |
+               GPIO_OSPEEDR_OSPEED8_Msk |
+               GPIO_OSPEEDR_OSPEED9_Msk |
+               GPIO_OSPEEDR_OSPEED10_Msk,
+               (2UL << GPIO_OSPEEDR_OSPEED7_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED8_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED9_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED10_Pos));                                             /* Set pin speed to high. */
 
-    GPIOA->OSPEEDR              &= (~GPIO_OSPEEDR_OSPEED7_Msk) &
-                                   (~GPIO_OSPEEDR_OSPEED8_Msk) &
-                                   (~GPIO_OSPEEDR_OSPEED9_Msk) &
-                                   (~GPIO_OSPEEDR_OSPEED10_Msk);                /* Reset pin speed. */
+    MODIFY_REG(GPIOB->OSPEEDR,
+               GPIO_OSPEEDR_OSPEED0_Msk |
+               GPIO_OSPEEDR_OSPEED1_Msk,
+               (2UL << GPIO_OSPEEDR_OSPEED0_Pos) |
+               (2UL << GPIO_OSPEEDR_OSPEED1_Pos));                                              /* Set pin speed to high. */
 
-    GPIOA->OSPEEDR              |= (2UL << GPIO_OSPEEDR_OSPEED7_Pos) |
-                                   (2UL << GPIO_OSPEEDR_OSPEED8_Pos) |
-                                   (2UL << GPIO_OSPEEDR_OSPEED9_Pos) |
-                                   (2UL << GPIO_OSPEEDR_OSPEED10_Pos);          /* Set pin speed to high. */
+    MODIFY_REG(GPIOA->AFR[0],
+               GPIO_AFRL_AFSEL7_Msk,
+               (6UL << GPIO_AFRL_AFSEL7_Pos));
 
-    GPIOA->AFR[0]               &= (~GPIO_AFRL_AFSEL7_Msk);
-    GPIOA->AFR[1]               &= (~GPIO_AFRH_AFSEL8_Msk) &
-                                   (~GPIO_AFRH_AFSEL9_Msk) &
-                                   (~GPIO_AFRH_AFSEL10_Msk);                    /* Reset alternate function. */
+    MODIFY_REG(GPIOA->AFR[1],
+            GPIO_AFRH_AFSEL8_Msk |
+            GPIO_AFRH_AFSEL9_Msk |
+            GPIO_AFRH_AFSEL10_Msk,
+            (6UL << GPIO_AFRH_AFSEL8_Pos) |
+            (6UL << GPIO_AFRH_AFSEL9_Pos) |
+            (6UL << GPIO_AFRH_AFSEL10_Pos));                                                    /* Set alternate function to AF6. */
 
-    GPIOA->AFR[0]               |= (6UL << GPIO_AFRL_AFSEL7_Pos);
-    GPIOA->AFR[1]               |= (6UL << GPIO_AFRH_AFSEL8_Pos) |
-                                   (6UL << GPIO_AFRH_AFSEL9_Pos) |
-                                   (6UL << GPIO_AFRH_AFSEL10_Pos);              /* Set alternate function to AF6. */
+    MODIFY_REG(GPIOB->AFR[0],
+               GPIO_AFRL_AFSEL0_Msk |
+               GPIO_AFRL_AFSEL1_Msk,
+               (6UL << GPIO_AFRL_AFSEL0_Pos) |
+               (6UL << GPIO_AFRL_AFSEL1_Pos));                                                  /* Set alternate function to AF6. */
 
-    /* PB01 - AF6 */
-    GPIOB->MODER                &= (~GPIO_MODER_MODE0_Msk) &
-                                   (~GPIO_MODER_MODE1_Msk);
-
-    GPIOB->MODER                |= (2UL << GPIO_MODER_MODE0_Pos) |
-                                   (2UL << GPIO_MODER_MODE1_Pos);               /* Set mode to alternate function. */
-
-    GPIOB->PUPDR                |= GPIO_PUPDR_PUPD0_1 |
-                                   GPIO_PUPDR_PUPD1_1;                          /* Enable pull down. */
-
-    GPIOB->OTYPER               &= (~GPIO_OTYPER_OT0_Msk) &
-                                   (~GPIO_OTYPER_OT1_Msk);                      /* Set output type to push-pull. */
-
-    GPIOB->OSPEEDR              &= (~GPIO_OSPEEDR_OSPEED1_Msk) &
-                                   (~GPIO_OSPEEDR_OSPEED1_Msk);                 /* Reset pin speed. */
-
-    GPIOB->OSPEEDR              |= (2UL << GPIO_OSPEEDR_OSPEED0_Pos) |
-                                   (2UL << GPIO_OSPEEDR_OSPEED1_Pos);           /* Set pin speed to high. */
-
-    GPIOB->AFR[0]               &= (~GPIO_AFRL_AFSEL0_Msk) &
-                                   (~GPIO_AFRL_AFSEL1_Msk);
-
-    GPIOB->AFR[0]               |= (6UL << GPIO_AFRL_AFSEL0_Pos) |
-                                   (6UL << GPIO_AFRL_AFSEL1_Pos);
+    /***********************************************************************************
+     * Timer TIM1 configuration:
+     *  - CH1/CH1N: PWM mode 1.
+     *  - CH3/CH3N: PWM mode 1.
+     *  - CH2/CH2N: PWM mode 1.
+     ***********************************************************************************/
 
     /* Reset timer 1 periphery. */
-    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                    /* Force TIM1 peripheral reset. */
-    RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);                 /* Release TIM1 peripheral reset. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                      /* Enable clocks for TIM1. */
+    SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                              /* Enable clocks for TIM1. */
 
-    TIM1->ARR                   = 1;
-
-    TIM1->CR1                   |= TIM_CR1_CMS_1;                               /* Center aligned mode 2. */
-
-    /* Timer configuration. */
-    TIM1->CCMR1                 |= TIM_CCMR1_OC1M_2 |
-                                   TIM_CCMR1_OC1M_1 |
-                                   TIM_CCMR1_OC2M_2 |
-                                   TIM_CCMR1_OC2M_1;
-
-    TIM1->CCMR2                 |= TIM_CCMR2_OC3M_2 |
-                                   TIM_CCMR2_OC3M_1;
-
-    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);
-    NVIC_SetPriority(TIM1_UP_TIM16_IRQn, 1);
-    TIM1->DIER                  |=  TIM_DIER_UIE;                               /* Enable update interrupt. */
-    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);
+    SET_BIT(TIM1->CR1, TIM_CR1_CMS_1);                                                          /* Center aligned mode 2. */
+    SET_BIT(TIM1->CCMR1,
+            TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 |                                               /* PWM mode 1. */
+            TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1);                                               /* PWM mode 1. */
+    SET_BIT(TIM1->CCMR2, TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_1);                                  /* PWM mode 1. */
+    SET_BIT(TIM1->DIER, TIM_DIER_UIE);                                                          /* Enable update interrupt flag generation. */
+    NVIC_SetPriority(TIM1_UP_TIM16_IRQn, CONFIG_PCC_IRQ_PRIORITY_d);                            /* Set correct NVIC interrupt priority. */
 }
 
-static void PCC_FC_ThreePhaseSinePWM_Start_v(void)
+static void _s_start_v(void)
 {
-    /* Dead time configuration. */
-    TIM1->BDTR                  &= ~TIM_BDTR_DTG_Msk;
-    TIM1->BDTR                  |= (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8(170.0e6f, PCC_FC_ThreePhaseSinePWM_DeadTime__s__f32);
+    PCC_CheckAndCorrectIncorrectParameters_v();
 
-    UTIL_TIM_SetTimerOverflowFrequency_v(   170.0e6f,
-                                            2.0f * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.switching_freq__Hz__f32,
-                                            &TIM1->ARR,
-                                            &TIM1->PSC);
-    TIM1->CCR1                  = 0;
-    TIM1->CCR2                  = 0;
-    TIM1->CCR3                  = 0;
+    /* Copy set parameters to actual parameters. */
+    _s_switching_freq__Hz__f32      = _SET_SW_FREQ_d;
+    _s_modulation_freq__Hz__f32     = _SET_MOD_FREQ_d;
+    _s_amplitude__per_cent__f32     = _SET_AMPLIDTUDE_d;
+    _s_dead_time__s__f32            = _SET_DEADTIME_d;
 
-    TIM1->CCMR1                 |= TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE;
-    TIM1->CCMR2                 |= TIM_CCMR2_OC3PE;
-    TIM1->CR1                   |= TIM_CR1_ARPE;
+    /* Dead time calculation and write to dead time register. */
+    MODIFY_REG(TIM1->BDTR,
+               TIM_BDTR_DTG_Msk,
+               (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d, _s_dead_time__s__f32));
 
-    TIM1->CCER                  |= TIM_CCER_CC1E    |                       /* Enable PWM channel: CH1. */
-                                   TIM_CCER_CC1NE   |                       /* Enable PWM channel: CH1N. */
-                                   TIM_CCER_CC2E    |                       /* Enable PWM channel: CH2. */
-                                   TIM_CCER_CC2NE   |                       /* Enable PWM channel: CH2N. */
-                                   TIM_CCER_CC3E    |                       /* Enable PWM channel: CH3. */
-                                   TIM_CCER_CC3NE;                          /* Enable PWM channel: CH3N. */
-    TIM1->BDTR                  |= TIM_BDTR_MOE;
-    TIM1->CR1                   |= TIM_CR1_CEN;
-}
+    /* Calculate and set timer register values for set switching frequency. */
+    UTIL_TIM_SetTimerOverflowFrequency_v(
+        (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+        UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * _SET_SW_FREQ_d,
+        &TIM1->ARR,
+        &TIM1->PSC
+        );
 
-static void PCC_FC_ThreePhaseSinePWM_ActiveHandling_v(void)
-{
-}
-
-f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
-static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
-{
-    UTIL_TIM_SetTimerOverflowFrequency_v(   170.0e6f,
-                                            2.0f * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.switching_freq__Hz__f32,
-                                            &TIM1->ARR,
-                                            &TIM1->PSC);
-
-    arm_sin_cos_f32(    PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32,
+    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
+    arm_sin_cos_f32(    _s_commutation_angle__rad__f32,
                         &sin_val_f32,
                         &cos_val_f32);
 
     arm_inv_park_f32(   0.0f,
-                        PCC_FC_ThreePhaseSinePWM_ActualParameters_s.amplitude_f32,
+                        _SET_AMPLIDTUDE_d,
+                        &alpha_val_f32,
+                        &beta_val_f32,
+                        sin_val_f32,
+                        cos_val_f32);
+
+    arm_inv_clarke_f32( alpha_val_f32,
+                        beta_val_f32,
+                        &u_val_f32,
+                        &v_val_f32);
+
+    w_val_f32 = - u_val_f32 - v_val_f32;
+    TIM1->CCR1 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, u_val_f32);
+    TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, v_val_f32);
+    TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, w_val_f32);
+
+    _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+
+    _s_commutation_angle__rad__f32 += _s_commutation_angle_step_per_period__rad__f32;
+    if(_s_commutation_angle__rad__f32 >= TWO_PI_d) _s_commutation_angle__rad__f32 -= TWO_PI_d;
+    else if(_s_commutation_angle__rad__f32 < 0.0f) _s_commutation_angle__rad__f32 += TWO_PI_d;
+
+    SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE);                                    /* Enable pre-load for capture compare 1 and 2. */
+    SET_BIT(TIM1->CCMR2, TIM_CCMR2_OC3PE);                                                      /* Enable pre-load for capture compare 3. */
+
+    SET_BIT(TIM1->CCER,
+            TIM_CCER_CC1E    |                                                                  /* Enable PWM channel: CH1. */
+            TIM_CCER_CC1NE   |                                                                  /* Enable PWM channel: CH1N. */
+            TIM_CCER_CC2E    |                                                                  /* Enable PWM channel: CH1. */
+            TIM_CCER_CC2NE   |                                                                  /* Enable PWM channel: CH1N. */
+            TIM_CCER_CC3E    |                                                                  /* Enable PWM channel: CH3. */
+            TIM_CCER_CC3NE);                                                                    /* Enable PWM channel: CH3N. */
+
+    SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                          /* Enable master output. */
+    CLEAR_REG(TIM1->CNT);                                                                       /* Reset timer count. */
+
+    NVIC_ClearPendingIRQ(TIM1_UP_TIM16_IRQn);                                                   /* Clear pending interrupt in NVIC. */
+    NVIC_EnableIRQ(TIM1_UP_TIM16_IRQn);                                                         /* Enable interrupt in NVIC. */
+
+    SET_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Enable pre-load for ARR. */
+            TIM_CR1_CEN);                                                                       /* Enable counter. */
+}
+
+static void _s_irq_handler_v(void)
+{
+    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
+    PCC_CheckAndCorrectIncorrectParameters_v();
+
+    /* Switching frequency was changed. */
+    if(_s_switching_freq__Hz__f32 != _SET_SW_FREQ_d)
+    {
+        /* Calculate and set timer register values for set switching frequency. */
+        UTIL_TIM_SetTimerOverflowFrequency_v(
+            (f32)SYS_APB1_CLOCK_FREQ__Hz__d,
+            UTIL_TIM_UP_DOWN_COUNTER_MODE_FREQ_MULTIPLIER_df32 * _SET_SW_FREQ_d,
+            &TIM1->ARR,
+            &TIM1->PSC
+            );
+
+        _s_switching_freq__Hz__f32 = _SET_SW_FREQ_d;
+
+        /* Update commutation angle step. */
+        _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+    }
+
+    /* Modulation frequency was changed. */
+    if(_s_modulation_freq__Hz__f32 != _SET_MOD_FREQ_d)
+    {
+        _s_modulation_freq__Hz__f32 = _SET_MOD_FREQ_d;
+
+        /* Update commutation angle step. */
+        _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+    }
+
+    _s_amplitude__per_cent__f32 = _SET_AMPLIDTUDE_d;
+
+
+    arm_sin_cos_f32(    _s_commutation_angle__rad__f32,
+                        &sin_val_f32,
+                        &cos_val_f32);
+
+    arm_inv_park_f32(   0.0f,
+                        _s_amplitude__per_cent__f32,
                         &alpha_val_f32,
                         &beta_val_f32,
                         sin_val_f32,
@@ -201,35 +306,65 @@ static void PCC_FC_ThreePhaseSinePWM_InterruptHandler_v(void)
     w_val_f32 = - u_val_f32 - v_val_f32;
 
 
-    TIM1->CCR1 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, u_val_f32);
-    TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, v_val_f32);
-    TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -1.0f, 1.0f, w_val_f32);
+    TIM1->CCR1 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, u_val_f32);
+    TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, v_val_f32);
+    TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, w_val_f32);
 
-    PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32 =    (360.0f * PCC_FC_ThreePhaseSinePWM_ActualParameters_s.modulation_freq__Hz__f32) /
-                                                                                        PCC_FC_ThreePhaseSinePWM_ActualParameters_s.switching_freq__Hz__f32;
-    PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 += PCC_FC_ThreePhaseSinePWM_CommutationAngleStepPerTimerPeriod__rad__f32;
-    if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 >= 360.0f) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 -= 360.0f;
-    else if(PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 < 0.0f) PCC_FC_ThreePhaseSinePWM_CommutationAngle__rad__f32 += 360.0f;
+    /* Deadtime has changed. */
+    if(_s_dead_time__s__f32 != _SET_DEADTIME_d)
+    {
 
-    TIM1->SR &= ~TIM_SR_UIF;
+        /* Calculate and write new dead time. */
+        MODIFY_REG(TIM1->BDTR,
+                   TIM_BDTR_DTG_Msk,
+                   (u32)UTIL_TIM_SetMinumumDeadTimeValue_u8((f32)SYS_APB1_CLOCK_FREQ__Hz__d, _SET_DEADTIME_d));
+
+        /* Copy set parameters to actual parameters. */
+        _s_dead_time__s__f32 = _SET_DEADTIME_d;
+    }
+
+    _s_commutation_angle__rad__f32 += _s_commutation_angle_step_per_period__rad__f32;
+    if(_s_commutation_angle__rad__f32 >= TWO_PI_d) _s_commutation_angle__rad__f32 -= TWO_PI_d;
+    else if(_s_commutation_angle__rad__f32 < 0.0f) _s_commutation_angle__rad__f32 += TWO_PI_d;
+
+    /* Clear interrupt flag. */
+    CLEAR_BIT(TIM1->SR, TIM_SR_UIF);
 }
 
-static void PCC_FC_ThreePhaseSinePWM_Stop_v(void)
+static void _s_stop_v(void)
 {
-    TIM1->BDTR                  &= ~TIM_BDTR_MOE;
-    TIM1->CR1                   &= ~TIM_CR1_CEN;
-    TIM1->CCMR1                 &= (~TIM_CCMR1_OC1PE) & (~TIM_CCMR1_OC2PE);
-    TIM1->CCMR2                 &= ~TIM_CCMR2_OC3PE;
-    TIM1->CR1                   &= ~TIM_CR1_ARPE;
+    NVIC_DisableIRQ(TIM1_UP_TIM16_IRQn);                                                        /* Disable interrupt in NVIC. */
+
+    CLEAR_BIT(TIM1->CCER,
+              TIM_CCER_CC1E |                                                                   /* Disable PWM channel: CH1. */
+              TIM_CCER_CC1NE |                                                                  /* Disable PWM channel: CH1N. */
+              TIM_CCER_CC2E |                                                                   /* Disable PWM channel: CH1. */
+              TIM_CCER_CC2NE |                                                                  /* Disable PWM channel: CH1N. */
+              TIM_CCER_CC3E |                                                                   /* Disable PWM channel: CH3. */
+              TIM_CCER_CC3NE);                                                                  /* Disable PWM channel: CH3N. */
+    CLEAR_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE | TIM_CCMR1_OC1PE);                                  /* Disable pre-load for capture compare 1. */
+    CLEAR_BIT(TIM1->CCMR2, TIM_CCMR2_OC3PE);                                                    /* Disable pre-load for capture compare 3. */
+
+    CLEAR_BIT(TIM1->BDTR, TIM_BDTR_MOE);                                                        /* Disable master output. */
+    CLEAR_REG(TIM1->CNT);                                                                       /* Reset timer count. */
+    CLEAR_BIT(TIM1->CR1,
+            TIM_CR1_ARPE |                                                                      /* Disable pre-load for ARR. */
+            TIM_CR1_CEN);
 }
 
-static void PCC_FC_ThreePhaseSinePWM_DeInit_v(void)
+static void _s_deinit_v(void)
 {
-    GPIOA->MODER                |= GPIO_MODER_MODE8_Msk;                    /* Set pin mode to analog. */
+    /* Set pin modes to analog. */
+    SET_BIT(GPIOA->MODER,
+            GPIO_MODER_MODE7_Msk |
+            GPIO_MODER_MODE8_Msk |
+            GPIO_MODER_MODE9_Msk |
+            GPIO_MODER_MODE10_Msk);
+
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE0_Msk | GPIO_MODER_MODE1_Msk);
 
     /* Reset timer 1 periphery. */
-    RCC->APB2RSTR               |= RCC_APB2RSTR_TIM1RST_Msk;                /* Force TIM1 peripheral reset. */
-    RCC->APB2RSTR               &= ~(RCC_APB2RSTR_TIM1RST_Msk);             /* Release TIM1 peripheral reset. */
-    RCC->APB2ENR                |= RCC_APB2ENR_TIM1EN_Msk;                  /* Enable clocks for TIM1. */
-    NVIC_DisableIRQ(TIM1_UP_TIM16_IRQn);
+    SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                           /* Force TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                         /* Release TIM1 peripheral reset. */
+    CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                            /* Stop clocks for TIM1. */
 }
