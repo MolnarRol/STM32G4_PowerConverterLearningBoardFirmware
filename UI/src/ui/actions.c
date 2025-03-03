@@ -48,7 +48,7 @@ void action_go_to_power_topology_menu(lv_event_t * e)
 
     lv_indev_set_group(input_encoder_ps, groups.param_selector);
 
-    PCC_SetTopology_b(PCC_TOPO_SinglePWM_e);
+    PCC_SetTopology_b(PCC_TOPO_FullBridgeUnipolarPWM_e);
     PCC_InitializeActiveTopology_b();
 
 
