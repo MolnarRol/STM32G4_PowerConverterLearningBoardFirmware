@@ -59,6 +59,7 @@ DMA_HandleTypeDef hdma_spi3_tx;
 u32 blink_tick_u32                  = 0;
 u32 pcc_handler_task__ticks__u32    = (u32)0;
 u32 lvgl_task_tick_u32              = (u32)0;
+PCC_Params_struct* active_params_ps;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -125,6 +126,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  PCC_SetTopology_b(PCC_TOPO_SinglePhaseUnipolarSinePWM_e);
+  PCC_InitializeActiveTopology_b();
+  PCC_StartActiveTopology_v();
+  active_params_ps = PCC_GetActiveTopologyParameters_ps();
   while (1)
   {
 #if 1
@@ -138,7 +143,6 @@ int main(void)
 	  if(ATB_CheckIfPeriodHasElapsed_b(&lvgl_task_tick_u32, ATB__ms__TO__ticks__du32(5)))
 	  {
 	      lv_timer_handler();
-//	      lv_task_handler();
 	      ui_tick();
 	  }
 

@@ -114,7 +114,7 @@ void PCC_CheckAndCorrectIncorrectParameters_v(void)
 {
     register u32            iteration_iu32;
     PCC_Param_struct*       data_ps;
-    for(iteration_iu32 = (u32)0; iteration_iu32 < 3U; iteration_iu32 += (u32)1) {
+    for(iteration_iu32 = (u32)0; iteration_iu32 < 4U; iteration_iu32 += (u32)1) {
         data_ps = &_PARAMS_dps->data_as[iteration_iu32];
 
         if(data_ps->val_f32 > data_ps->max_f32)

@@ -71,7 +71,8 @@ typedef struct {
         struct {
             PCC_Param_struct    switching_frequency__Hz__s;
             PCC_Param_struct    modulation_frequency__Hz__s;
-            PCC_Param_struct    amplitude_s;
+            PCC_Param_struct    amplitude__per_cent__s;
+            PCC_Param_struct    dead_time__s__s;
         } SinePWM_struct;
 
         struct {
@@ -79,7 +80,7 @@ typedef struct {
             PCC_Param_struct    pulse_len__deg__s;
         } LineCommutation_struct;
 
-        PCC_Param_struct        data_as[3U];
+        PCC_Param_struct        data_as[4U];
     };
 } PCC_Params_struct;
 
