@@ -32,14 +32,16 @@ static volatile f32 _s_duty__per_cent__f32;
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SinglePWM_s =
 {
-        .ctrl_params_pv     = &_s_set_params_s,
-        .initialize_pfv     = PCC_FC_SinglePWM_Init_v,
-        .start_pf           = PCC_FC_SinglePWM_Start_v,
-        .active_handler_pfv = PCC_FC_SinglePWM_ActiveHandling_v,
-        .stop_pfv           = PCC_FC_SinglePWM_Stop_v,
-        .deinitalize_pfv    = PCC_FC_SinglePWM_DeInit_v,
-        .isr_handler_pfv    = PCC_FC_SinglePWM_IrqHandler_v,
-        .driver_enable_u    = {.byte_val_u8 = (u8)0x1}
+    .ctrl_params_pv         = &_s_set_params_s,
+    .initialize_pfv         = PCC_FC_SinglePWM_Init_v,
+    .start_pf               = PCC_FC_SinglePWM_Start_v,
+    .active_handler_pfv     = PCC_FC_SinglePWM_ActiveHandling_v,
+    .stop_pfv               = PCC_FC_SinglePWM_Stop_v,
+    .deinitalize_pfv        = PCC_FC_SinglePWM_DeInit_v,
+    .isr_handler_pfv        = PCC_FC_SinglePWM_IrqHandler_v,
+    .driver_enable_u        = {.byte_val_u8 = (u8)0x1},
+    .ctrl_name_str          = "Single PWM\0",
+    .ctrl_descriptor_str    = "PWM output1 - GD1\0"
 };
 
 /**********************************************************************************************************************

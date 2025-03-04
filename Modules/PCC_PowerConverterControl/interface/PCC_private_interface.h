@@ -64,6 +64,8 @@ typedef struct
     void (*const deinitalize_pfv)		    (void);
     void (*const isr_handler_pfv)           (void);
     const PCC_driver_enable_union 		    driver_enable_u;
+    const char                              ctrl_name_str[50];
+    const char                              ctrl_descriptor_str[150];
 } PCC_TopologyHandle_struct;
 
 typedef struct

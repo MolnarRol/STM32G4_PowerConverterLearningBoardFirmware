@@ -16,7 +16,7 @@
 
 static PCC_TopologyHandleState_enum     s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
 static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
-static const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
+const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
 {
     &PCC_Topology_SinglePWM_s,
     &PCC_Topology_SingleComplementaryPWM_s,

@@ -25,7 +25,7 @@ static void PCC_FC_SingleComplementaryPWM_ActiveHandling_v(void) {};
  * Topology control parameters.
  **********************************************************************************************************************/
 static PCC_Params_struct _s_set_params_s = {
-        .type_e = PCC_ParamType_PWM_e,
+        .type_e = PCC_ParamType_ComplementaryPWM_e,
         .ComplementaryPWM_struct = {
                 .frequency__Hz__s               = {.min_f32 = 10.0f, .max_f32 = 250.0e6f, .val_f32 = 1000.0f},
                 .duty_cycle__per_cent__s        = {.min_f32 = 0.0f, .max_f32 = 100.0f, .val_f32 = 0.0f},
@@ -42,25 +42,27 @@ static volatile f32 _s_dead_time__s__f32;
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s =
 {
-        .ctrl_params_pv     = &_s_set_params_s,
-        .initialize_pfv     = PCC_FC_SingleComplementaryPWM_Init_v,
-        .start_pf           = PCC_FC_SingleComplementaryPWM_Start_v,
-        .active_handler_pfv = PCC_FC_SingleComplementaryPWM_ActiveHandling_v,
-        .stop_pfv           = PCC_FC_SingleComplementaryPWM_Stop_v,
-        .deinitalize_pfv    = PCC_FC_SingleComplementaryPWM_DeInit_v,
-        .isr_handler_pfv    = PCC_FC_SingleComplementaryPWM_IrqHandler_v,
-        .driver_enable_u    =
+    .ctrl_params_pv     = &_s_set_params_s,
+    .initialize_pfv     = PCC_FC_SingleComplementaryPWM_Init_v,
+    .start_pf           = PCC_FC_SingleComplementaryPWM_Start_v,
+    .active_handler_pfv = PCC_FC_SingleComplementaryPWM_ActiveHandling_v,
+    .stop_pfv           = PCC_FC_SingleComplementaryPWM_Stop_v,
+    .deinitalize_pfv    = PCC_FC_SingleComplementaryPWM_DeInit_v,
+    .isr_handler_pfv    = PCC_FC_SingleComplementaryPWM_IrqHandler_v,
+    .driver_enable_u    =
+                        {
+                          .drivers_s =
                             {
-                              .drivers_s =
-                                {
-                                        .gd1_f1 = 1,
-                                        .gd2_f1 = 0,
-                                        .gd3_f1 = 0,
-                                        .gd4_f1 = 1,
-                                        .gd5_f1 = 0,
-                                        .gd6_f1 = 0
-                                }
+                                    .gd1_f1 = 1,
+                                    .gd2_f1 = 0,
+                                    .gd3_f1 = 0,
+                                    .gd4_f1 = 1,
+                                    .gd5_f1 = 0,
+                                    .gd6_f1 = 0
                             }
+                        },
+    .ctrl_name_str          = "Single complementary PWM\0",
+    .ctrl_descriptor_str    = "PWM output 1 - GD1\n PWM output 1N -GD4\0"
 };
 
 /**********************************************************************************************************************

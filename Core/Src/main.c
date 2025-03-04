@@ -126,10 +126,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  PCC_SetTopology_b(PCC_TOPO_SinglePhaseBipolarSinePWM_e);
-  PCC_InitializeActiveTopology_b();
-  PCC_StartActiveTopology_v();
-  active_params_ps = PCC_GetActiveTopologyParameters_ps();
+//  PCC_SetTopology_b(PCC_TOPO_SinglePhaseBipolarSinePWM_e);
+//  PCC_InitializeActiveTopology_b();
+//  PCC_StartActiveTopology_v();
+//  active_params_ps = PCC_GetActiveTopologyParameters_ps();
   while (1)
   {
 #if 1

@@ -14,6 +14,7 @@ typedef struct _groups_t {
     lv_group_t *param_selector;
     lv_group_t *param_selector_sw_freq;
     lv_group_t *param_selector_duty;
+    lv_group_t *pcc_topology_select_grp;
 } groups_t;
 
 extern groups_t groups;
@@ -26,19 +27,14 @@ typedef struct _objects_t {
     lv_obj_t *simple_pwm;
     lv_obj_t *obj0;
     lv_obj_t *settings_btn;
-    lv_obj_t *obj1;
-    lv_obj_t *obj2;
-    lv_obj_t *obj3;
-    lv_obj_t *obj4;
     lv_obj_t *freq_editable_btn;
     lv_obj_t *param_slider;
     lv_obj_t *param_spinbox;
     lv_obj_t *freq_editable_btn_1;
     lv_obj_t *param_slider_1;
     lv_obj_t *param_spinbox_1;
-    lv_obj_t *obj5;
+    lv_obj_t *obj1;
     lv_obj_t *power_topology_control_btn;
-    lv_obj_t *obj6;
     lv_obj_t *label_topology_name;
     lv_obj_t *param_cnt_freq;
     lv_obj_t *param_cnt_label;

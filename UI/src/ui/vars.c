@@ -77,3 +77,11 @@ float get_var_pcc_param_freq_val_f32() {
 void set_var_pcc_param_freq_val_f32(float value) {
     pcc_param_freq_val_f32 = value;
 }
+
+int32_t get_var_pcc_param_freq_val_i32() {
+    return (int32_t)(pcc_param_freq_val_f32 * 100.0f);
+}
+
+void set_var_pcc_param_freq_val_i32(int32_t value) {
+    pcc_param_freq_val_f32 = (f32)value / 100.0f;
+}

@@ -59,7 +59,9 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgeUnipolarPWM_s =
                                 .gd5_f1 = 1,
                                 .gd6_f1 = 0
                             }
-                        }
+                        },
+    .ctrl_name_str          = "Full bridge unipolar PWM\0",
+    .ctrl_descriptor_str    = "PWM output 1 - GD1\n PWM output 1N -GD4\0"
 };
 
 /**********************************************************************************************************************
