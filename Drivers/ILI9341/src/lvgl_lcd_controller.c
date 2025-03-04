@@ -17,6 +17,7 @@
 #include "ui.h"
 #include "screens.h"
 #include "actions.h"
+#include "backlight_ctrl.h"
 /*********************
  *      DEFINES
  *********************/
@@ -69,6 +70,7 @@ void lv_port_disp_init(void)
      * Initialize your display
      * -----------------------*/
     disp_init();
+    LCD_BacklightInit_v();
 
     /*------------------------------------
      * Create a display and set a flush_cb
@@ -113,6 +115,8 @@ void lv_port_disp_init(void)
     start_stop_btn_s.pressed_callback_pfv = pui_lvgl_btn_short_press_cb_v;
     start_stop_btn_s.long_pressed_callback_pfv = pui_lvgl_btn_long_press_cb_v;
 
+    LCD_BacklightSetBrightness_v(50.0f);
+    LCD_BacklightEnable_v();
 }
 
 /**********************

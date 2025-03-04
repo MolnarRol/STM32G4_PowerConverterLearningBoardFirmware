@@ -32,9 +32,23 @@ static void load_pwm_param_screen(void)
 
 
 void action_back_to_main_menu(lv_event_t *e) {
-    remove_all_indev_events(input_push_btn_ps);
-    lv_indev_set_group(input_encoder_ps, groups.MainGroup);
+
     loadScreen(SCREEN_ID_MAIN);
+}
+
+void action_main_screen_loaded(lv_event_t *e) {
+    remove_all_indev_events(input_push_btn_ps);
+    lv_indev_wait_release(input_encoder_ps);
+    lv_indev_wait_release(input_push_btn_ps);
+    lv_indev_set_group(input_encoder_ps, groups.MainGroup);
+}
+
+void action_settings_screen_loaded(lv_event_t *e) {
+    remove_all_indev_events(input_push_btn_ps);
+    lv_indev_wait_release(input_encoder_ps);
+    lv_indev_wait_release(input_push_btn_ps);
+    lv_indev_set_group(input_encoder_ps, groups.settings_group);
+    lv_indev_add_event_cb(input_push_btn_ps, action_back_to_main_menu, LV_EVENT_PRESSED, NULL);
 }
 
 void action_stop_topology(lv_event_t *e)
@@ -90,3 +104,8 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             break;
     }
 }
+
+void action_go_to_settings(lv_event_t *e) {
+    loadScreen(SCREEN_ID_SETTINGS);
+}
+

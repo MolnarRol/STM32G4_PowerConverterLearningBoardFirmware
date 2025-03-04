@@ -6,6 +6,7 @@
  */
 #include "vars.h"
 #include <app_types.h>
+#include "backlight_ctrl.h"
 
 float slider_val;
 bool simple_pwm_freq_edit_enable_b = true;
@@ -85,3 +86,15 @@ int32_t get_var_pcc_param_freq_val_i32() {
 void set_var_pcc_param_freq_val_i32(int32_t value) {
     pcc_param_freq_val_f32 = (f32)value / 100.0f;
 }
+
+float brightness__per_cent__f32;
+
+float get_var_brightness__per_cent__f32() {
+    return brightness__per_cent__f32;
+}
+
+void set_var_brightness__per_cent__f32(float value) {
+    brightness__per_cent__f32 = value;
+    LCD_BacklightSetBrightness_v(brightness__per_cent__f32);
+}
+
