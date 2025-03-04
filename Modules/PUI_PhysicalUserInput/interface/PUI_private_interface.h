@@ -33,7 +33,8 @@ typedef struct
     boolean             state_b;
 }  PUI_IrqButton_struct;
 
-extern PUI_IrqButton_struct PUI_StartStopBtn_s;
+void PUI_ButtonHandler_v(PUI_Button_struct* btn_handle_ps);
+
 void PUI_IrqButtonIsrHandler_v(PUI_IrqButton_struct* btn_handle_ps);
 void PUI_RotaryEncoderReadCallback_v(lv_indev_t * indev, lv_indev_data_t*data);
 

@@ -9,9 +9,10 @@
  *      INCLUDES
  *********************/
 #include "ili9341_lvgl_lcd_controller.h"
+#include <PUI_private_interface.h>
+#include <PUI_public_interface.h>
 #include <stdbool.h>
 #include <main.h>
-#include <PUI_private_interface.h>
 #include "ili9341.h"
 #include "ui.h"
 #include "screens.h"
@@ -109,8 +110,9 @@ void lv_port_disp_init(void)
     lv_indev_set_group(input_encoder_ps, groups.MainGroup);
     ui_init();
 
-    PUI_StartStopBtn_s.btn_short_press_callback_pvf = pui_lvgl_btn_short_press_cb_v;
-    PUI_StartStopBtn_s.btn_long_press_callback_pvf = pui_lvgl_btn_long_press_cb_v;
+    start_stop_btn_s.pressed_callback_pfv = pui_lvgl_btn_short_press_cb_v;
+    start_stop_btn_s.long_pressed_callback_pfv = pui_lvgl_btn_long_press_cb_v;
+
 }
 
 /**********************
