@@ -67,6 +67,12 @@ typedef struct _objects_t {
     lv_obj_t *obj2;
     lv_obj_t *param_cnt_label_4;
     lv_obj_t *obj3;
+    lv_obj_t *sw_info_container;
+    lv_obj_t *device_info;
+    lv_obj_t *sw_version_label;
+    lv_obj_t *hw_revision_label;
+    lv_obj_t *sw_version_str_label;
+    lv_obj_t *hw_revision_str_label;
 } objects_t;
 
 extern objects_t objects;

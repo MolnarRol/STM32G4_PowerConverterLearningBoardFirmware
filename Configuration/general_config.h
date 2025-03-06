@@ -12,6 +12,9 @@
 #include "stm32g4xx.h"
 #include "digital_interface_config.h"
 
+#define PROD_SW_VERSION_STR_d                       "Develop"
+#define PROD_HW_REVISION_STR_d                      "Rev. A"
+
 #define GEN_DEF_PER_CENT_MAX_df32                   (f32)100.0f
 
 #define SYS_CPU_CLOCK_FREQ__Hz__d					( 170000000UL )

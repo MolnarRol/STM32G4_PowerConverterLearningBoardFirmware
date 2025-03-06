@@ -14,6 +14,7 @@ extern void action_load_pcc_topology_ctrl_screen(lv_event_t * e);
 extern void action_go_to_settings(lv_event_t * e);
 extern void action_main_screen_loaded(lv_event_t * e);
 extern void action_settings_screen_loaded(lv_event_t * e);
+extern void action_topology_simple_pwm_loaded(lv_event_t * e);
 
 
 #ifdef __cplusplus

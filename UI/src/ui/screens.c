@@ -378,6 +378,7 @@ void create_screen_simple_pwm() {
     objects.simple_pwm = obj;
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 320, 240);
+    lv_obj_add_event_cb(obj, action_topology_simple_pwm_loaded, LV_EVENT_SCREEN_LOADED, (void *)0);
     lv_obj_add_event_cb(obj, event_handler_cb_simple_pwm_simple_pwm, LV_EVENT_ALL, 0);
     lv_obj_set_style_bg_color(obj, lv_color_hex(0xff2a2a2a), LV_PART_MAIN | LV_STATE_DEFAULT);
     {
@@ -1113,6 +1114,73 @@ void create_screen_settings() {
             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_color(obj, lv_color_hex(0xff4c4c4c), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_opa(obj, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+        {
+            // sw_info_container
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            objects.sw_info_container = obj;
+            lv_obj_set_pos(obj, LV_PCT(1), 79);
+            lv_obj_set_size(obj, LV_PCT(98), 161);
+            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            {
+                lv_obj_t *parent_obj = obj;
+                {
+                    // device_info
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.device_info = obj;
+                    lv_obj_set_pos(obj, 112, 0);
+                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "Device info");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // sw_version_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.sw_version_label = obj;
+                    lv_obj_set_pos(obj, 4, 22);
+                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "SW version:");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // hw_revision_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.hw_revision_label = obj;
+                    lv_obj_set_pos(obj, 4, 63);
+                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "HW revision:");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // sw_version_str_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.sw_version_str_label = obj;
+                    lv_obj_set_pos(obj, 17, 40);
+                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // hw_revision_str_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.hw_revision_str_label = obj;
+                    lv_obj_set_pos(obj, 17, 81);
+                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+            }
         }
     }
     
