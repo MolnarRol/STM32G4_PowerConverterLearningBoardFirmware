@@ -56,7 +56,7 @@
         #undef __LV_TO_STR_AUX
         #undef __LV_TO_STR
     #elif defined(LV_CONF_INCLUDE_SIMPLE)         /*Or simply include lv_conf.h is enabled*/
-        #include "../../lv_conf.h"
+        #include "lv_conf.h"
     #else
         #include "../../lv_conf.h"                /*Else assume lv_conf.h is next to the lvgl folder*/
     #endif
