@@ -98,3 +98,32 @@ void set_var_brightness__per_cent__f32(float value) {
     LCD_BacklightSetBrightness_v(brightness__per_cent__f32);
 }
 
+bool param_1_en_b;
+
+bool get_var_param_1_en_b() {
+    return param_1_en_b;
+}
+
+void set_var_param_1_en_b(bool value) {
+    param_1_en_b = value;
+}
+
+bool param_2_en_b;
+
+bool get_var_param_2_en_b() {
+    return param_2_en_b;
+}
+
+void set_var_param_2_en_b(bool value) {
+    param_2_en_b = value;
+}
+
+bool param_3_en_b;
+
+bool get_var_param_3_en_b() {
+    return param_3_en_b;
+}
+
+void set_var_param_3_en_b(bool value) {
+    param_3_en_b = value;
+}

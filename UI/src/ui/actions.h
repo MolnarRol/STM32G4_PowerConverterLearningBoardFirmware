@@ -15,12 +15,8 @@ extern void action_go_to_settings(lv_event_t * e);
 extern void action_main_screen_loaded(lv_event_t * e);
 extern void action_settings_screen_loaded(lv_event_t * e);
 extern void action_settings_screen_unloaded(lv_event_t * e);
-extern void action_topology_simple_pwm_loaded(lv_event_t * e);
-extern void action_topology_simple_pwm_unloaded(lv_event_t * e);
-extern void action_topology_simple_complementary_pwm_loaded(lv_event_t * e);
-extern void action_topology_simple_complementary_pwm_unloaded(lv_event_t * e);
-extern void action_topology_sine_pwm_loaded(lv_event_t * e);
-extern void action_topology_sine_pwm_unloaded(lv_event_t * e);
+extern void action_topology_screen_loaded(lv_event_t * e);
+extern void action_topology_screen_unloaded(lv_event_t * e);
 
 
 #ifdef __cplusplus

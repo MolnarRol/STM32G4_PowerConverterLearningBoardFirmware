@@ -182,6 +182,30 @@
         "defaultValue": "0",
         "persistent": false,
         "native": false
+      },
+      {
+        "objID": "94f9b5ed-0167-4088-a66a-6ff78ccbd669",
+        "name": "param_1_en_b",
+        "type": "boolean",
+        "defaultValue": "false",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "aa1af5ab-91cc-4a92-b299-8059b31ac616",
+        "name": "param_2_en_b",
+        "type": "boolean",
+        "defaultValue": "false",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "37b07e52-02c6-48e9-be02-0a4562f34075",
+        "name": "param_3_en_b",
+        "type": "boolean",
+        "defaultValue": "false",
+        "persistent": false,
+        "native": false
       }
     ],
     "structures": [],
@@ -258,7 +282,7 @@
       "connectionLines": [],
       "localVariables": [],
       "userProperties": [],
-      "name": "topology_simple_pwm_loaded"
+      "name": "topology_screen_loaded"
     },
     {
       "objID": "68ca37c9-62c5-4270-f78f-ca76476e4447",
@@ -266,39 +290,7 @@
       "connectionLines": [],
       "localVariables": [],
       "userProperties": [],
-      "name": "topology_simple_pwm_unloaded"
-    },
-    {
-      "objID": "d33eb6c7-dfe2-4518-8a5b-581b80548312",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "topology_simple_complementary_pwm_loaded"
-    },
-    {
-      "objID": "c170e503-7962-4782-ab1a-8d58aa4f0c49",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "topology_simple_complementary_pwm_unloaded"
-    },
-    {
-      "objID": "37cdf49c-6618-47a0-e9e4-042ad010aab8",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "topology_sine_pwm_loaded"
-    },
-    {
-      "objID": "4e27d477-e9c0-43d2-c503-50b1d2bde43b",
-      "components": [],
-      "connectionLines": [],
-      "localVariables": [],
-      "userProperties": [],
-      "name": "topology_sine_pwm_unloaded"
+      "name": "topology_screen_unloaded"
     }
   ],
   "userPages": [
@@ -726,14 +718,14 @@
               "objID": "22d8dcd3-b8fa-4ee1-d77c-fe78b1a09785",
               "eventName": "SCREEN_LOADED",
               "handlerType": "action",
-              "action": "topology_simple_pwm_loaded",
+              "action": "topology_screen_loaded",
               "userData": 0
             },
             {
               "objID": "f9fbcdcf-29ca-4a10-c2f3-08cc10532983",
               "eventName": "SCREEN_UNLOADED",
               "handlerType": "action",
-              "action": "topology_simple_pwm_unloaded",
+              "action": "topology_screen_unloaded",
               "userData": 0
             }
           ],
@@ -1650,14 +1642,14 @@
               "objID": "7d678eca-7bf1-4fa5-b685-71fccd08f9fb",
               "eventName": "SCREEN_LOADED",
               "handlerType": "action",
-              "action": "topology_simple_complementary_pwm_loaded",
+              "action": "topology_screen_loaded",
               "userData": 0
             },
             {
               "objID": "de7ee13c-59e6-4da6-95b7-9f07c58e0007",
               "eventName": "SCREEN_UNLOADED",
               "handlerType": "action",
-              "action": "topology_simple_pwm_unloaded",
+              "action": "topology_screen_unloaded",
               "userData": 0
             }
           ],
@@ -2831,14 +2823,14 @@
               "objID": "cc619c50-3e2e-4b47-c6ea-650a9928bf79",
               "eventName": "SCREEN_LOADED",
               "handlerType": "action",
-              "action": "topology_sine_pwm_loaded",
+              "action": "topology_screen_loaded",
               "userData": 0
             },
             {
               "objID": "2d8f965f-d844-469c-8191-550916a02d39",
               "eventName": "SCREEN_UNLOADED",
               "handlerType": "action",
-              "action": "topology_sine_pwm_unloaded",
+              "action": "topology_screen_unloaded",
               "userData": 0
             }
           ],
@@ -3029,7 +3021,7 @@
                       "widthUnit": "px",
                       "heightUnit": "px",
                       "children": [],
-                      "widgetFlags": "CHECKABLE|PRESS_LOCK|SCROLL_CHAIN_HOR",
+                      "widgetFlags": "CHECKABLE",
                       "hiddenFlagType": "literal",
                       "clickableFlag": true,
                       "clickableFlagType": "literal",
@@ -3037,7 +3029,7 @@
                       "flagScrollDirection": "",
                       "scrollSnapX": "",
                       "scrollSnapY": "",
-                      "checkedState": "simple_pwm_duty_edit_enable_b",
+                      "checkedState": "param_1_en_b",
                       "checkedStateType": "expression",
                       "disabledStateType": "literal",
                       "states": "",
@@ -3087,8 +3079,8 @@
                       "scrollSnapX": "",
                       "scrollSnapY": "",
                       "checkedStateType": "literal",
-                      "disabledState": "simple_pwm_duty_edit_enable_flag_b",
-                      "disabledStateType": "expression",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
                       "states": "",
                       "localStyles": {
                         "objID": "ffd98ad5-cbb9-4f7b-b25b-75c5c1ced9a0",
@@ -3171,8 +3163,8 @@
                           "scrollSnapX": "",
                           "scrollSnapY": "",
                           "checkedStateType": "literal",
-                          "disabledState": "simple_pwm_duty_edit_enable_flag_b",
-                          "disabledStateType": "expression",
+                          "disabledState": false,
+                          "disabledStateType": "literal",
                           "states": "",
                           "localStyles": {
                             "objID": "e8127189-aa24-4514-d09c-1822dd43a12f"
@@ -3333,71 +3325,14 @@
                           "radius": 5,
                           "border_color": "#ffffff",
                           "border_width": 1,
-                          "grid_cell_row_span": 1,
                           "align": "TOP_MID",
-                          "margin_top": 6
+                          "margin_top": 0
                         }
                       }
                     }
                   },
                   "group": "",
                   "groupIndex": 0
-                },
-                {
-                  "objID": "1af4a53e-327b-4ba2-eb70-b0c317311cd4",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 100,
-                  "height": 18,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "908b48cf-dbca-41b4-8ceb-7d124449577c",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "identifier": "sine_pwm__amplitude_edit_disabled_val_label",
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "%",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "",
-                  "hiddenFlag": true,
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "a6b8f5d5-a2ce-420f-ed04-758ef3b87f57",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "border_color": "#ffffff",
-                          "border_width": 1,
-                          "text_color": "#ffffff",
-                          "radius": 5,
-                          "pad_left": 4,
-                          "margin_top": -4
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "Amplitude: <>%",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
                 },
                 {
                   "objID": "322e2a20-d34e-422c-8ed1-e6c5e77a8241",
@@ -3510,7 +3445,7 @@
                       "flagScrollDirection": "",
                       "scrollSnapX": "",
                       "scrollSnapY": "",
-                      "checkedState": "simple_pwm_duty_edit_enable_b",
+                      "checkedState": "param_2_en_b",
                       "checkedStateType": "expression",
                       "disabledStateType": "literal",
                       "states": "",
@@ -3560,8 +3495,8 @@
                       "scrollSnapX": "",
                       "scrollSnapY": "",
                       "checkedStateType": "literal",
-                      "disabledState": "simple_pwm_duty_edit_enable_flag_b",
-                      "disabledStateType": "expression",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
                       "states": "",
                       "localStyles": {
                         "objID": "b9f130fb-81ad-4bae-c338-128565a2378d",
@@ -3644,8 +3579,8 @@
                           "scrollSnapX": "",
                           "scrollSnapY": "",
                           "checkedStateType": "literal",
-                          "disabledState": "simple_pwm_duty_edit_enable_flag_b",
-                          "disabledStateType": "expression",
+                          "disabledState": false,
+                          "disabledStateType": "literal",
                           "states": "",
                           "localStyles": {
                             "objID": "281fba51-73df-447c-aed7-d4b273294d12"
@@ -3805,71 +3740,13 @@
                         "DEFAULT": {
                           "radius": 5,
                           "border_color": "#ffffff",
-                          "border_width": 1,
-                          "margin_top": -4
+                          "border_width": 1
                         }
                       }
                     }
                   },
                   "group": "",
                   "groupIndex": 0
-                },
-                {
-                  "objID": "63202fd2-ec53-408b-f07c-1b90afe750e6",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 100,
-                  "height": 18,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "3271609e-f7c1-42e4-da34-f8a7c64e33b4",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "hiddenInEditor": false,
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "identifier": "sine_pwm__mod_freq_edit_disabled_val_label",
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "%",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "",
-                  "hiddenFlag": true,
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "65bc9aed-2fdc-4c36-8400-11698998c354",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "border_color": "#ffffff",
-                          "border_width": 1,
-                          "text_color": "#ffffff",
-                          "radius": 5,
-                          "pad_left": 4,
-                          "margin_top": -4
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "Modulation frequency: <>Hz",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
                 },
                 {
                   "objID": "46ae9535-7fdc-4e6b-b62d-fd4a30152f62",
@@ -3901,7 +3778,7 @@
                       "type": "LVGLLabelWidget",
                       "left": 4,
                       "top": 4,
-                      "width": 87,
+                      "width": 168,
                       "height": 18,
                       "customInputs": [],
                       "customOutputs": [],
@@ -3945,7 +3822,7 @@
                       },
                       "group": "",
                       "groupIndex": 0,
-                      "text": "Frequency",
+                      "text": "Switching frequency",
                       "textType": "literal",
                       "longMode": "WRAP",
                       "recolor": false
@@ -3982,7 +3859,7 @@
                       "flagScrollDirection": "",
                       "scrollSnapX": "",
                       "scrollSnapY": "",
-                      "checkedState": "simple_pwm_freq_edit_enable_b",
+                      "checkedState": "param_3_en_b",
                       "checkedStateType": "expression",
                       "disabledState": false,
                       "disabledStateType": "literal",
@@ -4034,8 +3911,8 @@
                       "scrollSnapX": "",
                       "scrollSnapY": "",
                       "checkedStateType": "literal",
-                      "disabledState": "simple_pwm_freq_freq_edit_enable_flag_b",
-                      "disabledStateType": "expression",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
                       "states": "",
                       "localStyles": {
                         "objID": "5586ba39-50dc-4c8c-b427-70acd99fbc65",
@@ -4094,8 +3971,8 @@
                       "scrollSnapX": "",
                       "scrollSnapY": "",
                       "checkedStateType": "literal",
-                      "disabledState": "simple_pwm_freq_freq_edit_enable_flag_b",
-                      "disabledStateType": "expression",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
                       "states": "",
                       "localStyles": {
                         "objID": "2d48e5ab-c2d4-4f42-bd6b-dc9a16bf56be",
@@ -4348,71 +4225,13 @@
                         "DEFAULT": {
                           "radius": 5,
                           "border_color": "#e0e0e0",
-                          "border_width": 1,
-                          "margin_top": -4
+                          "border_width": 1
                         }
                       }
                     }
                   },
                   "group": "",
                   "groupIndex": 0
-                },
-                {
-                  "objID": "d1971316-7114-4d24-e4e7-78fcdfa80873",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 100,
-                  "height": 18,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "1829b4f6-5359-4535-80f0-9d448329bd4c",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "hiddenInEditor": false,
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "identifier": "sine_pwm__sw_freq_edit_disabled_val_label",
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "%",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "",
-                  "hiddenFlag": true,
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "15c212d5-199c-49ee-fdfa-cc8a29e4db76",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "border_color": "#ffffff",
-                          "border_width": 1,
-                          "text_color": "#ffffff",
-                          "radius": 5,
-                          "pad_left": 4,
-                          "margin_top": -4
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "Switching frequency: <>Hz",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
                 },
                 {
                   "objID": "2dfd145e-de20-4ffd-b949-7626c5abd044",
@@ -4572,14 +4391,183 @@
                         "DEFAULT": {
                           "border_color": "#ffffff",
                           "border_width": 1,
-                          "radius": 5,
-                          "margin_top": -4
+                          "radius": 5
                         }
                       }
                     }
                   },
                   "group": "",
                   "groupIndex": 0
+                },
+                {
+                  "objID": "1af4a53e-327b-4ba2-eb70-b0c317311cd4",
+                  "type": "LVGLLabelWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 100,
+                  "height": 18,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "908b48cf-dbca-41b4-8ceb-7d124449577c",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "sine_pwm__amplitude_edit_disabled_val_label",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "%",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "",
+                  "hiddenFlag": true,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "a6b8f5d5-a2ce-420f-ed04-758ef3b87f57",
+                    "definition": {
+                      "MAIN": {
+                        "DEFAULT": {
+                          "border_color": "#ffffff",
+                          "border_width": 1,
+                          "text_color": "#ffffff",
+                          "radius": 5,
+                          "pad_left": 4,
+                          "margin_top": -4
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "Amplitude: <>%",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
+                },
+                {
+                  "objID": "63202fd2-ec53-408b-f07c-1b90afe750e6",
+                  "type": "LVGLLabelWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 100,
+                  "height": 18,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "3271609e-f7c1-42e4-da34-f8a7c64e33b4",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "hiddenInEditor": false,
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "sine_pwm__mod_freq_edit_disabled_val_label",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "%",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "",
+                  "hiddenFlag": true,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "65bc9aed-2fdc-4c36-8400-11698998c354",
+                    "definition": {
+                      "MAIN": {
+                        "DEFAULT": {
+                          "border_color": "#ffffff",
+                          "border_width": 1,
+                          "text_color": "#ffffff",
+                          "radius": 5,
+                          "pad_left": 4,
+                          "margin_top": -4
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "Modulation frequency: <>Hz",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
+                },
+                {
+                  "objID": "d1971316-7114-4d24-e4e7-78fcdfa80873",
+                  "type": "LVGLLabelWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 100,
+                  "height": 18,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "1829b4f6-5359-4535-80f0-9d448329bd4c",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "hiddenInEditor": false,
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "sine_pwm__sw_freq_edit_disabled_val_label",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "%",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "",
+                  "hiddenFlag": true,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "15c212d5-199c-49ee-fdfa-cc8a29e4db76",
+                    "definition": {
+                      "MAIN": {
+                        "DEFAULT": {
+                          "border_color": "#ffffff",
+                          "border_width": 1,
+                          "text_color": "#ffffff",
+                          "radius": 5,
+                          "pad_left": 4,
+                          "margin_top": -4
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "Switching frequency: <>Hz",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
                 },
                 {
                   "objID": "2b741813-5b10-40c8-e50f-2883ce685058",
@@ -4633,7 +4621,7 @@
                   },
                   "group": "",
                   "groupIndex": 0,
-                  "text": "Switching frequency: <>Hz",
+                  "text": "Dead time: <> ns",
                   "textType": "literal",
                   "longMode": "WRAP",
                   "recolor": false
@@ -4646,7 +4634,7 @@
               "flagScrollbarMode": "off",
               "flagScrollDirection": "",
               "scrollSnapX": "",
-              "scrollSnapY": "",
+              "scrollSnapY": "start",
               "checkedStateType": "literal",
               "disabledStateType": "literal",
               "states": "",
@@ -4656,7 +4644,8 @@
                   "MAIN": {
                     "DEFAULT": {
                       "layout": "FLEX",
-                      "flex_flow": "COLUMN"
+                      "flex_flow": "COLUMN",
+                      "pad_top": 10
                     }
                   }
                 }

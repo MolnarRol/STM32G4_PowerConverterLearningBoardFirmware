@@ -24,7 +24,10 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_DUTY_EDIT_ENABLE_FLAG_B = 6,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_FREQ_VAL_F32 = 7,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_FREQ_VAL_I32 = 8,
-    FLOW_GLOBAL_VARIABLE_BRIGHTNESS__PER_CENT__F32 = 9
+    FLOW_GLOBAL_VARIABLE_BRIGHTNESS__PER_CENT__F32 = 9,
+    FLOW_GLOBAL_VARIABLE_PARAM_1_EN_B = 10,
+    FLOW_GLOBAL_VARIABLE_PARAM_2_EN_B = 11,
+    FLOW_GLOBAL_VARIABLE_PARAM_3_EN_B = 12
 };
 
 // Native global variables
@@ -49,6 +52,12 @@ extern int32_t get_var_pcc_param_freq_val_i32();
 extern void set_var_pcc_param_freq_val_i32(int32_t value);
 extern float get_var_brightness__per_cent__f32();
 extern void set_var_brightness__per_cent__f32(float value);
+extern bool get_var_param_1_en_b();
+extern void set_var_param_1_en_b(bool value);
+extern bool get_var_param_2_en_b();
+extern void set_var_param_2_en_b(bool value);
+extern bool get_var_param_3_en_b();
+extern void set_var_param_3_en_b(bool value);
 
 
 #ifdef __cplusplus

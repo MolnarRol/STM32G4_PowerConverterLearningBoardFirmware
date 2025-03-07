@@ -8,12 +8,13 @@
 #include "pcc_menu.h"
 #include "PCC_private_interface.h"
 #include "general_config.h"
+#include "vars.h"
 
 extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
 
-void action_start_topology(lv_event_t *e);
-void action_stop_topology(lv_event_t *e);
+void start_topology_callback(lv_event_t *e);
+void stop_topology_callback(lv_event_t *e);
 
 static void remove_all_indev_events(lv_indev_t * indev_p)
 {
@@ -24,43 +25,82 @@ static void remove_all_indev_events(lv_indev_t * indev_p)
 }
 
 /***************************************************************************************************************
- *  Screen loaded callbacks.
+ *  Topology screens callbacks.
  ***************************************************************************************************************/
-void action_topology_simple_pwm_loaded(lv_event_t *e) {
+void action_topology_screen_loaded(lv_event_t *e) {
     lv_indev_wait_release(input_encoder_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
+    lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
     lv_indev_set_group(input_encoder_ps, groups.param_selector);
+
+    set_var_param_1_en_b(true);
+    set_var_param_2_en_b(true);
+    set_var_param_3_en_b(true);
 }
 
-void action_topology_simple_pwm_unloaded(lv_event_t *e) {
+void action_topology_screen_unloaded(lv_event_t *e) {
     lv_group_set_editing(groups.param_selector, false);
     remove_all_indev_events(input_push_btn_ps);
 }
 
-void action_topology_simple_complementary_pwm_loaded(lv_event_t *e) {
-    lv_indev_wait_release(input_encoder_ps);
+void start_topology_callback(lv_event_t *e) {
+    remove_all_indev_events(input_push_btn_ps);
+    lv_indev_add_event_cb(input_push_btn_ps, stop_topology_callback, LV_EVENT_PRESSED, NULL);
+
+    if(get_var_param_1_en_b())
+    {
+
+    }
+    else
+    {
+        lv_obj_add_flag(objects.sine_pwm__amplitude_cnt, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    if(get_var_param_2_en_b())
+    {
+
+    }
+    else
+    {
+        lv_obj_add_flag(objects.sine_pwm__mod_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(objects.sine_pwm__mod_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    if(get_var_param_3_en_b())
+    {
+
+    }
+    else
+    {
+        lv_obj_add_flag(objects.sine_pwm__sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(objects.sine_pwm__sw_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    lv_obj_add_flag(objects.sine_pwm__deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.sine_pwm__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_scroll_to_y(objects.sine_pwm__main_cnt, 0, LV_ANIM_ON);
+}
+
+void stop_topology_callback(lv_event_t *e) {
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
-    lv_indev_set_group(input_encoder_ps, groups.param_selector);
+    lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
+
+    lv_obj_add_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(objects.sine_pwm__mod_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(objects.sine_pwm__sw_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(objects.sine_pwm__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_clear_flag(objects.sine_pwm__amplitude_cnt, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.sine_pwm__mod_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.sine_pwm__sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.sine_pwm__deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
 }
 
-void action_topology_simple_complementary_pwm_unloaded(lv_event_t *e) {
-    lv_group_set_editing(groups.param_selector, false);
-    remove_all_indev_events(input_push_btn_ps);
-}
-
-void action_topology_sine_pwm_loaded(lv_event_t *e) {
-    lv_indev_wait_release(input_encoder_ps);
-    remove_all_indev_events(input_push_btn_ps);
-    lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
-    lv_indev_set_group(input_encoder_ps, groups.param_selector);
-}
-
-void action_topology_sine_pwm_unloaded(lv_event_t *e) {
-    lv_group_set_editing(groups.param_selector, false);
-    remove_all_indev_events(input_push_btn_ps);
-}
-
+/***************************************************************************************************************
+ *  Topology screens callbacks.
+ ***************************************************************************************************************/
 void action_settings_screen_loaded(lv_event_t *e) {
     static lv_obj_t* project_url_qr_ps = NULL;
     static const char* project_url_p = PROD_SOURCE_URL_d;
@@ -99,20 +139,6 @@ void action_main_screen_loaded(lv_event_t *e) {
     lv_indev_wait_release(input_encoder_ps);
     lv_indev_wait_release(input_push_btn_ps);
     lv_indev_set_group(input_encoder_ps, groups.MainGroup);
-}
-
-
-
-void action_stop_topology(lv_event_t *e)
-{
-    remove_all_indev_events(input_push_btn_ps);
-    lv_indev_add_event_cb(input_push_btn_ps, action_back_to_main_menu, LV_EVENT_PRESSED, NULL);
-    lv_indev_add_event_cb(input_push_btn_ps, action_start_topology, LV_EVENT_LONG_PRESSED, NULL);
-}
-
-void action_start_topology(lv_event_t *e) {
-    remove_all_indev_events(input_push_btn_ps);
-    lv_indev_add_event_cb(input_push_btn_ps, action_stop_topology, LV_EVENT_PRESSED, NULL);
 }
 
 void action_pcc_topology_menu_loaded(lv_event_t *e) {
@@ -161,5 +187,7 @@ void action_go_to_settings(lv_event_t *e) {
 void action_go_to_power_topology_menu(lv_event_t * e)
 {
     lv_indev_wait_release(input_encoder_ps);
+    lv_indev_wait_release(input_push_btn_ps);
+    remove_all_indev_events(input_push_btn_ps);
     loadScreen(SCREEN_ID_POWER_TOPOLOGY_MENU);
 }
