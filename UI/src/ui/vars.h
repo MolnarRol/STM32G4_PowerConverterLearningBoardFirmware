@@ -23,7 +23,8 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_SW_FREQ_EDIT_EN = 5,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_EDIT_EN = 6,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_EDIT_EN = 7,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_EDIT_EN = 8
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_EDIT_EN = 8,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_DEADTIME_F32 = 9
 };
 
 // Native global variables
@@ -46,6 +47,8 @@ extern bool get_var_pcc_param_amplitude_edit_en();
 extern void set_var_pcc_param_amplitude_edit_en(bool value);
 extern bool get_var_pcc_param_phase_shift_edit_en();
 extern void set_var_pcc_param_phase_shift_edit_en(bool value);
+extern float get_var_pcc_param_deadtime_f32();
+extern void set_var_pcc_param_deadtime_f32(float value);
 
 
 #ifdef __cplusplus

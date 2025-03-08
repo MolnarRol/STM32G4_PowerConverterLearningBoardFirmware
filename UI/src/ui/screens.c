@@ -187,6 +187,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_edit_
     }
 }
 
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__deadtime_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_deadtime_f32(value);
+        }
+    }
+}
+
 static void event_handler_cb_settings_settings(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_SCREEN_LOAD_START) {
@@ -924,6 +935,7 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_spinbox_set_range(obj, 0, 5000);
                             lv_spinbox_set_rollover(obj, false);
                             lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__deadtime_spinbox, LV_EVENT_ALL, 0);
                             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
                             lv_obj_set_style_align(obj, LV_ALIGN_RIGHT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
                             lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1113,6 +1125,15 @@ void tick_screen_topo_ctrl_parameter_scr() {
             tick_value_change_obj = objects.ctrl_param__amplitude_edit_en_btn;
             if (new_val) lv_obj_add_state(objects.ctrl_param__amplitude_edit_en_btn, LV_STATE_CHECKED);
             else lv_obj_clear_state(objects.ctrl_param__amplitude_edit_en_btn, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_deadtime_f32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__deadtime_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__deadtime_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__deadtime_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }

@@ -12,10 +12,11 @@
 #include "stdio.h"
 #include "main.h"
 
-extern lv_indev_t *            input_encoder_ps;
-extern lv_indev_t *            input_push_btn_ps;
-extern float* pcc_param_duty_cycle_pf32;
-extern float* pcc_param_sw_freq_pf32;
+extern lv_indev_t *             input_encoder_ps;
+extern lv_indev_t *             input_push_btn_ps;
+extern float*                   pcc_param_duty_cycle_pf32;
+extern float*                   pcc_param_sw_freq_pf32;
+extern float*                   pcc_param_deadtime_pf32;
 
 void start_topology_callback(lv_event_t *e);
 void stop_topology_callback(lv_event_t *e);
@@ -85,6 +86,29 @@ void start_topology_callback(lv_event_t *e) {
             lv_obj_add_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             break;
 
+        case PCC_ParamType_ComplementaryPWM_e:
+            if(!get_var_pcc_param_duty_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Duty cycle: %.2f %%", params_ps->ComplementaryPWM_struct.duty_cycle__per_cent__s.val_f32);
+                lv_label_set_text(objects.pcc_param__duty_cycle_edit_disabled_val_label, tmp_str);
+            }
+
+            if(!get_var_pcc_param_sw_freq_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Switching frequency: %.2f Hz", params_ps->ComplementaryPWM_struct.frequency__Hz__s.val_f32);
+                lv_label_set_text(objects.pcc_param__sw_freq_edit_disabled_val_label, tmp_str);
+            }
+
+            lv_obj_add_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+            snprintf(tmp_str, sizeof(tmp_str), "Deadtime: %.0f ns", get_var_pcc_param_deadtime_f32());
+            lv_label_set_text(objects.pcc_param__deadtime_edit_disabled_val_label, tmp_str);
+            lv_obj_clear_flag(objects.pcc_param__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+            break;
+
         default:
             break;
     }
@@ -112,6 +136,17 @@ void stop_topology_callback(lv_event_t *e) {
             lv_obj_add_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
 
+            break;
+
+        case PCC_ParamType_ComplementaryPWM_e:
+            lv_obj_clear_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__deadtime_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             break;
 
         default:
@@ -228,6 +263,10 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             break;
 
         case PCC_ParamType_ComplementaryPWM_e:
+            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.val_f32;
+            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.val_f32;
+            pcc_param_deadtime_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.dead_time__s__s.val_f32;
+
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.min_f32);
             lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.max_f32);
@@ -236,6 +275,22 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             lv_label_set_text(objects.ctrl_param_1__duty_min_label, tmp_str);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.max_f32);
             lv_label_set_text(objects.ctrl_param_1__duty_max_label, tmp_str);
+
+            lv_slider_set_range(objects.ctrl_param_1__duty_slider,
+                                topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.min_f32,
+                                topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.max_f32);
+
+            lv_spinbox_set_range(objects.ctrl_param_1__duty_spinbox,
+                                 topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.min_f32 * 100.0f,
+                                 topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.max_f32 * 100.0f);
+
+            lv_spinbox_set_range(objects.ctrl_param__sw_freq_spinbox,
+                                topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.min_f32 * 100.0f,
+                                topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.max_f32 * 100.0f);
+
+            lv_spinbox_set_range(objects.ctrl_param__deadtime_spinbox,
+                                 0,
+                                 5000);
 
             lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
