@@ -114,6 +114,8 @@ void PCC_InterruptHandler_v(void);
 
 void PCC_CheckAndCorrectIncorrectParameters_v(void);
 void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u);
+const PCC_TopologyHandle_struct* const PCC_GetCurrentTopologyHandle_ps(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -57,7 +57,7 @@ typedef struct _objects_t {
     lv_obj_t *brightness_slider;
     lv_obj_t *obj2;
     lv_obj_t *power_topology_control_btn;
-    lv_obj_t *label_topology_name;
+    lv_obj_t *simple_pwm__name;
     lv_obj_t *param_cnt_freq;
     lv_obj_t *param_cnt_label;
     lv_obj_t *param_max;
@@ -66,7 +66,7 @@ typedef struct _objects_t {
     lv_obj_t *param_cnt_label_1;
     lv_obj_t *param_max_1;
     lv_obj_t *param_min_1;
-    lv_obj_t *label_topology_name_1;
+    lv_obj_t *simple_complementary_pwm__name;
     lv_obj_t *param_sw_freq_cnt;
     lv_obj_t *minimum_sw_freq_value_label;
     lv_obj_t *minimum_sw_freq_label;
@@ -80,7 +80,7 @@ typedef struct _objects_t {
     lv_obj_t *param_min_3;
     lv_obj_t *param_dead_time_cnt;
     lv_obj_t *obj3;
-    lv_obj_t *label_topology_name_2;
+    lv_obj_t *sine_pwm__name;
     lv_obj_t *sine_pwm__main_cnt;
     lv_obj_t *sine_pwm__amplitude_cnt;
     lv_obj_t *sine_pwm__amplitude_cnt_label;

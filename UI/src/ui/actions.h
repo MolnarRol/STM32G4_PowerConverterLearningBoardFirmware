@@ -10,6 +10,7 @@ extern "C" {
 extern void action_go_to_power_topology_menu(lv_event_t * e);
 extern void action_back_to_main_menu(lv_event_t * e);
 extern void action_pcc_topology_menu_loaded(lv_event_t * e);
+extern void action_pcc_topology_menu_unloaded(lv_event_t * e);
 extern void action_load_pcc_topology_ctrl_screen(lv_event_t * e);
 extern void action_go_to_settings(lv_event_t * e);
 extern void action_main_screen_loaded(lv_event_t * e);

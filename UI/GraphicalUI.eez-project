@@ -237,6 +237,14 @@
       "name": "pcc_topology_menu_loaded"
     },
     {
+      "objID": "303a25c7-1a91-4728-8454-96201084eec7",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "pcc_topology_menu_unloaded"
+    },
+    {
       "objID": "2720ffe0-1c10-4a49-8b1a-77b613aead63",
       "components": [],
       "connectionLines": [],
@@ -655,6 +663,13 @@
               "handlerType": "action",
               "action": "pcc_topology_menu_loaded",
               "userData": 0
+            },
+            {
+              "objID": "120e77ca-22f8-475c-eda0-5b3a63dba34d",
+              "eventName": "SCREEN_UNLOADED",
+              "handlerType": "action",
+              "action": "pcc_topology_menu_unloaded",
+              "userData": 0
             }
           ],
           "leftUnit": "px",
@@ -751,7 +766,7 @@
               },
               "timeline": [],
               "eventHandlers": [],
-              "identifier": "LabelTopologyName",
+              "identifier": "simple_pwm__name",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "%",
@@ -1675,7 +1690,7 @@
               },
               "timeline": [],
               "eventHandlers": [],
-              "identifier": "LabelTopologyName_1",
+              "identifier": "simple_complementary_pwm__name",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "%",
@@ -2857,7 +2872,7 @@
               "hiddenInEditor": false,
               "timeline": [],
               "eventHandlers": [],
-              "identifier": "LabelTopologyName_2",
+              "identifier": "sine_pwm__name",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "%",
@@ -4632,7 +4647,7 @@
               "clickableFlag": true,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "off",
-              "flagScrollDirection": "",
+              "flagScrollDirection": "ver",
               "scrollSnapX": "",
               "scrollSnapY": "start",
               "checkedStateType": "literal",

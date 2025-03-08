@@ -511,6 +511,7 @@ void create_screen_power_topology_menu() {
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 320, 240);
     lv_obj_add_event_cb(obj, action_pcc_topology_menu_loaded, LV_EVENT_SCREEN_LOADED, (void *)0);
+    lv_obj_add_event_cb(obj, action_pcc_topology_menu_unloaded, LV_EVENT_SCREEN_UNLOADED, (void *)0);
     lv_obj_add_event_cb(obj, event_handler_cb_power_topology_menu_power_topology_menu, LV_EVENT_ALL, 0);
     lv_obj_set_style_bg_color(obj, lv_color_hex(0xff2a2a2a), LV_PART_MAIN | LV_STATE_DEFAULT);
     
@@ -532,9 +533,9 @@ void create_screen_simple_pwm() {
     {
         lv_obj_t *parent_obj = obj;
         {
-            // LabelTopologyName
+            // simple_pwm__name
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.label_topology_name = obj;
+            objects.simple_pwm__name = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, LV_PCT(100), 25);
             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
@@ -856,9 +857,9 @@ void create_screen_simple_complementary_pwm() {
     {
         lv_obj_t *parent_obj = obj;
         {
-            // LabelTopologyName_1
+            // simple_complementary_pwm__name
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.label_topology_name_1 = obj;
+            objects.simple_complementary_pwm__name = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, LV_PCT(100), 20);
             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
@@ -1234,9 +1235,9 @@ void create_screen_sine_pwm() {
     {
         lv_obj_t *parent_obj = obj;
         {
-            // LabelTopologyName_2
+            // sine_pwm__name
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.label_topology_name_2 = obj;
+            objects.sine_pwm__name = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, LV_PCT(100), 20);
             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);

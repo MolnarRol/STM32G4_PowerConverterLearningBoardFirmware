@@ -13,6 +13,7 @@
 #define _ISR_HANDLER_TOPOLOGY_dpf       (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->isr_handler_pfv)
 #define _DRIVER_EN_ds                   (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->driver_enable_u)
 #define _PARAMS_dps                     (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->ctrl_params_pv)
+#define _CURRENT_HANDLE_ds              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e])
 
 static PCC_TopologyHandleState_enum     s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
 static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
@@ -94,6 +95,11 @@ boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e)
 		return_status_b = True_b;
 	}
 	return return_status_b;
+}
+
+const PCC_TopologyHandle_struct* const PCC_GetCurrentTopologyHandle_ps(void)
+{
+    return _CURRENT_HANDLE_ds;
 }
 
 void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u)
