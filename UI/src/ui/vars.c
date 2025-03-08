@@ -168,14 +168,16 @@ void set_var_pcc_param_sw_freq_i32(int32_t value) {
         *pcc_param_sw_freq_pf32 = (float)value / 100.0f;
 }
 
-float get_var_pcc_param_deadtime_f32() {
+int32_t get_var_pcc_param_deadtime_i32() {
     if(pcc_param_deadtime_pf32)
-        return *pcc_param_deadtime_pf32 * 1.0e9f;
-    return 0.0f;
+        return (int32_t)(*pcc_param_deadtime_pf32 * 1.0e9f);
+
+    return 0;
 }
 
-void set_var_pcc_param_deadtime_f32(float value) {
-    *pcc_param_deadtime_pf32 = value * 1.0e-9f;
+void set_var_pcc_param_deadtime_i32(int32_t value) {
+    if(pcc_param_deadtime_pf32)
+        *pcc_param_deadtime_pf32 = (float)value * 1.0e-9f;
 }
 
 /*

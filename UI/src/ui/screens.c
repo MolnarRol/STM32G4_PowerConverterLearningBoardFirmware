@@ -193,7 +193,7 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__deadtime_spinbo
         lv_obj_t *ta = lv_event_get_target(e);
         if (tick_value_change_obj != ta) {
             int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_deadtime_f32(value);
+            set_var_pcc_param_deadtime_i32(value);
         }
     }
 }
@@ -1129,7 +1129,7 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_deadtime_f32();
+        int32_t new_val = get_var_pcc_param_deadtime_i32();
         int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__deadtime_spinbox);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__deadtime_spinbox;

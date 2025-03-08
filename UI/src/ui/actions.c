@@ -104,7 +104,7 @@ void start_topology_callback(lv_event_t *e) {
             lv_obj_add_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
-            snprintf(tmp_str, sizeof(tmp_str), "Deadtime: %.0f ns", get_var_pcc_param_deadtime_f32());
+            snprintf(tmp_str, sizeof(tmp_str), "Deadtime: %d ns", get_var_pcc_param_deadtime_i32());
             lv_label_set_text(objects.pcc_param__deadtime_edit_disabled_val_label, tmp_str);
             lv_obj_clear_flag(objects.pcc_param__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
             break;

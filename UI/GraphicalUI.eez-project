@@ -177,8 +177,8 @@
       },
       {
         "objID": "ce4673ee-eff9-4f1d-c316-e1761334b24a",
-        "name": "pcc_param_deadtime_f32",
-        "type": "float",
+        "name": "pcc_param_deadtime_i32",
+        "type": "integer",
         "defaultValue": "0",
         "persistent": false,
         "native": false
@@ -877,7 +877,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_sw_freq_cnt",
@@ -901,7 +901,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_cnt_label",
@@ -955,7 +955,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_edit_en_btn",
@@ -1006,7 +1006,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_spinbox",
@@ -1066,7 +1066,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_label",
@@ -1119,7 +1119,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_label",
@@ -1173,7 +1173,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_placeholder_label",
@@ -1226,7 +1226,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_placeholder_label",
@@ -2971,7 +2971,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_deadtime_cnt",
@@ -2995,7 +2995,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__deadtime_spinbox",
@@ -3036,7 +3036,7 @@
                       "rollover": false,
                       "step": 1,
                       "stepType": "literal",
-                      "value": "pcc_param_deadtime_f32",
+                      "value": "pcc_param_deadtime_i32",
                       "valueType": "expression"
                     },
                     {
@@ -3054,7 +3054,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__deadtime_label",
