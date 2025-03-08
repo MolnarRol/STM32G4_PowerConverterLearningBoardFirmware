@@ -33,6 +33,7 @@
 #include "ili9341_lvgl_lcd_controller.h"
 #include <TD_SPI_public_interface.h>
 #include "ui.h"
+#include "stdio.h"
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 

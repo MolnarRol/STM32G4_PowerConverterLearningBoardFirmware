@@ -9,6 +9,7 @@
 #include "PCC_private_interface.h"
 #include "general_config.h"
 #include "vars.h"
+#include "stdio.h"
 
 extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
@@ -17,6 +18,7 @@ void start_topology_callback(lv_event_t *e);
 void stop_topology_callback(lv_event_t *e);
 
 static void remove_all_indev_events(lv_indev_t * indev_p) {
+    printf("%s\n", __func__);
     for(u32 event_count_u32 = lv_indev_get_event_count(input_push_btn_ps); event_count_u32 > 0; event_count_u32--)
     {
         lv_indev_remove_event(indev_p, event_count_u32 - 1);
@@ -27,82 +29,44 @@ static void remove_all_indev_events(lv_indev_t * indev_p) {
  *  Topology screens callbacks.
  ***************************************************************************************************************/
 void action_topology_screen_loaded(lv_event_t *e) {
-    lv_indev_wait_release(input_encoder_ps);
+    printf("%s\n", __func__);
     lv_indev_set_group(input_encoder_ps, groups.param_selector);
 
+    remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
     lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
 
     set_var_param_1_en_b(true);
     set_var_param_2_en_b(true);
     set_var_param_3_en_b(true);
-//    const char* topology_name_pstr = PCC_GetCurrentTopologyHandle_ps()->ctrl_name_str;
-//    lv_label_set_text(objects.simple_pwm__name, topology_name_pstr);
-//    lv_label_set_text(objects.simple_complementary_pwm__name, topology_name_pstr);
-//    lv_label_set_text(objects.sine_pwm__name, topology_name_pstr);
+
+    lv_label_set_text(objects.topo_name_label, PCC_GetCurrentTopologyHandle_ps()->ctrl_name_str);
 }
 
 void action_topology_screen_unloaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     lv_group_set_editing(groups.param_selector, false);
-    remove_all_indev_events(input_push_btn_ps);
 }
 
 void start_topology_callback(lv_event_t *e) {
+    printf("%s\n", __func__);
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, stop_topology_callback, LV_EVENT_PRESSED, NULL);
-
-    if(get_var_param_1_en_b()) {
-        lv_obj_add_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    }
-    else {
-        lv_obj_add_flag(objects.sine_pwm__amplitude_cnt, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    if(get_var_param_2_en_b()) {
-        lv_obj_add_flag(objects.sine_pwm__mod_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
-    }
-    else {
-        lv_obj_add_flag(objects.sine_pwm__mod_freq_cnt, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(objects.sine_pwm__mod_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    if(get_var_param_3_en_b()) {
-        lv_obj_add_flag(objects.sine_pwm__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
-    }
-    else {
-        lv_obj_add_flag(objects.sine_pwm__sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_clear_flag(objects.sine_pwm__sw_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    }
-
-    lv_obj_add_flag(objects.sine_pwm__deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_scroll_to_y(objects.sine_pwm__main_cnt, 0, LV_ANIM_ON);
 }
 
 void stop_topology_callback(lv_event_t *e) {
+    printf("%s\n", __func__);
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
     lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
 
-    lv_obj_add_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(objects.sine_pwm__mod_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(objects.sine_pwm__sw_freq_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(objects.sine_pwm__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-
-    lv_obj_clear_flag(objects.sine_pwm__amplitude_cnt, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__mod_freq_cnt, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__amplitude_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__mod_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.sine_pwm__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
 }
 
 /***************************************************************************************************************
- *  Topology screens callbacks.
+ *  Settings screen callbacks.
  ***************************************************************************************************************/
 void action_settings_screen_loaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     static lv_obj_t* project_url_qr_ps = NULL;
     static const char* project_url_p = PROD_SOURCE_URL_d;
 
@@ -125,21 +89,26 @@ void action_settings_screen_loaded(lv_event_t *e) {
 }
 
 void action_settings_screen_unloaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     lv_group_set_editing(groups.settings_group, false);
-    remove_all_indev_events(input_push_btn_ps);
 }
 
+/***************************************************************************************************************
+ *  Main screen callbacks.
+ ***************************************************************************************************************/
 void action_main_screen_loaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     remove_all_indev_events(input_push_btn_ps);
-    lv_indev_wait_release(input_encoder_ps);
-    lv_indev_wait_release(input_push_btn_ps);
     lv_indev_set_group(input_encoder_ps, groups.MainGroup);
 }
 
+/***************************************************************************************************************
+ *  Topology select screen.
+ ***************************************************************************************************************/
 void action_pcc_topology_menu_loaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     lv_indev_wait_release(input_encoder_ps);
-    lv_indev_wait_release(input_push_btn_ps);
-
+    remove_all_indev_events(input_push_btn_ps);
     ui_init_pcc_menu_v();
 
     lv_indev_set_group(input_encoder_ps, groups.pcc_topology_select_grp);
@@ -147,27 +116,27 @@ void action_pcc_topology_menu_loaded(lv_event_t *e) {
 }
 
 void action_pcc_topology_menu_unloaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     lv_group_set_editing(groups.pcc_topology_select_grp, false);
 }
 
 void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
+    printf("%s\n", __func__);
     PCC_TopologyHandle_struct* topo_handle_s = (PCC_TopologyHandle_struct*)lv_event_get_user_data(e);
-    lv_group_focus_freeze(groups.pcc_topology_select_grp, true);
+
     switch(topo_handle_s->ctrl_params_pv->type_e)
     {
         case PCC_ParamType_PWM_e:
-            loadScreen(SCREEN_ID_SIMPLE_PWM);
             break;
 
         case PCC_ParamType_ComplementaryPWM_e:
-            loadScreen(SCREEN_ID_SIMPLE_COMPLEMENTARY_PWM);
             break;
 
         case PCC_ParamType_PhaseShiftedPWM_e:
             break;
 
         case PCC_ParamType_SinePWM_e:
-            loadScreen(SCREEN_ID_SINE_PWM);
+
             break;
 
         case PCC_ParamType_LineCommutated_e:
@@ -176,19 +145,23 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
         default:
             break;
     }
+    loadScreen(SCREEN_ID_TOPO_CTRL_PARAMETER_SCR);
 }
 
 /***************************************************************************************************************
  *  Screen switch events.
  ***************************************************************************************************************/
 void action_go_to_settings(lv_event_t *e) {
+    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_SETTINGS);
 }
 
 void action_go_to_power_topology_menu(lv_event_t * e) {
+    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_POWER_TOPOLOGY_MENU);
 }
 
 void action_back_to_main_menu(lv_event_t *e) {
+    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_MAIN);
 }
