@@ -6,17 +6,19 @@
  */
 #include <pcc.h>
 
-#define _INIT_TOPOLOGY_dpf              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->initialize_pfv)
-#define _START_TOPOLOGY_dpf             (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->start_pf)
-#define _STOP_TOPOLOGY_dpf              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->stop_pfv)
-#define _DEINIT_TOPOLOGY_dpf            (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->deinitalize_pfv)
-#define _ISR_HANDLER_TOPOLOGY_dpf       (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->isr_handler_pfv)
-#define _DRIVER_EN_ds                   (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->driver_enable_u)
-#define _PARAMS_dps                     (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e]->ctrl_params_pv)
-#define _CURRENT_HANDLE_ds              (s_PCC_Topologies_aps[s_PCC_ActiveTopology_e])
+#define _INIT_TOPOLOGY_dpf              (s_PCC_ActiveTopologyHandler_ps->initialize_pfv)
+#define _START_TOPOLOGY_dpf             (s_PCC_ActiveTopologyHandler_ps->start_pf)
+#define _STOP_TOPOLOGY_dpf              (s_PCC_ActiveTopologyHandler_ps->stop_pfv)
+#define _DEINIT_TOPOLOGY_dpf            (s_PCC_ActiveTopologyHandler_ps->deinitalize_pfv)
+#define _ISR_HANDLER_TOPOLOGY_dpf       (s_PCC_ActiveTopologyHandler_ps->isr_handler_pfv)
+#define _DRIVER_EN_ds                   (s_PCC_ActiveTopologyHandler_ps->driver_enable_u)
+#define _PARAMS_dps                     (s_PCC_ActiveTopologyHandler_ps->ctrl_params_pv)
+#define _CURRENT_HANDLE_ds              (s_PCC_ActiveTopologyHandler_ps)
 
 static PCC_TopologyHandleState_enum     s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
+//static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
+static PCC_TopologyHandle_struct* s_PCC_ActiveTopologyHandler_ps = NULL;
+
 const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
 {
     &PCC_Topology_SinglePWM_s,
@@ -26,13 +28,15 @@ const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
     &PCC_Topology_FullBridgeBipolarPWM_s,
     &PCC_Topology_SinglePhaseUnipolarSinePWM_s,
     &PCC_Topology_SinglePhaseBipolarSinePWM_s,
-    &PCC_Topology_ThreePhaseSinePWM_s,
+    &PCC_Topology_ThreePhaseSinePWM_s
+#if 0
     &PCC_Topology_SingleImpulseControlledRectifier_s,
     &PCC_Topology_SinglePhaseThyristorVoltageConverter_s,
     &PCC_Topology_SinglePhaseTriacVoltageConverter_s,
     &PCC_Topology_DoubleImpulseControlledRectifier_s,
     &PCC_Topology_SixPulseThreePhaseControlledRectifier_s,
     &PCC_Topology_ThreePulseThreePhaseControlledRectifier_s
+#endif
 };
 
 boolean PCC_InitializeActiveTopology_b(void)
@@ -85,13 +89,12 @@ void PCC_InterruptHandler_v(void)
     _ISR_HANDLER_TOPOLOGY_dpf();
 }
 
-boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e)
+boolean PCC_SetTopology_b(PCC_TopologyHandle_struct* ctrl_topology_ps)
 {
 	boolean return_status_b = False_b;
-	assert_param(topology_e < (sizeof(s_PCC_Topologies_aps) / sizeof(s_PCC_Topologies_aps[0])));
 	if(s_PCC_TopologyState_e == PCC_UNINITIALIZED_e)
 	{
-		s_PCC_ActiveTopology_e = topology_e;
+	    s_PCC_ActiveTopologyHandler_ps = ctrl_topology_ps;
 		return_status_b = True_b;
 	}
 	return return_status_b;

@@ -84,7 +84,6 @@ typedef struct {
     };
 } PCC_Params_struct;
 
-boolean PCC_SetTopology_b(PCC_Topologies_enum topology_e);
 boolean PCC_InitializeActiveTopology_b(void);
 boolean PCC_DeinitializeActiveTopology_v(void);
 boolean PCC_StartActiveTopology_v(void);

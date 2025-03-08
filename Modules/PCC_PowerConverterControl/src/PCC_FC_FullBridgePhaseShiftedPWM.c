@@ -35,6 +35,7 @@ static volatile f32 _s_dead_time__s__f32;
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
 {
+    .topology_identifier_e = PCC_TOPO_FullBridgePhaseShiftedPWM_e,
     .ctrl_params_pv     = &_s_set_params_s,
     .initialize_pfv     = PCC_FC_FullBridgePhaseShiftedPWM_Init_v,
     .start_pf           = PCC_FC_FullBridgePhaseShiftedPWM_Start_v,

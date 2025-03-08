@@ -15,49 +15,37 @@ extern "C" {
 // Flow global variables
 
 enum FlowGlobalVariables {
-    FLOW_GLOBAL_VARIABLE_SLIDER_VAL = 0,
-    FLOW_GLOBAL_VARIABLE_TOPOLOGY_CTRL_NAME = 1,
-    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_FREQ_EDIT_ENABLE_B = 2,
-    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_FREQ_FREQ_EDIT_ENABLE_FLAG_B = 3,
-    FLOW_GLOBAL_VARIABLE_STATUS_VAR_STR = 4,
-    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_DUTY_EDIT_ENABLE_B = 5,
-    FLOW_GLOBAL_VARIABLE_SIMPLE_PWM_DUTY_EDIT_ENABLE_FLAG_B = 6,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FREQ_VAL_F32 = 7,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FREQ_VAL_I32 = 8,
-    FLOW_GLOBAL_VARIABLE_BRIGHTNESS__PER_CENT__F32 = 9,
-    FLOW_GLOBAL_VARIABLE_PARAM_1_EN_B = 10,
-    FLOW_GLOBAL_VARIABLE_PARAM_2_EN_B = 11,
-    FLOW_GLOBAL_VARIABLE_PARAM_3_EN_B = 12
+    FLOW_GLOBAL_VARIABLE_BRIGHTNESS__PER_CENT__F32 = 0,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_DUTY_CYCLE_F32 = 1,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_DUTY_CYCLE_I32 = 2,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_SW_FREQ_I32 = 3,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_DUTY_EDIT_EN = 4,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_SW_FREQ_EDIT_EN = 5,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_EDIT_EN = 6,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_EDIT_EN = 7,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_EDIT_EN = 8
 };
 
 // Native global variables
 
-extern float get_var_slider_val();
-extern void set_var_slider_val(float value);
-extern const char *get_var_topology_ctrl_name();
-extern void set_var_topology_ctrl_name(const char *value);
-extern bool get_var_simple_pwm_freq_edit_enable_b();
-extern void set_var_simple_pwm_freq_edit_enable_b(bool value);
-extern bool get_var_simple_pwm_freq_freq_edit_enable_flag_b();
-extern void set_var_simple_pwm_freq_freq_edit_enable_flag_b(bool value);
-extern const char *get_var_status_var_str();
-extern void set_var_status_var_str(const char *value);
-extern bool get_var_simple_pwm_duty_edit_enable_b();
-extern void set_var_simple_pwm_duty_edit_enable_b(bool value);
-extern bool get_var_simple_pwm_duty_edit_enable_flag_b();
-extern void set_var_simple_pwm_duty_edit_enable_flag_b(bool value);
-extern float get_var_pcc_param_freq_val_f32();
-extern void set_var_pcc_param_freq_val_f32(float value);
-extern int32_t get_var_pcc_param_freq_val_i32();
-extern void set_var_pcc_param_freq_val_i32(int32_t value);
 extern float get_var_brightness__per_cent__f32();
 extern void set_var_brightness__per_cent__f32(float value);
-extern bool get_var_param_1_en_b();
-extern void set_var_param_1_en_b(bool value);
-extern bool get_var_param_2_en_b();
-extern void set_var_param_2_en_b(bool value);
-extern bool get_var_param_3_en_b();
-extern void set_var_param_3_en_b(bool value);
+extern float get_var_pcc_param_duty_cycle_f32();
+extern void set_var_pcc_param_duty_cycle_f32(float value);
+extern int32_t get_var_pcc_param_duty_cycle_i32();
+extern void set_var_pcc_param_duty_cycle_i32(int32_t value);
+extern int32_t get_var_pcc_param_sw_freq_i32();
+extern void set_var_pcc_param_sw_freq_i32(int32_t value);
+extern bool get_var_pcc_param_duty_edit_en();
+extern void set_var_pcc_param_duty_edit_en(bool value);
+extern bool get_var_pcc_param_sw_freq_edit_en();
+extern void set_var_pcc_param_sw_freq_edit_en(bool value);
+extern bool get_var_pcc_param_mod_freq_edit_en();
+extern void set_var_pcc_param_mod_freq_edit_en(bool value);
+extern bool get_var_pcc_param_amplitude_edit_en();
+extern void set_var_pcc_param_amplitude_edit_en(bool value);
+extern bool get_var_pcc_param_phase_shift_edit_en();
+extern void set_var_pcc_param_phase_shift_edit_en(bool value);
 
 
 #ifdef __cplusplus

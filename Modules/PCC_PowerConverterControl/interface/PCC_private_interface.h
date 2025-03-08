@@ -55,6 +55,7 @@ typedef union
 
 typedef struct
 {
+    const PCC_Topologies_enum               topology_identifier_e;
     PCC_Params_struct * const               ctrl_params_pv;
     void (*const initialize_pfv)		    (void);
     void (*const initialized_pfv)           (void);
@@ -115,6 +116,7 @@ void PCC_InterruptHandler_v(void);
 void PCC_CheckAndCorrectIncorrectParameters_v(void);
 void PCC_SetGateDriverPowerStates(PCC_driver_enable_union enable_states_u);
 const PCC_TopologyHandle_struct* const PCC_GetCurrentTopologyHandle_ps(void);
+boolean PCC_SetTopology_b(PCC_TopologyHandle_struct* ctrl_topology_ps);
 
 #ifdef __cplusplus
 }

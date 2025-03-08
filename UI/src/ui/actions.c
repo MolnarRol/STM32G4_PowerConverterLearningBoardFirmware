@@ -10,9 +10,12 @@
 #include "general_config.h"
 #include "vars.h"
 #include "stdio.h"
+#include "main.h"
 
 extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
+extern float* pcc_param_duty_cycle_pf32;
+extern float* pcc_param_sw_freq_pf32;
 
 void start_topology_callback(lv_event_t *e);
 void stop_topology_callback(lv_event_t *e);
@@ -36,30 +39,84 @@ void action_topology_screen_loaded(lv_event_t *e) {
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
     lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
 
-    set_var_param_1_en_b(true);
-    set_var_param_2_en_b(true);
-    set_var_param_3_en_b(true);
+    lv_label_set_text(objects.topo_state_label, "READY");
+    lv_obj_set_style_text_color(objects.topo_state_label, (lv_color_t){.green = 255}, LV_PART_MAIN);
 
-    lv_label_set_text(objects.topo_name_label, PCC_GetCurrentTopologyHandle_ps()->ctrl_name_str);
+    set_var_pcc_param_duty_edit_en(true);
+    set_var_pcc_param_sw_freq_edit_en(true);
+    PCC_InitializeActiveTopology_b();
 }
 
 void action_topology_screen_unloaded(lv_event_t *e) {
     printf("%s\n", __func__);
     lv_group_set_editing(groups.param_selector, false);
+    PCC_DeinitializeActiveTopology_v();
 }
 
 void start_topology_callback(lv_event_t *e) {
     printf("%s\n", __func__);
+    char tmp_str[100];
+    PCC_Params_struct* params_ps = PCC_GetActiveTopologyParameters_ps();
+    lv_label_set_text(objects.topo_state_label, "RUNNING");
+    lv_obj_set_style_text_color(objects.topo_state_label, (lv_color_t){.red = 255}, LV_PART_MAIN);
+
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, stop_topology_callback, LV_EVENT_PRESSED, NULL);
+
+    switch(params_ps->type_e)
+    {
+        case PCC_ParamType_PWM_e:
+            if(!get_var_pcc_param_duty_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Duty cycle: %.2f %%", params_ps->PWM_struct.duty_cycle__per_cent__s.val_f32);
+                lv_label_set_text(objects.pcc_param__duty_cycle_edit_disabled_val_label, tmp_str);
+            }
+
+            if(!get_var_pcc_param_sw_freq_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Switching frequency: %.2f Hz", params_ps->PWM_struct.frequency__Hz__s.val_f32);
+                lv_label_set_text(objects.pcc_param__sw_freq_edit_disabled_val_label, tmp_str);
+            }
+
+
+            lv_obj_add_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            break;
+
+        default:
+            break;
+    }
+    PCC_StartActiveTopology_v();
 }
 
 void stop_topology_callback(lv_event_t *e) {
     printf("%s\n", __func__);
+
+    PCC_StopActiveTopology_v();
+    lv_indev_wait_release(input_push_btn_ps);
+    lv_label_set_text(objects.topo_state_label, "READY");
+    lv_obj_set_style_text_color(objects.topo_state_label, (lv_color_t){.green = 255}, LV_PART_MAIN);
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
     lv_indev_add_event_cb(input_push_btn_ps, start_topology_callback, LV_EVENT_LONG_PRESSED, NULL);
 
+    switch(PCC_GetActiveTopologyParameters_ps()->type_e)
+    {
+        case PCC_ParamType_PWM_e:
+            lv_obj_clear_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_1__duty_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+
+            break;
+
+        default:
+            break;
+    }
 }
 
 /***************************************************************************************************************
@@ -122,21 +179,80 @@ void action_pcc_topology_menu_unloaded(lv_event_t *e) {
 
 void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
     printf("%s\n", __func__);
+
+    char tmp_str[100];
+    lv_obj_t* child_ps;
     PCC_TopologyHandle_struct* topo_handle_s = (PCC_TopologyHandle_struct*)lv_event_get_user_data(e);
+
+    if(PCC_SetTopology_b(topo_handle_s) == False_b)
+    {
+        Error_Handler();
+    }
+
+    lv_label_set_text(objects.topo_name_label, topo_handle_s->ctrl_name_str);
+
+    for(u32 child_iu32 = 0; child_iu32 < lv_obj_get_child_count(objects.ctrl_param_main_cnt); child_iu32++) {
+        child_ps = lv_obj_get_child(objects.ctrl_param_main_cnt, child_iu32);
+        lv_obj_add_flag(child_ps, LV_OBJ_FLAG_HIDDEN);
+    }
 
     switch(topo_handle_s->ctrl_params_pv->type_e)
     {
         case PCC_ParamType_PWM_e:
+            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.val_f32;
+            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.val_f32;
+
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_max_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.min_f32);
+            lv_label_set_text(objects.ctrl_param_1__duty_min_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.max_f32);
+            lv_label_set_text(objects.ctrl_param_1__duty_max_label, tmp_str);
+
+            lv_slider_set_range(objects.ctrl_param_1__duty_slider,
+                                topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.min_f32,
+                                topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.max_f32);
+
+            lv_spinbox_set_range(objects.ctrl_param_1__duty_spinbox,
+                                 topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.min_f32 * 100.0f,
+                                 topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.max_f32 * 100.0f);
+
+            lv_spinbox_set_range(objects.ctrl_param__sw_freq_spinbox,
+                                topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.min_f32 * 100.0f,
+                                topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.max_f32 * 100.0f);
+
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         case PCC_ParamType_ComplementaryPWM_e:
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_max_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.min_f32);
+            lv_label_set_text(objects.ctrl_param_1__duty_min_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.max_f32);
+            lv_label_set_text(objects.ctrl_param_1__duty_max_label, tmp_str);
+
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         case PCC_ParamType_PhaseShiftedPWM_e:
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_phase_shift_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         case PCC_ParamType_SinePWM_e:
-
+            lv_obj_clear_flag(objects.ctrl_param_amplitude_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_mod_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         case PCC_ParamType_LineCommutated_e:

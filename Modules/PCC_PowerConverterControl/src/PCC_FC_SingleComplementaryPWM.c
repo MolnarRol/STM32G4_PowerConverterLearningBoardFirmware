@@ -42,25 +42,26 @@ static volatile f32 _s_dead_time__s__f32;
  **********************************************************************************************************************/
 const PCC_TopologyHandle_struct PCC_Topology_SingleComplementaryPWM_s =
 {
-    .ctrl_params_pv     = &_s_set_params_s,
-    .initialize_pfv     = PCC_FC_SingleComplementaryPWM_Init_v,
-    .start_pf           = PCC_FC_SingleComplementaryPWM_Start_v,
-    .active_handler_pfv = PCC_FC_SingleComplementaryPWM_ActiveHandling_v,
-    .stop_pfv           = PCC_FC_SingleComplementaryPWM_Stop_v,
-    .deinitalize_pfv    = PCC_FC_SingleComplementaryPWM_DeInit_v,
-    .isr_handler_pfv    = PCC_FC_SingleComplementaryPWM_IrqHandler_v,
-    .driver_enable_u    =
-                        {
-                          .drivers_s =
-                            {
-                                    .gd1_f1 = 1,
-                                    .gd2_f1 = 0,
-                                    .gd3_f1 = 0,
-                                    .gd4_f1 = 1,
-                                    .gd5_f1 = 0,
-                                    .gd6_f1 = 0
-                            }
-                        },
+    .topology_identifier_e  = PCC_TOPO_SingleComplementaryPWM_e,
+    .ctrl_params_pv         = &_s_set_params_s,
+    .initialize_pfv         = PCC_FC_SingleComplementaryPWM_Init_v,
+    .start_pf               = PCC_FC_SingleComplementaryPWM_Start_v,
+    .active_handler_pfv     = PCC_FC_SingleComplementaryPWM_ActiveHandling_v,
+    .stop_pfv               = PCC_FC_SingleComplementaryPWM_Stop_v,
+    .deinitalize_pfv        = PCC_FC_SingleComplementaryPWM_DeInit_v,
+    .isr_handler_pfv        = PCC_FC_SingleComplementaryPWM_IrqHandler_v,
+    .driver_enable_u        =
+    {
+      .drivers_s =
+        {
+                .gd1_f1 = 1,
+                .gd2_f1 = 0,
+                .gd3_f1 = 0,
+                .gd4_f1 = 1,
+                .gd5_f1 = 0,
+                .gd6_f1 = 0
+        }
+    },
     .ctrl_name_str          = "Single complementary PWM\0",
     .ctrl_descriptor_str    = "PWM output 1 - GD1\n PWM output 1N -GD4\0"
 };

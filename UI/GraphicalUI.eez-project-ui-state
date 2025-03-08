@@ -1,9 +1,9 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[GraphicalUI.eez-project]:/userPages/4",
+    "selectedUserPageObject": "[GraphicalUI.eez-project]:/userPages/2",
     "selectedUserWidgetObject": "[GraphicalUI.eez-project]:/userWidgets/1",
-    "selectedActionObject": "[GraphicalUI.eez-project]:/actions/11",
-    "selectedGlobalVariableObject": "[GraphicalUI.eez-project]:/variables/globalVariables/9",
+    "selectedActionObject": "[GraphicalUI.eez-project]:/actions/3",
+    "selectedGlobalVariableObject": "[GraphicalUI.eez-project]:/variables/globalVariables/12",
     "selectedLvglGroupObject": "[GraphicalUI.eez-project]:/lvglGroups/groups/7",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
@@ -122,13 +122,12 @@
             {
               "type": "row",
               "id": "#6547c5a4-5ffb-4c25-88fc-eeee6fde3955",
-              "weight": 20.83704636445822,
+              "weight": 27.697405207626712,
               "children": [
                 {
                   "type": "tabset",
                   "id": "#ee2d6e05-1d85-4bcc-ab2a-0551288fbbb6",
-                  "weight": 0.7189290124893899,
-                  "selected": 1,
+                  "weight": 1.0388524230471683,
                   "enableClose": false,
                   "children": [
                     {
@@ -160,7 +159,7 @@
                 {
                   "type": "tabset",
                   "id": "#89971112-fa91-429b-8adc-8d93ec83277c",
-                  "weight": 1.4019115743543102,
+                  "weight": 1.0819881637965318,
                   "enableClose": false,
                   "children": [
                     {
@@ -195,17 +194,17 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 41.20301482037934,
+              "weight": 46.6777045791939,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#308443c1-51d5-41e2-ab9a-8f8d4b0f7f0a",
-                  "name": "SimpleComplementaryPWM_1",
+                  "id": "#d704711b-0678-4244-9787-df459180bbb4",
+                  "name": "TopoCtrlParameterScr",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[GraphicalUI.eez-project]:/userPages/5",
+                    "objectPath": "[GraphicalUI.eez-project]:/userPages/2",
                     "permanent": false
                   },
                   "icon": "svg:page"
@@ -215,7 +214,7 @@
             {
               "type": "row",
               "id": "#0cde942a-46d7-4556-9cc0-40bfcaa82b49",
-              "weight": 37.95993881516239,
+              "weight": 25.624890213179338,
               "children": [
                 {
                   "type": "tabset",
@@ -1036,24 +1035,19 @@
         "0": {
           "0": {},
           "1": {
-            "2": {
-              "0": {}
-            },
-            "3": {}
-          },
-          "2": {
-            "1": {},
-            "2": {},
-            "3": {
-              "$selected": true
+            "0": {},
+            "1": {
+              "3": {
+                "$selected": true
+              }
             }
           }
         }
       },
       "transform": {
         "translate": {
-          "x": -244.3666666666668,
-          "y": -220.8135986328125
+          "x": -343.0776041666668,
+          "y": -240.5943603515625
         },
         "scale": 2
       },
@@ -1088,11 +1082,12 @@
     "[GraphicalUI.eez-project]:/userPages/3[flow-state]": {
       "selection": {
         "0": {
+          "0": {
+            "$selected": true
+          },
           "2": {
             "2": {},
-            "3": {
-              "$selected": true
-            }
+            "3": {}
           },
           "3": {
             "1": {}
@@ -1116,18 +1111,16 @@
     "[GraphicalUI.eez-project]:/userPages/4[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          },
+          "0": {},
           "1": {
-            "3": {}
+            "$selected": true
           }
         }
       },
       "transform": {
         "translate": {
           "x": -280,
-          "y": -254.8223876953125
+          "y": -317.828369140625
         },
         "scale": 2
       },
@@ -1190,7 +1183,7 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "LAYOUT"
+    "MISCELLANEOUS"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,

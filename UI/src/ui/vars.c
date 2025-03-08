@@ -127,3 +127,95 @@ bool get_var_param_3_en_b() {
 void set_var_param_3_en_b(bool value) {
     param_3_en_b = value;
 }
+
+/*
+ * PCC params
+ */
+float* pcc_param_duty_cycle_pf32;
+float* pcc_param_sw_freq_pf32;
+
+float get_var_pcc_param_duty_cycle_f32() {
+    if(pcc_param_duty_cycle_pf32)
+        return *pcc_param_duty_cycle_pf32;
+   return 0.0f;
+}
+
+void set_var_pcc_param_duty_cycle_f32(float value) {
+    if(pcc_param_duty_cycle_pf32)
+        *pcc_param_duty_cycle_pf32 = value;
+}
+
+int32_t get_var_pcc_param_duty_cycle_i32() {
+    if(pcc_param_duty_cycle_pf32)
+        return (int32_t)(*pcc_param_duty_cycle_pf32 * 100.0f);
+    return 0;
+}
+
+void set_var_pcc_param_duty_cycle_i32(int32_t value) {
+    if(pcc_param_duty_cycle_pf32)
+        *pcc_param_duty_cycle_pf32 = (float)value / 100.0f;
+}
+
+int32_t get_var_pcc_param_sw_freq_i32() {
+    if(pcc_param_sw_freq_pf32)
+        return *pcc_param_sw_freq_pf32 * 100.0f;
+    return 0.0f;
+}
+
+void set_var_pcc_param_sw_freq_i32(int32_t value) {
+    if(pcc_param_sw_freq_pf32)
+        *pcc_param_sw_freq_pf32 = (float)value / 100.0f;
+}
+
+/*
+ * PCC edit params enable.
+ */
+bool pcc_param_duty_edit_en;
+
+bool get_var_pcc_param_duty_edit_en() {
+    return pcc_param_duty_edit_en;
+}
+
+void set_var_pcc_param_duty_edit_en(bool value) {
+    pcc_param_duty_edit_en = value;
+}
+
+bool pcc_param_sw_freq_edit_en;
+
+bool get_var_pcc_param_sw_freq_edit_en() {
+    return pcc_param_sw_freq_edit_en;
+}
+
+void set_var_pcc_param_sw_freq_edit_en(bool value) {
+    pcc_param_sw_freq_edit_en = value;
+}
+
+bool pcc_param_mod_freq_edit_en;
+
+bool get_var_pcc_param_mod_freq_edit_en() {
+    return pcc_param_mod_freq_edit_en;
+}
+
+void set_var_pcc_param_mod_freq_edit_en(bool value) {
+    pcc_param_mod_freq_edit_en = value;
+}
+
+bool pcc_param_amplitude_edit_en;
+
+bool get_var_pcc_param_amplitude_edit_en() {
+    return pcc_param_amplitude_edit_en;
+}
+
+void set_var_pcc_param_amplitude_edit_en(bool value) {
+    pcc_param_amplitude_edit_en = value;
+}
+
+bool pcc_param_phase_shift_edit_en;
+
+bool get_var_pcc_param_phase_shift_edit_en() {
+    return pcc_param_phase_shift_edit_en;
+}
+
+void set_var_pcc_param_phase_shift_edit_en(bool value) {
+    pcc_param_phase_shift_edit_en = value;
+}

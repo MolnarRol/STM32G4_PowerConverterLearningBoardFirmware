@@ -31,7 +31,6 @@ typedef struct _objects_t {
     lv_obj_t *settings_btn;
     lv_obj_t *ctrl_param__sw_freq_edit_en_btn;
     lv_obj_t *ctrl_param__sw_freq_spinbox;
-    lv_obj_t *ctrl_param__sw_freq_unit_dropdown;
     lv_obj_t *ctrl_param__phase_shift_edit_en_btn;
     lv_obj_t *ctrl_param__phase_shift_spinbox;
     lv_obj_t *ctrl_param__phase_shift_slider;
@@ -49,6 +48,7 @@ typedef struct _objects_t {
     lv_obj_t *obj1;
     lv_obj_t *power_topology_control_btn;
     lv_obj_t *topo_name_label;
+    lv_obj_t *topo_state_label;
     lv_obj_t *ctrl_param_main_cnt;
     lv_obj_t *ctrl_param_sw_freq_cnt;
     lv_obj_t *ctrl_param__sw_freq_cnt_label;
@@ -69,8 +69,8 @@ typedef struct _objects_t {
     lv_obj_t *ctrl_param_duty_cnt;
     lv_obj_t *ctrl_param_1__duty_name_label;
     lv_obj_t *ctrl_param_1__duty_slider_cnt;
-    lv_obj_t *ctrl_param_1__duty_min_label;
     lv_obj_t *ctrl_param_1__duty_max_label;
+    lv_obj_t *ctrl_param_1__duty_min_label;
     lv_obj_t *ctrl_param_amplitude_cnt;
     lv_obj_t *ctrl_param__amplitude_name_label;
     lv_obj_t *ctrl_param__amplitude_slider_cnt;
@@ -78,12 +78,12 @@ typedef struct _objects_t {
     lv_obj_t *ctrl_param__amplitude_max_val_palceholder_label;
     lv_obj_t *ctrl_param_deadtime_cnt;
     lv_obj_t *ctrl_param__deadtime_label;
-    lv_obj_t *sine_pwm__sw_freq_edit_disabled_val_label;
-    lv_obj_t *sine_pwm__sw_freq_edit_disabled_val_label_1;
-    lv_obj_t *sine_pwm__mod_freq_edit_disabled_val_label;
-    lv_obj_t *sine_pwm__amplitude_edit_disabled_val_label_1;
-    lv_obj_t *sine_pwm__amplitude_edit_disabled_val_label;
-    lv_obj_t *sine_pwm__deadtime_edit_disabled_val_label;
+    lv_obj_t *pcc_param__sw_freq_edit_disabled_val_label;
+    lv_obj_t *pcc_param__phase_shift_edit_disabled_val_label;
+    lv_obj_t *pcc_param__mod_freq_edit_disabled_val_label;
+    lv_obj_t *pcc_param__duty_cycle_edit_disabled_val_label;
+    lv_obj_t *pcc_param__amplitude_edit_disabled_val_label;
+    lv_obj_t *pcc_param__deadtime_edit_disabled_val_label;
     lv_obj_t *param_cnt_label_4;
     lv_obj_t *obj2;
     lv_obj_t *sw_info_container;
@@ -114,12 +114,6 @@ void tick_screen_topo_ctrl_parameter_scr();
 
 void create_screen_settings();
 void tick_screen_settings();
-
-void create_user_widget_status_bar(lv_obj_t *parent_obj, int startWidgetIndex);
-void tick_user_widget_status_bar(int startWidgetIndex);
-
-void create_user_widget_param_slider_and_spinbox(lv_obj_t *parent_obj, int startWidgetIndex);
-void tick_user_widget_param_slider_and_spinbox(int startWidgetIndex);
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
