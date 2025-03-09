@@ -129,7 +129,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  PCC_SetTopology_b(&PCC_Topology_SinglePhaseThyristorVoltageConverter_s);
+  PCC_SetTopology_b(&PCC_Topology_SinglePhaseTriacVoltageConverter_s);
   PCC_InitializeActiveTopology_b();
   PCC_StartActiveTopology_v();
   while (1)
