@@ -134,7 +134,7 @@ static void _s_deinit_v(void)
     /* Reset timer 1 periphery. */
     SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                       /* Force TIM1 peripheral reset. */
     CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                     /* Release TIM1 peripheral reset. */
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                          /* Enable clocks for TIM1. */
+    CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                        /* Disable clocks for TIM1. */
 }
 
 static void _s_start_pulses_v(void)
