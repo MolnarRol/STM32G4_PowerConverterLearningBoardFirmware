@@ -135,6 +135,8 @@ float* pcc_param_duty_cycle_pf32;
 float* pcc_param_sw_freq_pf32;
 float* pcc_param_deadtime_pf32;
 float* pcc_param_phase_shift_pf32;
+float* pcc_param_mod_freq_pf32;
+float* pcc_param_amplitude_pf32;
 
 float get_var_pcc_param_duty_cycle_f32() {
     if(pcc_param_duty_cycle_pf32)
@@ -202,6 +204,51 @@ void set_var_pcc_param_phase_shift_i32(int32_t value) {
     if(pcc_param_phase_shift_pf32)
         *pcc_param_phase_shift_pf32 = (float)value / 100.0f;
 }
+
+float get_var_pcc_param_mod_freq_f32() {
+    if(pcc_param_mod_freq_pf32)
+         return *pcc_param_mod_freq_pf32;
+    return 0.0f;
+}
+
+void set_var_pcc_param_mod_freq_f32(float value) {
+    if(pcc_param_mod_freq_pf32)
+        *pcc_param_mod_freq_pf32 = value;
+}
+
+int32_t get_var_pcc_param_mod_freq_i32() {
+    if(pcc_param_mod_freq_pf32)
+         return (int32_t)(*pcc_param_mod_freq_pf32 * 100.0f);
+    return 0;
+}
+
+void set_var_pcc_param_mod_freq_i32(int32_t value) {
+    if(pcc_param_mod_freq_pf32)
+        *pcc_param_mod_freq_pf32 = (float)value / 100.0f;
+}
+
+float get_var_pcc_param_amplitude_f32() {
+    if(pcc_param_amplitude_pf32)
+         return *pcc_param_amplitude_pf32;
+    return 0.0f;
+}
+
+void set_var_pcc_param_amplitude_f32(float value) {
+    if(pcc_param_amplitude_pf32)
+        *pcc_param_amplitude_pf32 = value;
+}
+
+int32_t get_var_pcc_param_amplitude_i32() {
+    if(pcc_param_amplitude_pf32)
+         return (int32_t)(*pcc_param_amplitude_pf32 * 100.0f);
+    return 0;
+}
+
+void set_var_pcc_param_amplitude_i32(int32_t value) {
+    if(pcc_param_amplitude_pf32)
+        *pcc_param_amplitude_pf32 = (float)value / 100.0f;
+}
+
 /*
  * PCC edit params enable.
  */

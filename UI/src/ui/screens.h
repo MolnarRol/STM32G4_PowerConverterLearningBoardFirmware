@@ -64,8 +64,8 @@ typedef struct _objects_t {
     lv_obj_t *ctrl_param_mod_freq_cnt;
     lv_obj_t *ctrl_param__mod_freq_name_label;
     lv_obj_t *ctrl_param__mod_freq_slider_cnt;
-    lv_obj_t *ctrl_param__mod_freq_min_val_palceholder_label;
     lv_obj_t *ctrl_param__mod_freq_max_val_palceholder_label;
+    lv_obj_t *ctrl_param__mod_freq_min_val_palceholder_label;
     lv_obj_t *ctrl_param_duty_cnt;
     lv_obj_t *ctrl_param_1__duty_name_label;
     lv_obj_t *ctrl_param_1__duty_slider_cnt;
@@ -74,8 +74,8 @@ typedef struct _objects_t {
     lv_obj_t *ctrl_param_amplitude_cnt;
     lv_obj_t *ctrl_param__amplitude_name_label;
     lv_obj_t *ctrl_param__amplitude_slider_cnt;
-    lv_obj_t *ctrl_param__amplitude_min_val_palceholder_label;
     lv_obj_t *ctrl_param__amplitude_max_val_palceholder_label;
+    lv_obj_t *ctrl_param__amplitude_min_val_palceholder_label;
     lv_obj_t *ctrl_param_deadtime_cnt;
     lv_obj_t *ctrl_param__deadtime_label;
     lv_obj_t *pcc_param__sw_freq_edit_disabled_val_label;

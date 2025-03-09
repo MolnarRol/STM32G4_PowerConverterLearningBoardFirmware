@@ -198,6 +198,38 @@
         "defaultValue": "0",
         "persistent": false,
         "native": false
+      },
+      {
+        "objID": "26e77021-a42d-4470-99be-654ea8258495",
+        "name": "pcc_param_mod_freq_f32",
+        "type": "float",
+        "defaultValue": "0",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "49107f93-0d25-42f9-8bfa-d615f8472598",
+        "name": "pcc_param_mod_freq_i32",
+        "type": "integer",
+        "defaultValue": "0",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "ca2f98f8-c0a9-40ab-d352-6b7c24359e17",
+        "name": "pcc_param_amplitude_f32",
+        "type": "float",
+        "defaultValue": "0",
+        "persistent": false,
+        "native": false
+      },
+      {
+        "objID": "8447d7c5-4872-4921-84da-3b263ac9ffcf",
+        "name": "pcc_param_amplitude_i32",
+        "type": "integer",
+        "defaultValue": "0",
+        "persistent": false,
+        "native": false
       }
     ],
     "structures": [],
@@ -893,7 +925,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": true,
+                  "hiddenInEditor": false,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_sw_freq_cnt",
@@ -917,7 +949,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_cnt_label",
@@ -971,7 +1003,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_edit_en_btn",
@@ -1022,7 +1054,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_spinbox",
@@ -1082,7 +1114,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_label",
@@ -1135,7 +1167,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_label",
@@ -1189,7 +1221,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_placeholder_label",
@@ -1242,7 +1274,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_placeholder_label",
@@ -1323,7 +1355,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_phase_shift_cnt",
@@ -1347,7 +1379,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__phase_shift_name_label",
@@ -1401,7 +1433,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__phase_shift_edit_en_btn",
@@ -1450,7 +1482,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__phase_shift_spinbox",
@@ -1510,7 +1542,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__phase_shift_slider_cnt",
@@ -1534,7 +1566,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__phase_shift_slider",
@@ -1584,7 +1616,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__phase_shift_max_val_palceholder_label",
@@ -1638,7 +1670,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__phase_shift_min_val_palceholder_label",
@@ -1739,7 +1771,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": true,
+                  "hiddenInEditor": false,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_mod_freq_cnt",
@@ -1763,7 +1795,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__mod_freq_name_label",
@@ -1817,7 +1849,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__mod_freq_edit_en_btn",
@@ -1834,7 +1866,7 @@
                       "flagScrollDirection": "",
                       "scrollSnapX": "",
                       "scrollSnapY": "",
-                      "checkedState": "pcc_param_sw_freq_edit_en",
+                      "checkedState": "pcc_param_mod_freq_edit_en",
                       "checkedStateType": "expression",
                       "disabledStateType": "literal",
                       "states": "",
@@ -1866,7 +1898,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__mod_freq_spinbox",
@@ -1908,8 +1940,8 @@
                       "rollover": false,
                       "step": 1,
                       "stepType": "literal",
-                      "value": 0,
-                      "valueType": "literal"
+                      "value": "pcc_param_mod_freq_i32",
+                      "valueType": "expression"
                     },
                     {
                       "objID": "dff1b62e-b6d4-40e4-f99b-20a83310f708",
@@ -1926,7 +1958,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__mod_freq_slider_cnt",
@@ -1950,7 +1982,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__mod_freq_slider",
@@ -1979,8 +2011,8 @@
                           "min": 0,
                           "max": 100,
                           "mode": "NORMAL",
-                          "value": 0,
-                          "valueType": "literal",
+                          "value": "pcc_param_mod_freq_f32",
+                          "valueType": "expression",
                           "valueLeft": 0,
                           "valueLeftType": "literal",
                           "enableAnimation": true
@@ -2000,10 +2032,10 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
-                          "identifier": "ctrl_param__mod_freq_min_val_palceholder_label",
+                          "identifier": "ctrl_param__mod_freq_max_val_palceholder_label",
                           "leftUnit": "px",
                           "topUnit": "px",
                           "widthUnit": "content",
@@ -2054,10 +2086,10 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
-                          "identifier": "ctrl_param__mod_freq_max_val_palceholder_label",
+                          "identifier": "ctrl_param__mod_freq_min_val_palceholder_label",
                           "leftUnit": "px",
                           "topUnit": "px",
                           "widthUnit": "content",
@@ -2571,7 +2603,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": true,
+                  "hiddenInEditor": false,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_amplitude_cnt",
@@ -2595,7 +2627,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__amplitude_name_label",
@@ -2649,7 +2681,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__amplitude_edit_en_btn",
@@ -2698,7 +2730,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__amplitude_spinbox",
@@ -2740,8 +2772,8 @@
                       "rollover": false,
                       "step": 1,
                       "stepType": "literal",
-                      "value": 0,
-                      "valueType": "literal"
+                      "value": "pcc_param_amplitude_i32",
+                      "valueType": "expression"
                     },
                     {
                       "objID": "3a45c894-1d8a-47d0-e6f6-a1f8731dfa0d",
@@ -2758,7 +2790,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": true,
+                      "hiddenInEditor": false,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__amplitude_slider_cnt",
@@ -2782,7 +2814,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__amplitude_slider",
@@ -2811,8 +2843,8 @@
                           "min": 0,
                           "max": 100,
                           "mode": "NORMAL",
-                          "value": "0",
-                          "valueType": "literal",
+                          "value": "pcc_param_amplitude_f32",
+                          "valueType": "expression",
                           "valueLeft": 0,
                           "valueLeftType": "literal",
                           "enableAnimation": true
@@ -2832,10 +2864,10 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
-                          "identifier": "ctrl_param__amplitude_min_val_palceholder_label",
+                          "identifier": "ctrl_param__amplitude_max_val_palceholder_label",
                           "leftUnit": "px",
                           "topUnit": "px",
                           "widthUnit": "content",
@@ -2886,10 +2918,10 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": true,
+                          "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [],
-                          "identifier": "ctrl_param__amplitude_max_val_palceholder_label",
+                          "identifier": "ctrl_param__amplitude_min_val_palceholder_label",
                           "leftUnit": "px",
                           "topUnit": "px",
                           "widthUnit": "content",

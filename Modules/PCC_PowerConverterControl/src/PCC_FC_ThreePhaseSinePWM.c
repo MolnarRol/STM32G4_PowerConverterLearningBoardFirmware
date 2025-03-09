@@ -31,8 +31,8 @@ static PCC_Params_struct _s_set_params_s = {
     .type_e = PCC_ParamType_SinePWM_e,
     .SinePWM_struct = {
         .switching_frequency__Hz__s = {.min_f32 = 1000.0f, .max_f32 = 100e3f, .val_f32 = 10.0e3f},
-        .modulation_frequency__Hz__s = {.min_f32 = 0.0f, .max_f32 = 1000.0f, .val_f32 = 0.0f},
-        .amplitude__per_cent__s = {.min_f32 = -100.0f, .max_f32 = 100.0f, .val_f32 = 0.0f},
+        .modulation_frequency__Hz__s = {.min_f32 = -1000.0f, .max_f32 = 1000.0f, .val_f32 = 0.0f},
+        .amplitude__per_cent__s = {.min_f32 = 0.0f, .max_f32 = 100.0f, .val_f32 = 0.0f},
         .dead_time__s__s = {.min_f32 = 0.0f, .max_f32 = 5000.0e-9f, .val_f32 = 200.0e-9f}
     }
 };
@@ -41,8 +41,8 @@ static volatile f32 _s_switching_freq__Hz__f32;
 static volatile f32 _s_modulation_freq__Hz__f32;
 static volatile f32 _s_amplitude__per_cent__f32;
 static volatile f32 _s_dead_time__s__f32;
-static volatile f32 _s_commutation_angle__rad__f32 = 0.0f;
-static volatile f32 _s_commutation_angle_step_per_period__rad__f32;
+static volatile f32 _s_commutation_angle__deg__f32 = 0.0f;
+static volatile f32 _s_commutation_angle_step_per_period__deg__f32;
 
 /**********************************************************************************************************************
  * Topology handler structure.
@@ -206,7 +206,7 @@ static void _s_start_v(void)
         );
 
     f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
-    arm_sin_cos_f32(    _s_commutation_angle__rad__f32,
+    arm_sin_cos_f32(    _s_commutation_angle__deg__f32,
                         &sin_val_f32,
                         &cos_val_f32);
 
@@ -227,11 +227,11 @@ static void _s_start_v(void)
     TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, v_val_f32);
     TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, w_val_f32);
 
-    _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+    _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
 
-    _s_commutation_angle__rad__f32 += _s_commutation_angle_step_per_period__rad__f32;
-    if(_s_commutation_angle__rad__f32 >= TWO_PI_d) _s_commutation_angle__rad__f32 -= TWO_PI_d;
-    else if(_s_commutation_angle__rad__f32 < 0.0f) _s_commutation_angle__rad__f32 += TWO_PI_d;
+    _s_commutation_angle__deg__f32 += _s_commutation_angle_step_per_period__deg__f32;
+    if(_s_commutation_angle__deg__f32 >= 360.0f) _s_commutation_angle__deg__f32 -= 360.0f;
+    else if(_s_commutation_angle__deg__f32 < 0.0f) _s_commutation_angle__deg__f32 += 360.0f;
 
     SET_BIT(TIM1->CCMR1, TIM_CCMR1_OC1PE | TIM_CCMR1_OC2PE);                                    /* Enable pre-load for capture compare 1 and 2. */
     SET_BIT(TIM1->CCMR2, TIM_CCMR2_OC3PE);                                                      /* Enable pre-load for capture compare 3. */
@@ -255,9 +255,10 @@ static void _s_start_v(void)
             TIM_CR1_CEN);                                                                       /* Enable counter. */
 }
 
+f32 u_val_f32, v_val_f32, w_val_f32;
 static void _s_irq_handler_v(void)
 {
-    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32, u_val_f32, v_val_f32, w_val_f32;
+    f32 sin_val_f32, cos_val_f32, alpha_val_f32, beta_val_f32;
     PCC_CheckAndCorrectIncorrectParameters_v();
 
     /* Switching frequency was changed. */
@@ -274,7 +275,7 @@ static void _s_irq_handler_v(void)
         _s_switching_freq__Hz__f32 = _SET_SW_FREQ_d;
 
         /* Update commutation angle step. */
-        _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
     }
 
     /* Modulation frequency was changed. */
@@ -283,13 +284,13 @@ static void _s_irq_handler_v(void)
         _s_modulation_freq__Hz__f32 = _SET_MOD_FREQ_d;
 
         /* Update commutation angle step. */
-        _s_commutation_angle_step_per_period__rad__f32 = (PI_d * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
     }
 
     _s_amplitude__per_cent__f32 = _SET_AMPLIDTUDE_d;
 
 
-    arm_sin_cos_f32(    _s_commutation_angle__rad__f32,
+    arm_sin_cos_f32(    _s_commutation_angle__deg__f32,
                         &sin_val_f32,
                         &cos_val_f32);
 
@@ -325,9 +326,9 @@ static void _s_irq_handler_v(void)
         _s_dead_time__s__f32 = _SET_DEADTIME_d;
     }
 
-    _s_commutation_angle__rad__f32 += _s_commutation_angle_step_per_period__rad__f32;
-    if(_s_commutation_angle__rad__f32 >= TWO_PI_d) _s_commutation_angle__rad__f32 -= TWO_PI_d;
-    else if(_s_commutation_angle__rad__f32 < 0.0f) _s_commutation_angle__rad__f32 += TWO_PI_d;
+    _s_commutation_angle__deg__f32 += _s_commutation_angle_step_per_period__deg__f32;
+    if(_s_commutation_angle__deg__f32 >= 360.0f) _s_commutation_angle__deg__f32 -= 360.0f;
+    else if(_s_commutation_angle__deg__f32 < 0.0f) _s_commutation_angle__deg__f32 += 360.0f;
 
     /* Clear interrupt flag. */
     CLEAR_BIT(TIM1->SR, TIM_SR_UIF);

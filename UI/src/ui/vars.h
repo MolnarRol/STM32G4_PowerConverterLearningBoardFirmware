@@ -26,7 +26,11 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_EDIT_EN = 8,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_DEADTIME_I32 = 9,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_I32 = 10,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_F32 = 11
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PHASE_SHIFT_F32 = 11,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_F32 = 12,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_I32 = 13,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_F32 = 14,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_I32 = 15
 };
 
 // Native global variables
@@ -55,6 +59,14 @@ extern int32_t get_var_pcc_param_phase_shift_i32();
 extern void set_var_pcc_param_phase_shift_i32(int32_t value);
 extern float get_var_pcc_param_phase_shift_f32();
 extern void set_var_pcc_param_phase_shift_f32(float value);
+extern float get_var_pcc_param_mod_freq_f32();
+extern void set_var_pcc_param_mod_freq_f32(float value);
+extern int32_t get_var_pcc_param_mod_freq_i32();
+extern void set_var_pcc_param_mod_freq_i32(int32_t value);
+extern float get_var_pcc_param_amplitude_f32();
+extern void set_var_pcc_param_amplitude_f32(float value);
+extern int32_t get_var_pcc_param_amplitude_i32();
+extern void set_var_pcc_param_amplitude_i32(int32_t value);
 
 
 #ifdef __cplusplus
