@@ -9,7 +9,6 @@
 #include "UTIL_public_interface.h"
 
 static void PCC_LC_DoubleImpulseControlledRectifier_Init_v(void);
-static void PCC_LC_DoubleImpulseControlledRectifier_ActiveHandling_v(void);
 static void PCC_LC_DoubleImpulseControlledRectifier_DeInit_v(void);
 
 static void PCC_LC_DoubleImpulseControlledRectifier_StartPulses_v(void);
@@ -20,7 +19,6 @@ const PCC_TopologyHandle_struct PCC_Topology_DoubleImpulseControlledRectifier_s 
 {
         .initialize_pfv     = PCC_LC_DoubleImpulseControlledRectifier_Init_v,
         .start_pf           = PCC_LC_ZC_Enable_v,
-        .active_handler_pfv = PCC_LC_DoubleImpulseControlledRectifier_ActiveHandling_v,
         .stop_pfv           = PCC_LC_ZC_Disable_v,
         .deinitalize_pfv    = PCC_LC_DoubleImpulseControlledRectifier_DeInit_v,
         .isr_handler_pfv    = PCC_LC_ZC_IrqHandler_v,
@@ -144,10 +142,6 @@ static void PCC_LC_DoubleImpulseControlledRectifier_Init_v(void)
     TIM2->SMCR                  |= TIM_SMCR_SMS_3;                          /* Set TIM2 as slave for TIM1_TRGO */
 
     PCC_LC_ZC_Init_v(&s_zc_control_s, ZC_LC_ZC_SENSITIVE_TO_RISING_EDGE_d);
-}
-
-static void PCC_LC_DoubleImpulseControlledRectifier_ActiveHandling_v(void)
-{
 }
 
 static void PCC_LC_DoubleImpulseControlledRectifier_DeInit_v(void)

@@ -9,7 +9,6 @@
 #include "UTIL_public_interface.h"
 
 static void PCC_LC_SinglePhaseTriacVoltageConverter_Init_v(void);
-static void PCC_LC_SinglePhaseTriacVoltageConverter_ActiveHandling_v(void);
 static void PCC_LC_SinglePhaseTriacVoltageConverter_DeInit_v(void);
 
 static void PCC_LC_SinglePhaseTriacVoltageConverter_StartPulses_v(void);
@@ -20,7 +19,6 @@ const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseTriacVoltageConverter_s 
 {
         .initialize_pfv     = PCC_LC_SinglePhaseTriacVoltageConverter_Init_v,
         .start_pf           = PCC_LC_ZC_Enable_v,
-        .active_handler_pfv = PCC_LC_SinglePhaseTriacVoltageConverter_ActiveHandling_v,
         .stop_pfv           = PCC_LC_ZC_Disable_v,
         .deinitalize_pfv    = PCC_LC_SinglePhaseTriacVoltageConverter_DeInit_v,
         .isr_handler_pfv    = PCC_LC_ZC_IrqHandler_v,
@@ -86,10 +84,6 @@ static void PCC_LC_SinglePhaseTriacVoltageConverter_Init_v(void)
     TIM1->SMCR                  |= TIM_SMCR_SMS_3 | TIM_SMCR_TS_3 | TIM_SMCR_TS_1;
 
     PCC_LC_ZC_Init_v(&s_zc_control_s, ZC_LC_ZC_SENSITIVE_TO_ANY_EDGE_d);
-}
-
-static void PCC_LC_SinglePhaseTriacVoltageConverter_ActiveHandling_v(void)
-{
 }
 
 static void PCC_LC_SinglePhaseTriacVoltageConverter_DeInit_v(void)

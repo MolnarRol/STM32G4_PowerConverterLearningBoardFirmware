@@ -11,9 +11,6 @@ static void PCC_FC_FullBridgePhaseShiftedPWM_Stop_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v(void);
 static void PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v(void);
 
-/* TODO: Remove active handling. */
-static void PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v(void){};
-
 /**********************************************************************************************************************
  * Topology control parameters.
  **********************************************************************************************************************/
@@ -39,7 +36,6 @@ const PCC_TopologyHandle_struct PCC_Topology_FullBridgePhaseShiftedPWM_s =
     .ctrl_params_pv     = &_s_set_params_s,
     .initialize_pfv     = PCC_FC_FullBridgePhaseShiftedPWM_Init_v,
     .start_pf           = PCC_FC_FullBridgePhaseShiftedPWM_Start_v,
-    .active_handler_pfv = PCC_FC_FullBridgePhaseShiftedPWM_ActiveHandling_v,
     .stop_pfv           = PCC_FC_FullBridgePhaseShiftedPWM_Stop_v,
     .deinitalize_pfv    = PCC_FC_FullBridgePhaseShiftedPWM_DeInit_v,
     .isr_handler_pfv    = PCC_FC_FullBridgePhaseShiftedPWM_IrqHandler_v,

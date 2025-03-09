@@ -9,7 +9,6 @@
 #include "UTIL_public_interface.h"
 
 static void PCC_LC_SixPulseThreePhaseControlledRectifier_Init_v(void);
-static void PCC_LC_SixPulseThreePhaseControlledRectifier_ActiveHandling_v(void);
 static void PCC_LC_SixPulseThreePhaseControlledRectifier_DeInit_v(void);
 
 static void PCC_LC_SixPulseThreePhaseControlledRectifier_StartPulses_v(void);
@@ -20,7 +19,6 @@ const PCC_TopologyHandle_struct PCC_Topology_SixPulseThreePhaseControlledRectifi
 {
         .initialize_pfv     = PCC_LC_SixPulseThreePhaseControlledRectifier_Init_v,
         .start_pf           = PCC_LC_ZC_Enable_v,
-        .active_handler_pfv = PCC_LC_SixPulseThreePhaseControlledRectifier_ActiveHandling_v,
         .stop_pfv           = PCC_LC_ZC_Disable_v,
         .deinitalize_pfv    = PCC_LC_SixPulseThreePhaseControlledRectifier_DeInit_v,
         .isr_handler_pfv    = PCC_LC_ZC_IrqHandler_v,
@@ -191,10 +189,6 @@ static void PCC_LC_SixPulseThreePhaseControlledRectifier_Init_v(void)
     TIM3->SMCR                  |= TIM_SMCR_SMS_3 | TIM_SMCR_TS_0;         /* Set TIM3 as slave for TIM2_TRGO */
 
     PCC_LC_ZC_Init_v(&s_zc_control_s, ZC_LC_ZC_SENSITIVE_TO_RISING_EDGE_d);
-}
-
-static void PCC_LC_SixPulseThreePhaseControlledRectifier_ActiveHandling_v(void)
-{
 }
 
 static void PCC_LC_SixPulseThreePhaseControlledRectifier_DeInit_v(void)

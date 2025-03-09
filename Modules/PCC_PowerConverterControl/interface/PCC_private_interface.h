@@ -58,9 +58,7 @@ typedef struct
     const PCC_Topologies_enum               topology_identifier_e;
     PCC_Params_struct * const               ctrl_params_pv;
     void (*const initialize_pfv)		    (void);
-    void (*const initialized_pfv)           (void);
     void (*const start_pf)				    (void);
-    void (*const active_handler_pfv)	    (void);
     void (*const stop_pfv)				    (void);
     void (*const deinitalize_pfv)		    (void);
     void (*const isr_handler_pfv)           (void);

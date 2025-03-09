@@ -34,6 +34,8 @@
 #include <TD_SPI_public_interface.h>
 #include "ui.h"
 #include "stdio.h"
+
+#include "PCC_private_interface.h"
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 
@@ -127,6 +129,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  PCC_SetTopology_b(&PCC_Topology_SingleImpulseControlledRectifier_s);
+  PCC_InitializeActiveTopology_b();
+  PCC_StartActiveTopology_v();
   while (1)
   {
 #if 1
