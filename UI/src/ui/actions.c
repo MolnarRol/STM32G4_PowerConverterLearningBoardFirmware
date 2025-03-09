@@ -17,6 +17,7 @@ extern lv_indev_t *             input_push_btn_ps;
 extern float*                   pcc_param_duty_cycle_pf32;
 extern float*                   pcc_param_sw_freq_pf32;
 extern float*                   pcc_param_deadtime_pf32;
+extern float*                   pcc_param_phase_shift_pf32;
 
 void start_topology_callback(lv_event_t *e);
 void stop_topology_callback(lv_event_t *e);
@@ -45,6 +46,7 @@ void action_topology_screen_loaded(lv_event_t *e) {
 
     set_var_pcc_param_duty_edit_en(true);
     set_var_pcc_param_sw_freq_edit_en(true);
+    set_var_pcc_param_phase_shift_edit_en(true);
     PCC_InitializeActiveTopology_b();
 }
 
@@ -109,6 +111,29 @@ void start_topology_callback(lv_event_t *e) {
             lv_obj_clear_flag(objects.pcc_param__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
             break;
 
+        case PCC_ParamType_PhaseShiftedPWM_e:
+            if(!get_var_pcc_param_phase_shift_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__phase_shift_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_phase_shift_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Phase shift: %.2f degree", params_ps->PhaseShiftedPWM_struct.phase_shift__deg__s.val_f32);
+                lv_label_set_text(objects.pcc_param__phase_shift_edit_disabled_val_label, tmp_str);
+            }
+
+            if(!get_var_pcc_param_sw_freq_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Switching frequency: %.2f Hz", params_ps->PhaseShiftedPWM_struct.frequency__Hz__s.val_f32);
+                lv_label_set_text(objects.pcc_param__sw_freq_edit_disabled_val_label, tmp_str);
+            }
+
+            lv_obj_add_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param__phase_shift_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+            snprintf(tmp_str, sizeof(tmp_str), "Deadtime: %d ns", get_var_pcc_param_deadtime_i32());
+            lv_label_set_text(objects.pcc_param__deadtime_edit_disabled_val_label, tmp_str);
+            lv_obj_clear_flag(objects.pcc_param__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
+            break;
+
         default:
             break;
     }
@@ -145,6 +170,17 @@ void stop_topology_callback(lv_event_t *e) {
             lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.pcc_param__duty_cycle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__deadtime_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            break;
+
+        case PCC_ParamType_PhaseShiftedPWM_e:
+            lv_obj_clear_flag(objects.ctrl_param__sw_freq_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param__phase_shift_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_phase_shift_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__phase_shift_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.pcc_param__sw_freq_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.pcc_param__deadtime_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             break;
@@ -234,9 +270,6 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
     switch(topo_handle_s->ctrl_params_pv->type_e)
     {
         case PCC_ParamType_PWM_e:
-            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.val_f32;
-            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.val_f32;
-
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.min_f32);
             lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.max_f32);
@@ -258,15 +291,15 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
                                 topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.min_f32 * 100.0f,
                                 topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.max_f32 * 100.0f);
 
+
             lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
+
+            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.duty_cycle__per_cent__s.val_f32;
+            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->PWM_struct.frequency__Hz__s.val_f32;
             break;
 
         case PCC_ParamType_ComplementaryPWM_e:
-            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.val_f32;
-            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.val_f32;
-            pcc_param_deadtime_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.dead_time__s__s.val_f32;
-
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.min_f32);
             lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.max_f32);
@@ -295,12 +328,41 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_duty_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+
+            pcc_param_duty_cycle_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.duty_cycle__per_cent__s.val_f32;
+            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.frequency__Hz__s.val_f32;
+            pcc_param_deadtime_pf32 = &topo_handle_s->ctrl_params_pv->ComplementaryPWM_struct.dead_time__s__s.val_f32;
             break;
 
         case PCC_ParamType_PhaseShiftedPWM_e:
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.frequency__Hz__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_min_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.frequency__Hz__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__sw_freq_max_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__phase_shift_min_val_palceholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__phase_shift_max_val_palceholder_label, tmp_str);
+
+            lv_slider_set_range(objects.ctrl_param__phase_shift_slider,
+                                topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.min_f32,
+                                topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.max_f32);
+
+            lv_spinbox_set_range(objects.ctrl_param__phase_shift_spinbox,
+                                 topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.min_f32 * 100.0f,
+                                 topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.max_f32 * 100.0f);
+
+            lv_spinbox_set_range(objects.ctrl_param__sw_freq_spinbox,
+                                topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.frequency__Hz__s.min_f32 * 100.0f,
+                                topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.frequency__Hz__s.max_f32 * 100.0f);
+
             lv_obj_clear_flag(objects.ctrl_param_sw_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_phase_shift_cnt, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_deadtime_cnt, LV_OBJ_FLAG_HIDDEN);
+
+            pcc_param_phase_shift_pf32 = &topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.phase_shift__deg__s.val_f32;
+            pcc_param_sw_freq_pf32 = &topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.frequency__Hz__s.val_f32;
+            pcc_param_deadtime_pf32 = &topo_handle_s->ctrl_params_pv->PhaseShiftedPWM_struct.dead_time__s__s.val_f32;
             break;
 
         case PCC_ParamType_SinePWM_e:

@@ -17,7 +17,7 @@ PUI_Button_struct start_stop_btn_s =
 {
     .port_ps                                = GPIOB,
     .pin_number_u32                         = 12,
-    .minimum_valid_press_time__ticks__u32   = 50,
+    .minimum_valid_press_time__ticks__u32   = 20,
     .minimum_long_press_time__ticks__u32    = 1500,
     .tick_src_u32                           = HAL_GetTick
 };

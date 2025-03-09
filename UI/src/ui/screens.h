@@ -59,8 +59,8 @@ typedef struct _objects_t {
     lv_obj_t *ctrl_param_phase_shift_cnt;
     lv_obj_t *ctrl_param__phase_shift_name_label;
     lv_obj_t *ctrl_param__phase_shift_slider_cnt;
-    lv_obj_t *ctrl_param__phase_shift_min_val_palceholder_label;
     lv_obj_t *ctrl_param__phase_shift_max_val_palceholder_label;
+    lv_obj_t *ctrl_param__phase_shift_min_val_palceholder_label;
     lv_obj_t *ctrl_param_mod_freq_cnt;
     lv_obj_t *ctrl_param__mod_freq_name_label;
     lv_obj_t *ctrl_param__mod_freq_slider_cnt;
