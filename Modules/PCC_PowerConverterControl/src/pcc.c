@@ -16,7 +16,6 @@
 #define _CURRENT_HANDLE_ds              (s_PCC_ActiveTopologyHandler_ps)
 
 static PCC_TopologyHandleState_enum     s_PCC_TopologyState_e = PCC_UNINITIALIZED_e;
-//static PCC_Topologies_enum	            s_PCC_ActiveTopology_e = PCC_TOPO_SinglePWM_e;
 static PCC_TopologyHandle_struct* s_PCC_ActiveTopologyHandler_ps = NULL;
 
 const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
@@ -31,9 +30,9 @@ const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
     &PCC_Topology_ThreePhaseSinePWM_s,
     &PCC_Topology_SingleImpulseControlledRectifier_s,
     &PCC_Topology_SinglePhaseThyristorVoltageConverter_s,
-    &PCC_Topology_SinglePhaseTriacVoltageConverter_s
+    &PCC_Topology_SinglePhaseTriacVoltageConverter_s,
+    &PCC_Topology_DoubleImpulseControlledRectifier_s
 #if 0
-    &PCC_Topology_DoubleImpulseControlledRectifier_s,
     &PCC_Topology_SixPulseThreePhaseControlledRectifier_s,
     &PCC_Topology_ThreePulseThreePhaseControlledRectifier_s
 #endif
