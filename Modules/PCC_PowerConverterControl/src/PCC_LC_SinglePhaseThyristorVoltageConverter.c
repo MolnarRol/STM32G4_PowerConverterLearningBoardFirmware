@@ -53,7 +53,7 @@ const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseThyristorVoltageConverte
                                     .gd2_f1 = 1
                             }
                         },
-    .ctrl_name_str      = "1 phase AC voltage converter (Thyristor)\0"
+    .ctrl_name_str      = "1 phase AC/AC (Thyristor)\0"
 };
 
 /**********************************************************************************************************************

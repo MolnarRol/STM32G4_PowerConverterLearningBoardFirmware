@@ -57,7 +57,7 @@ const PCC_TopologyHandle_struct PCC_Topology_SixPulseThreePhaseControlledRectifi
                                     .gd6_f1 = 1
                             }
                         },
-    .ctrl_name_str      = "6 impulse controlled rectifier\0"
+    .ctrl_name_str      = "6 impulse AC/DC\0"
 };
 
 /**********************************************************************************************************************

@@ -57,7 +57,7 @@ const PCC_TopologyHandle_struct PCC_Topology_SinglePhaseTriacVoltageConverter_s 
                                     .gd6_f1 = 0
                             }
                         },
-    .ctrl_name_str      = "1 phase AC voltage converter (Triac)\0"
+    .ctrl_name_str      = "1 phase AC/AC (Triac)\0"
 };
 
 /**********************************************************************************************************************

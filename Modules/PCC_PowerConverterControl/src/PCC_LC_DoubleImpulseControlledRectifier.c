@@ -55,7 +55,7 @@ const PCC_TopologyHandle_struct PCC_Topology_DoubleImpulseControlledRectifier_s 
                                     .gd4_f1 = 1
                             }
                         },
-    .ctrl_name_str      = "2 impulse controlled rectifier\0"
+    .ctrl_name_str      = "2 impulse AC/DC\0"
 };
 
 /**********************************************************************************************************************

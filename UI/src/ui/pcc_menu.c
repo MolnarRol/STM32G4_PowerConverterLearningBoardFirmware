@@ -7,6 +7,7 @@
 #include "screens.h"
 #include "actions.h"
 #include "PCC_private_interface.h"
+#include "styles.h"
 
 extern lv_indev_t *            input_encoder_ps;
 extern lv_indev_t *            input_push_btn_ps;
@@ -34,7 +35,8 @@ void ui_init_pcc_menu_v(void)
         lv_obj_center(btn_label_p);
         lv_group_add_obj(groups.pcc_topology_select_grp, button_p);
 
-        lv_obj_set_style_bg_color(button_p, lv_color_hex(0xffbbbbbb), LV_PART_MAIN | LV_STATE_FOCUSED);
-        lv_obj_set_style_text_color(button_p, lv_color_hex(0xff000000), LV_PART_MAIN | LV_STATE_FOCUSED);
+        add_style_default_btn(button_p);
+//        lv_obj_set_style_bg_color(button_p, lv_color_hex(0xffbbbbbb), LV_PART_MAIN | LV_STATE_FOCUSED);
+//        lv_obj_set_style_text_color(button_p, lv_color_hex(0xff000000), LV_PART_MAIN | LV_STATE_FOCUSED);
     }
 }

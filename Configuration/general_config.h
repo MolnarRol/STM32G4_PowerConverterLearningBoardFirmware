@@ -12,7 +12,7 @@
 #include "stm32g4xx.h"
 #include "digital_interface_config.h"
 
-#define PROD_SW_VERSION_STR_d                       "0.1.0(develop)"
+#define PROD_SW_VERSION_STR_d                       "0.1.0(alpha)"
 #define PROD_HW_REVISION_STR_d                      "Rev. A"
 #define PROD_SOURCE_URL_d                           "https://github.com/MolnarRol/STM32G4_PowerConverterLearningBoardFirmware"
 
