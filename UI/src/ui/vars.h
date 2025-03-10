@@ -30,7 +30,13 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_F32 = 12,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_MOD_FREQ_I32 = 13,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_F32 = 14,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_I32 = 15
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_AMPLITUDE_I32 = 15,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_LINE_FREQ_F32 = 16,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PULSE_LEN_I32 = 17,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_F32 = 18,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_I32 = 19,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_PULSE_LEN_EDIT_EN = 20,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_EDIT_EN = 21
 };
 
 // Native global variables
@@ -67,6 +73,18 @@ extern float get_var_pcc_param_amplitude_f32();
 extern void set_var_pcc_param_amplitude_f32(float value);
 extern int32_t get_var_pcc_param_amplitude_i32();
 extern void set_var_pcc_param_amplitude_i32(int32_t value);
+extern float get_var_pcc_param_line_freq_f32();
+extern void set_var_pcc_param_line_freq_f32(float value);
+extern int32_t get_var_pcc_param_pulse_len_i32();
+extern void set_var_pcc_param_pulse_len_i32(int32_t value);
+extern float get_var_pcc_param_firing_angle_f32();
+extern void set_var_pcc_param_firing_angle_f32(float value);
+extern int32_t get_var_pcc_param_firing_angle_i32();
+extern void set_var_pcc_param_firing_angle_i32(int32_t value);
+extern bool get_var_pcc_param_pulse_len_edit_en();
+extern void set_var_pcc_param_pulse_len_edit_en(bool value);
+extern bool get_var_pcc_param_firing_angle_edit_en();
+extern void set_var_pcc_param_firing_angle_edit_en(bool value);
 
 
 #ifdef __cplusplus

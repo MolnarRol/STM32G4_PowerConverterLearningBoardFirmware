@@ -88,6 +88,11 @@ static void event_handler_cb_topo_ctrl_parameter_scr_topo_ctrl_parameter_scr(lv_
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_slider);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__deadtime_spinbox);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_edit_en_btn);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_spinbox);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__pulse_len_edit_en_btn);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__pulse_len_spinbox);
         // group: param_selector_sw_freq
         lv_group_remove_all_objs(groups.param_selector_sw_freq);
         // group: param_selector_duty
@@ -260,6 +265,61 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__deadtime_spinbo
         if (tick_value_change_obj != ta) {
             int32_t value = lv_spinbox_get_value(ta);
             set_var_pcc_param_deadtime_i32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_edit_en_btn(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            set_var_pcc_param_firing_angle_edit_en(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_firing_angle_i32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_slider(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_slider_get_value(ta);
+            set_var_pcc_param_firing_angle_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__pulse_len_edit_en_btn(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            set_var_pcc_param_pulse_len_edit_en(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__pulse_len_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_pulse_len_i32(value);
         }
     }
 }
@@ -1026,6 +1086,215 @@ void create_screen_topo_ctrl_parameter_scr() {
                     }
                 }
                 {
+                    // ctrl_param_firing_angle_cnt
+                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                    objects.ctrl_param_firing_angle_cnt = obj;
+                    lv_obj_set_pos(obj, LV_PCT(0), LV_PCT(0));
+                    lv_obj_set_size(obj, LV_PCT(100), 74);
+                    lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_radius(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_width(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_align(obj, LV_ALIGN_TOP_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_margin_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    {
+                        lv_obj_t *parent_obj = obj;
+                        {
+                            // ctrl_param__firing_angle_name_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__firing_angle_name_label = obj;
+                            lv_obj_set_pos(obj, 4, 4);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "Firing angle [degree]");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_TOP_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__firing_angle_edit_en_btn
+                            lv_obj_t *obj = lv_switch_create(parent_obj);
+                            objects.ctrl_param__firing_angle_edit_en_btn = obj;
+                            lv_obj_set_pos(obj, -4, 4);
+                            lv_obj_set_size(obj, 40, 20);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_edit_en_btn, LV_EVENT_ALL, 0);
+                            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_ON_FOCUS|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                            lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__firing_angle_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__firing_angle_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__firing_angle_slider_cnt
+                            lv_obj_t *obj = lv_obj_create(parent_obj);
+                            objects.ctrl_param__firing_angle_slider_cnt = obj;
+                            lv_obj_set_pos(obj, 4, 20);
+                            lv_obj_set_size(obj, LV_PCT(75), 49);
+                            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            {
+                                lv_obj_t *parent_obj = obj;
+                                {
+                                    // ctrl_param__firing_angle_slider
+                                    lv_obj_t *obj = lv_slider_create(parent_obj);
+                                    objects.ctrl_param__firing_angle_slider = obj;
+                                    lv_obj_set_pos(obj, LV_PCT(5), 9);
+                                    lv_obj_set_size(obj, LV_PCT(90), 12);
+                                    lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_slider, LV_EVENT_ALL, 0);
+                                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+                                }
+                                {
+                                    // ctrl_param__firing_angle_max_val_palceholder_label
+                                    lv_obj_t *obj = lv_label_create(parent_obj);
+                                    objects.ctrl_param__firing_angle_max_val_palceholder_label = obj;
+                                    lv_obj_set_pos(obj, -4, 0);
+                                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                    lv_label_set_text(obj, "<placeholder>");
+                                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                }
+                                {
+                                    // ctrl_param__firing_angle_min_val_palceholder_label
+                                    lv_obj_t *obj = lv_label_create(parent_obj);
+                                    objects.ctrl_param__firing_angle_min_val_palceholder_label = obj;
+                                    lv_obj_set_pos(obj, 4, 0);
+                                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                    lv_label_set_text(obj, "<placeholder>");
+                                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                }
+                            }
+                        }
+                    }
+                }
+                {
+                    // ctrl_param_pulse_len_cnt
+                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                    objects.ctrl_param_pulse_len_cnt = obj;
+                    lv_obj_set_pos(obj, LV_PCT(0), -19);
+                    lv_obj_set_size(obj, LV_PCT(100), 74);
+                    lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                    lv_obj_set_style_radius(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_color(obj, lv_color_hex(0xffe0e0e0), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_width(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    {
+                        lv_obj_t *parent_obj = obj;
+                        {
+                            // ctrl_param__pulse_len_cnt_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__pulse_len_cnt_label = obj;
+                            lv_obj_set_pos(obj, 4, 4);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "Pulse length [degree]");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_TOP_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_edit_en_btn
+                            lv_obj_t *obj = lv_switch_create(parent_obj);
+                            objects.ctrl_param__pulse_len_edit_en_btn = obj;
+                            lv_obj_set_pos(obj, -4, 4);
+                            lv_obj_set_size(obj, 40, 20);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__pulse_len_edit_en_btn, LV_EVENT_ALL, 0);
+                            lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_margin_top(obj, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__pulse_len_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 40, 36);
+                            lv_spinbox_set_digit_format(obj, 2, 0);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__pulse_len_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_min_val_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__pulse_len_min_val_label = obj;
+                            lv_obj_set_pos(obj, 4, 0);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "Min:");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_LEFT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_max_val_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__pulse_len_max_val_label = obj;
+                            lv_obj_set_pos(obj, 4, -4);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "Max:");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_min_val_placeholder_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__pulse_len_min_val_placeholder_label = obj;
+                            lv_obj_set_pos(obj, 40, 0);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "<placeholder>");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_LEFT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                        {
+                            // ctrl_param__pulse_len_max_val_placeholder_label
+                            lv_obj_t *obj = lv_label_create(parent_obj);
+                            objects.ctrl_param__pulse_len_max_val_placeholder_label = obj;
+                            lv_obj_set_pos(obj, 40, -4);
+                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                            lv_label_set_text(obj, "<placeholder>");
+                            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
+                    }
+                }
+                {
                     // pcc_param__sw_freq_edit_disabled_val_label
                     lv_obj_t *obj = lv_label_create(parent_obj);
                     objects.pcc_param__sw_freq_edit_disabled_val_label = obj;
@@ -1107,6 +1376,36 @@ void create_screen_topo_ctrl_parameter_scr() {
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_PCT(100), LV_SIZE_CONTENT);
                     lv_label_set_text(obj, "Dead time: <> ns");
+                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                    lv_obj_set_style_border_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_width(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_radius(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_left(obj, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_margin_top(obj, -4, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // pcc_param__firing_angle_edit_disabled_val_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.pcc_param__firing_angle_edit_disabled_val_label = obj;
+                    lv_obj_set_pos(obj, 0, 0);
+                    lv_obj_set_size(obj, LV_PCT(100), LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "");
+                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                    lv_obj_set_style_border_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_border_width(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_radius(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_pad_left(obj, 4, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_margin_top(obj, -4, LV_PART_MAIN | LV_STATE_DEFAULT);
+                }
+                {
+                    // pcc_param__pulse_len_edit_disabled_val_label
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.pcc_param__pulse_len_edit_disabled_val_label = obj;
+                    lv_obj_set_pos(obj, 0, 0);
+                    lv_obj_set_size(obj, LV_PCT(100), LV_SIZE_CONTENT);
+                    lv_label_set_text(obj, "");
                     lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
                     lv_obj_set_style_border_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_obj_set_style_border_width(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1260,6 +1559,53 @@ void tick_screen_topo_ctrl_parameter_scr() {
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__deadtime_spinbox;
             lv_spinbox_set_value(objects.ctrl_param__deadtime_spinbox, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_pcc_param_firing_angle_edit_en();
+        bool cur_val = lv_obj_has_state(objects.ctrl_param__firing_angle_edit_en_btn, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__firing_angle_edit_en_btn;
+            if (new_val) lv_obj_add_state(objects.ctrl_param__firing_angle_edit_en_btn, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.ctrl_param__firing_angle_edit_en_btn, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_firing_angle_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__firing_angle_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__firing_angle_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__firing_angle_spinbox, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_firing_angle_f32();
+        int32_t cur_val = lv_slider_get_value(objects.ctrl_param__firing_angle_slider);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__firing_angle_slider;
+            lv_slider_set_value(objects.ctrl_param__firing_angle_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = get_var_pcc_param_pulse_len_edit_en();
+        bool cur_val = lv_obj_has_state(objects.ctrl_param__pulse_len_edit_en_btn, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__pulse_len_edit_en_btn;
+            if (new_val) lv_obj_add_state(objects.ctrl_param__pulse_len_edit_en_btn, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.ctrl_param__pulse_len_edit_en_btn, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_pulse_len_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__pulse_len_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__pulse_len_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__pulse_len_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }

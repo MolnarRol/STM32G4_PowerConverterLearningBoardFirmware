@@ -21,12 +21,13 @@ extern float*           pcc_param_deadtime_pf32;
 extern float*           pcc_param_phase_shift_pf32;
 extern float*           pcc_param_mod_freq_pf32;
 extern float*           pcc_param_amplitude_pf32;
+extern float*           pcc_param_firing_angle_pf32;
+extern float*           pcc_param_pulse_len_pf32;
 
 void start_topology_callback(lv_event_t *e);
 void stop_topology_callback(lv_event_t *e);
 
 static void remove_all_indev_events(lv_indev_t * indev_p) {
-    printf("%s\n", __func__);
     for(u32 event_count_u32 = lv_indev_get_event_count(input_push_btn_ps); event_count_u32 > 0; event_count_u32--)
     {
         lv_indev_remove_event(indev_p, event_count_u32 - 1);
@@ -52,17 +53,17 @@ void action_topology_screen_loaded(lv_event_t *e) {
     set_var_pcc_param_phase_shift_edit_en(true);
     set_var_pcc_param_amplitude_edit_en(true);
     set_var_pcc_param_mod_freq_edit_en(true);
+    set_var_pcc_param_firing_angle_edit_en(true);
+    set_var_pcc_param_pulse_len_edit_en(true);
     PCC_InitializeActiveTopology_b();
 }
 
 void action_topology_screen_unloaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     lv_group_set_editing(groups.param_selector, false);
     PCC_DeinitializeActiveTopology_v();
 }
 
 void start_topology_callback(lv_event_t *e) {
-    printf("%s\n", __func__);
     char tmp_str[100];
     PCC_Params_struct* params_ps = PCC_GetActiveTopologyParameters_ps();
     lv_label_set_text(objects.topo_state_label, "RUNNING");
@@ -170,6 +171,25 @@ void start_topology_callback(lv_event_t *e) {
             lv_obj_clear_flag(objects.pcc_param__deadtime_edit_disabled_val_label, LV_OBJ_FLAG_HIDDEN);
             break;
 
+        case PCC_ParamType_LineCommutated_e:
+            if(!get_var_pcc_param_firing_angle_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__firing_angle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_firing_angle_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Firing angle: %.2f degree", params_ps->LineCommutation_struct.firing_angle__deg__s.val_f32);
+                lv_label_set_text(objects.pcc_param__firing_angle_edit_disabled_val_label, tmp_str);
+            }
+
+            if(!get_var_pcc_param_pulse_len_edit_en()) {
+                lv_obj_clear_flag(objects.pcc_param__pulse_len_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+                lv_obj_add_flag(objects.ctrl_param_pulse_len_cnt, LV_OBJ_FLAG_HIDDEN);
+                snprintf(tmp_str, sizeof(tmp_str), "Gate pulse length: %.2f degree", params_ps->LineCommutation_struct.pulse_len__deg__s.val_f32);
+                lv_label_set_text(objects.pcc_param__pulse_len_edit_disabled_val_label, tmp_str);
+            }
+
+            lv_obj_add_flag(objects.ctrl_param__firing_angle_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param__pulse_len_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            break;
+
         default:
             break;
     }
@@ -177,8 +197,6 @@ void start_topology_callback(lv_event_t *e) {
 }
 
 void stop_topology_callback(lv_event_t *e) {
-    printf("%s\n", __func__);
-
     PCC_StopActiveTopology_v();
     lv_indev_wait_release(input_push_btn_ps);
     lv_label_set_text(objects.topo_state_label, "READY");
@@ -235,6 +253,16 @@ void stop_topology_callback(lv_event_t *e) {
             lv_obj_add_flag(objects.pcc_param__deadtime_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             break;
 
+        case PCC_ParamType_LineCommutated_e:
+            lv_obj_clear_flag(objects.ctrl_param__firing_angle_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param__pulse_len_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_firing_angle_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_pulse_len_cnt, LV_OBJ_FLAG_HIDDEN);
+
+            lv_obj_add_flag(objects.pcc_param__firing_angle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.pcc_param__pulse_len_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            break;
+
         default:
             break;
     }
@@ -244,7 +272,6 @@ void stop_topology_callback(lv_event_t *e) {
  *  Settings screen callbacks.
  ***************************************************************************************************************/
 void action_settings_screen_loaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     static lv_obj_t* project_url_qr_ps = NULL;
     static const char* project_url_p = PROD_SOURCE_URL_d;
 
@@ -267,7 +294,6 @@ void action_settings_screen_loaded(lv_event_t *e) {
 }
 
 void action_settings_screen_unloaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     lv_group_set_editing(groups.settings_group, false);
 }
 
@@ -275,7 +301,6 @@ void action_settings_screen_unloaded(lv_event_t *e) {
  *  Main screen callbacks.
  ***************************************************************************************************************/
 void action_main_screen_loaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_set_group(input_encoder_ps, groups.MainGroup);
 }
@@ -284,7 +309,6 @@ void action_main_screen_loaded(lv_event_t *e) {
  *  Topology select screen.
  ***************************************************************************************************************/
 void action_pcc_topology_menu_loaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     lv_indev_wait_release(input_encoder_ps);
     remove_all_indev_events(input_push_btn_ps);
     ui_init_pcc_menu_v();
@@ -294,13 +318,10 @@ void action_pcc_topology_menu_loaded(lv_event_t *e) {
 }
 
 void action_pcc_topology_menu_unloaded(lv_event_t *e) {
-    printf("%s\n", __func__);
     lv_group_set_editing(groups.pcc_topology_select_grp, false);
 }
 
 void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
-    printf("%s\n", __func__);
-
     char tmp_str[100];
     lv_obj_t* child_ps;
     PCC_TopologyHandle_struct* topo_handle_s = (PCC_TopologyHandle_struct*)lv_event_get_user_data(e);
@@ -463,6 +484,33 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             break;
 
         case PCC_ParamType_LineCommutated_e:
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__firing_angle_min_val_palceholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__firing_angle_max_val_palceholder_label, tmp_str);
+
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.min_f32);
+            lv_label_set_text(objects.ctrl_param__pulse_len_min_val_placeholder_label, tmp_str);
+            snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.max_f32);
+            lv_label_set_text(objects.ctrl_param__pulse_len_max_val_placeholder_label, tmp_str);
+
+            lv_slider_set_range(objects.ctrl_param__firing_angle_slider,
+                                topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.min_f32,
+                                topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.max_f32);
+
+            lv_spinbox_set_range(objects.ctrl_param__firing_angle_spinbox,
+                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.min_f32 * 100.0f,
+                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.max_f32 * 100.0f);
+
+            lv_spinbox_set_range(objects.ctrl_param__pulse_len_spinbox,
+                                topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.min_f32,
+                                topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.max_f32);
+
+            lv_obj_clear_flag(objects.ctrl_param_firing_angle_cnt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_pulse_len_cnt, LV_OBJ_FLAG_HIDDEN);
+
+            pcc_param_firing_angle_pf32 = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.val_f32;
+            pcc_param_sw_freq_pf32      = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.val_f32;
             break;
 
         default:
@@ -475,16 +523,13 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
  *  Screen switch events.
  ***************************************************************************************************************/
 void action_go_to_settings(lv_event_t *e) {
-    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_SETTINGS);
 }
 
 void action_go_to_power_topology_menu(lv_event_t * e) {
-    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_POWER_TOPOLOGY_MENU);
 }
 
 void action_back_to_main_menu(lv_event_t *e) {
-    printf("%s\n", __func__);
     loadScreen(SCREEN_ID_MAIN);
 }
