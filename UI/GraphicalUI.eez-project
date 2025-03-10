@@ -973,7 +973,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_sw_freq_cnt",
@@ -997,7 +997,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_cnt_label",
@@ -1051,7 +1051,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_edit_en_btn",
@@ -1102,7 +1102,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_spinbox",
@@ -1162,7 +1162,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_label",
@@ -1215,7 +1215,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_label",
@@ -1269,7 +1269,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_min_val_placeholder_label",
@@ -1322,7 +1322,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__sw_freq_max_val_placeholder_label",
@@ -3233,7 +3233,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_firing_angle_cnt",
@@ -3257,7 +3257,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__firing_angle_name_label",
@@ -3311,7 +3311,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__firing_angle_edit_en_btn",
@@ -3331,7 +3331,7 @@
                       "checkedState": "pcc_param_firing_angle_edit_en",
                       "checkedStateType": "expression",
                       "disabledStateType": "literal",
-                      "states": "",
+                      "states": "FOCUSED",
                       "localStyles": {
                         "objID": "03b55fa7-8b53-4158-ffc9-8b55e9af4f4d",
                         "definition": {
@@ -3360,7 +3360,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__firing_angle_spinbox",
@@ -3420,7 +3420,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param__firing_angle_slider_cnt",
@@ -3444,7 +3444,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__firing_angle_slider",
@@ -3494,7 +3494,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__firing_angle_max_val_palceholder_label",
@@ -3548,7 +3548,7 @@
                             "conditionalStyles": [],
                             "childStyles": []
                           },
-                          "hiddenInEditor": false,
+                          "hiddenInEditor": true,
                           "timeline": [],
                           "eventHandlers": [],
                           "identifier": "ctrl_param__firing_angle_min_val_palceholder_label",
@@ -4064,6 +4064,120 @@
                   "groupIndex": 0
                 },
                 {
+                  "objID": "0afae03b-0fdf-497f-a163-90f6b3a40537",
+                  "type": "LVGLLabelWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 100,
+                  "height": 18,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "2e8e151b-0eb1-4d73-e5c9-fc16c30b3761",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "hiddenInEditor": true,
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "pcc_param__firing_angle_edit_disabled_val_label",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "%",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "",
+                  "hiddenFlag": false,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "e368f372-eaa8-456f-d647-f987ad231afc",
+                    "definition": {
+                      "MAIN": {
+                        "DEFAULT": {
+                          "border_color": "#ffffff",
+                          "border_width": 1,
+                          "text_color": "#ffffff",
+                          "radius": 5,
+                          "pad_left": 4,
+                          "margin_top": -4
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
+                },
+                {
+                  "objID": "679b3a49-4345-4f94-dc38-3347092bdc96",
+                  "type": "LVGLLabelWidget",
+                  "left": 0,
+                  "top": 0,
+                  "width": 100,
+                  "height": 18,
+                  "customInputs": [],
+                  "customOutputs": [],
+                  "style": {
+                    "objID": "113824b8-af4d-4d05-d250-15b27809a261",
+                    "useStyle": "default",
+                    "conditionalStyles": [],
+                    "childStyles": []
+                  },
+                  "hiddenInEditor": true,
+                  "timeline": [],
+                  "eventHandlers": [],
+                  "identifier": "pcc_param__pulse_len_edit_disabled_val_label",
+                  "leftUnit": "px",
+                  "topUnit": "px",
+                  "widthUnit": "%",
+                  "heightUnit": "content",
+                  "children": [],
+                  "widgetFlags": "",
+                  "hiddenFlag": false,
+                  "hiddenFlagType": "literal",
+                  "clickableFlagType": "literal",
+                  "flagScrollbarMode": "",
+                  "flagScrollDirection": "",
+                  "scrollSnapX": "",
+                  "scrollSnapY": "",
+                  "checkedStateType": "literal",
+                  "disabledStateType": "literal",
+                  "states": "",
+                  "localStyles": {
+                    "objID": "9dfe76be-b459-44cb-aeb3-3a69433fdc95",
+                    "definition": {
+                      "MAIN": {
+                        "DEFAULT": {
+                          "border_color": "#ffffff",
+                          "border_width": 1,
+                          "text_color": "#ffffff",
+                          "radius": 5,
+                          "pad_left": 4,
+                          "margin_top": -4
+                        }
+                      }
+                    }
+                  },
+                  "group": "",
+                  "groupIndex": 0,
+                  "text": "",
+                  "textType": "literal",
+                  "longMode": "WRAP",
+                  "recolor": false
+                },
+                {
                   "objID": "d1971316-7114-4d24-e4e7-78fcdfa80873",
                   "type": "LVGLLabelWidget",
                   "left": 0,
@@ -4401,120 +4515,6 @@
                   "group": "",
                   "groupIndex": 0,
                   "text": "Dead time: <> ns",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
-                },
-                {
-                  "objID": "0afae03b-0fdf-497f-a163-90f6b3a40537",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 100,
-                  "height": 18,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "2e8e151b-0eb1-4d73-e5c9-fc16c30b3761",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "hiddenInEditor": true,
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "identifier": "pcc_param__firing_angle_edit_disabled_val_label",
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "%",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "",
-                  "hiddenFlag": false,
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "e368f372-eaa8-456f-d647-f987ad231afc",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "border_color": "#ffffff",
-                          "border_width": 1,
-                          "text_color": "#ffffff",
-                          "radius": 5,
-                          "pad_left": 4,
-                          "margin_top": -4
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "",
-                  "textType": "literal",
-                  "longMode": "WRAP",
-                  "recolor": false
-                },
-                {
-                  "objID": "679b3a49-4345-4f94-dc38-3347092bdc96",
-                  "type": "LVGLLabelWidget",
-                  "left": 0,
-                  "top": 0,
-                  "width": 100,
-                  "height": 18,
-                  "customInputs": [],
-                  "customOutputs": [],
-                  "style": {
-                    "objID": "113824b8-af4d-4d05-d250-15b27809a261",
-                    "useStyle": "default",
-                    "conditionalStyles": [],
-                    "childStyles": []
-                  },
-                  "hiddenInEditor": true,
-                  "timeline": [],
-                  "eventHandlers": [],
-                  "identifier": "pcc_param__pulse_len_edit_disabled_val_label",
-                  "leftUnit": "px",
-                  "topUnit": "px",
-                  "widthUnit": "%",
-                  "heightUnit": "content",
-                  "children": [],
-                  "widgetFlags": "",
-                  "hiddenFlag": false,
-                  "hiddenFlagType": "literal",
-                  "clickableFlagType": "literal",
-                  "flagScrollbarMode": "",
-                  "flagScrollDirection": "",
-                  "scrollSnapX": "",
-                  "scrollSnapY": "",
-                  "checkedStateType": "literal",
-                  "disabledStateType": "literal",
-                  "states": "",
-                  "localStyles": {
-                    "objID": "9dfe76be-b459-44cb-aeb3-3a69433fdc95",
-                    "definition": {
-                      "MAIN": {
-                        "DEFAULT": {
-                          "border_color": "#ffffff",
-                          "border_width": 1,
-                          "text_color": "#ffffff",
-                          "radius": 5,
-                          "pad_left": 4,
-                          "margin_top": -4
-                        }
-                      }
-                    }
-                  },
-                  "group": "",
-                  "groupIndex": 0,
-                  "text": "",
                   "textType": "literal",
                   "longMode": "WRAP",
                   "recolor": false
@@ -5169,24 +5169,8 @@
         "name": "MainGroup"
       },
       {
-        "objID": "656761b3-a814-43c5-ed76-2fdb9a975871",
-        "name": "PCC_topo_select_group"
-      },
-      {
-        "objID": "ab15da74-c588-4421-f465-a07e22a77052",
-        "name": "pcc_simple_pwm_mode"
-      },
-      {
         "objID": "c8a9940e-3aae-43ee-a2c2-d185af0b072e",
         "name": "param_selector"
-      },
-      {
-        "objID": "8f0d59f2-b359-40bc-e2bb-1c1313928de4",
-        "name": "param_selector_sw_freq"
-      },
-      {
-        "objID": "3932564e-ff89-4a3c-8393-47b848d3e4a4",
-        "name": "param_selector_duty"
       },
       {
         "objID": "0eec20d9-1b4d-4b83-f781-b1015c482c29",

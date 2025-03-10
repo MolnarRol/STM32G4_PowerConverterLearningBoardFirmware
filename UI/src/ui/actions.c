@@ -39,7 +39,7 @@ static void remove_all_indev_events(lv_indev_t * indev_p) {
  ***************************************************************************************************************/
 void action_topology_screen_loaded(lv_event_t *e) {
     printf("%s\n", __func__);
-    lv_indev_set_group(input_encoder_ps, groups.param_selector);
+
 
     remove_all_indev_events(input_push_btn_ps);
     lv_indev_add_event_cb(input_push_btn_ps, action_go_to_power_topology_menu, LV_EVENT_PRESSED, NULL);
@@ -56,9 +56,28 @@ void action_topology_screen_loaded(lv_event_t *e) {
     set_var_pcc_param_firing_angle_edit_en(true);
     set_var_pcc_param_pulse_len_edit_en(true);
     PCC_InitializeActiveTopology_b();
+    lv_indev_set_group(input_encoder_ps, groups.param_selector);
+
+    switch(PCC_GetActiveTopologyParameters_ps()->type_e)
+        {
+            case PCC_ParamType_PWM_e:
+            case PCC_ParamType_ComplementaryPWM_e:
+            case PCC_ParamType_PhaseShiftedPWM_e:
+            case PCC_ParamType_SinePWM_e:
+                lv_group_focus_obj(objects.ctrl_param__sw_freq_edit_en_btn);
+                break;
+
+            case PCC_ParamType_LineCommutated_e:
+                lv_group_focus_obj(objects.ctrl_param__firing_angle_edit_en_btn);
+                break;
+
+            default:
+                break;
+        }
 }
 
 void action_topology_screen_unloaded(lv_event_t *e) {
+    printf("%s\n", __func__);
     lv_group_set_editing(groups.param_selector, false);
     PCC_DeinitializeActiveTopology_v();
 }
@@ -172,6 +191,7 @@ void start_topology_callback(lv_event_t *e) {
             break;
 
         case PCC_ParamType_LineCommutated_e:
+            printf("%s\n", __func__);
             if(!get_var_pcc_param_firing_angle_edit_en()) {
                 lv_obj_clear_flag(objects.pcc_param__firing_angle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
                 lv_obj_add_flag(objects.ctrl_param_firing_angle_cnt, LV_OBJ_FLAG_HIDDEN);
@@ -254,6 +274,7 @@ void stop_topology_callback(lv_event_t *e) {
             break;
 
         case PCC_ParamType_LineCommutated_e:
+            printf("%s\n", __func__);
             lv_obj_clear_flag(objects.ctrl_param__firing_angle_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param__pulse_len_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             lv_obj_clear_flag(objects.ctrl_param_firing_angle_cnt, LV_OBJ_FLAG_HIDDEN);
@@ -484,6 +505,7 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             break;
 
         case PCC_ParamType_LineCommutated_e:
+            printf("%d\n", __LINE__);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.min_f32);
             lv_label_set_text(objects.ctrl_param__firing_angle_min_val_palceholder_label, tmp_str);
             snprintf(tmp_str, sizeof(tmp_str), "%.0f", topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.max_f32);
@@ -511,11 +533,13 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
 
             pcc_param_firing_angle_pf32 = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.val_f32;
             pcc_param_sw_freq_pf32      = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.val_f32;
+            lv_group_focus_obj(objects.ctrl_param__firing_angle_edit_en_btn);
             break;
 
         default:
             break;
     }
+
     loadScreen(SCREEN_ID_TOPO_CTRL_PARAMETER_SCR);
 }
 

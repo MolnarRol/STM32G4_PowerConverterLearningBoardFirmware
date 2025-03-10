@@ -52,7 +52,8 @@ const PCC_TopologyHandle_struct PCC_Topology_SingleImpulseControlledRectifier_s 
                                     .gd1_f1 = 1
                             }
                         },
-    .ctrl_name_str      = "1 impulse controlled rectifier\0"
+    .ctrl_name_str      = "1 imp AC/DC\0",
+    .ctrl_descriptor_str    = "PWM output1 - GD1\0"
 };
 
 /**********************************************************************************************************************
