@@ -32,10 +32,8 @@ const PCC_TopologyHandle_struct* const s_PCC_Topologies_aps[] =
     &PCC_Topology_SinglePhaseThyristorVoltageConverter_s,
     &PCC_Topology_SinglePhaseTriacVoltageConverter_s,
     &PCC_Topology_DoubleImpulseControlledRectifier_s,
-    &PCC_Topology_SixPulseThreePhaseControlledRectifier_s
-#if 0
+    &PCC_Topology_SixPulseThreePhaseControlledRectifier_s,
     &PCC_Topology_ThreePulseThreePhaseControlledRectifier_s
-#endif
 };
 
 boolean PCC_InitializeActiveTopology_b(void)

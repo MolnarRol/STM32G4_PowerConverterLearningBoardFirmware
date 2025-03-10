@@ -22,7 +22,7 @@ void ui_init_pcc_menu_v(void)
 
     lv_obj_clean(lv_screen_active());
 
-    for(topo_s32 = 0; topo_s32 < 8; topo_s32++)
+    for(topo_s32 = 0; topo_s32 < 14; topo_s32++)
     {
         button_p = lv_button_create(lv_screen_active());
         lv_obj_set_size(button_p, LV_PCT(90), 30);
