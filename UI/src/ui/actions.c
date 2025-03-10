@@ -208,6 +208,7 @@ void start_topology_callback(lv_event_t *e) {
 
             lv_obj_add_flag(objects.ctrl_param__firing_angle_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.ctrl_param__pulse_len_edit_en_btn, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(objects.ctrl_param_line_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         default:
@@ -282,6 +283,7 @@ void stop_topology_callback(lv_event_t *e) {
 
             lv_obj_add_flag(objects.pcc_param__firing_angle_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
             lv_obj_add_flag(objects.pcc_param__pulse_len_edit_disabled_val_label,LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(objects.ctrl_param_line_freq_cnt, LV_OBJ_FLAG_HIDDEN);
             break;
 
         default:
@@ -521,8 +523,8 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.max_f32);
 
             lv_spinbox_set_range(objects.ctrl_param__firing_angle_spinbox,
-                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.min_f32 * 100.0f,
-                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.max_f32 * 100.0f);
+                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.min_f32 * 100.0f,
+                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.max_f32 * 100.0f);
 
             lv_spinbox_set_range(objects.ctrl_param__pulse_len_spinbox,
                                 topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.min_f32,
@@ -532,7 +534,7 @@ void action_load_pcc_topology_ctrl_screen(lv_event_t *e) {
             lv_obj_clear_flag(objects.ctrl_param_pulse_len_cnt, LV_OBJ_FLAG_HIDDEN);
 
             pcc_param_firing_angle_pf32 = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.firing_angle__deg__s.val_f32;
-            pcc_param_sw_freq_pf32      = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.val_f32;
+            pcc_param_pulse_len_pf32    = &topo_handle_s->ctrl_params_pv->LineCommutation_struct.pulse_len__deg__s.val_f32;
             lv_group_focus_obj(objects.ctrl_param__firing_angle_edit_en_btn);
             break;
 

@@ -36,7 +36,8 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_F32 = 18,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_I32 = 19,
     FLOW_GLOBAL_VARIABLE_PCC_PARAM_PULSE_LEN_EDIT_EN = 20,
-    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_EDIT_EN = 21
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_FIRING_ANGLE_EDIT_EN = 21,
+    FLOW_GLOBAL_VARIABLE_PCC_PARAM_LINE_FREQ_STR = 22
 };
 
 // Native global variables
@@ -85,6 +86,8 @@ extern bool get_var_pcc_param_pulse_len_edit_en();
 extern void set_var_pcc_param_pulse_len_edit_en(bool value);
 extern bool get_var_pcc_param_firing_angle_edit_en();
 extern void set_var_pcc_param_firing_angle_edit_en(bool value);
+extern const char *get_var_pcc_param_line_freq_str();
+extern void set_var_pcc_param_line_freq_str(const char *value);
 
 
 #ifdef __cplusplus
