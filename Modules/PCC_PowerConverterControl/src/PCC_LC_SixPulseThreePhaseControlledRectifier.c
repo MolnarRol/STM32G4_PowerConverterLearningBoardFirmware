@@ -165,7 +165,7 @@ static void _s_init_v(void)
     SET_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);
     CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);
 
-    /* Reset timer 2 periphery. */
+    /* Reset timer 2 and 3 periphery. */
     SET_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM2RST_Msk | RCC_APB1RSTR1_TIM3RST_Msk);
     CLEAR_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM2RST_Msk | RCC_APB1RSTR1_TIM3RST_Msk);
 
@@ -228,7 +228,7 @@ static void _s_deinit_v(void)
     CLEAR_BIT(RCC->APB2RSTR, RCC_APB2RSTR_TIM1RST_Msk);                                 /* Release TIM1 peripheral reset. */
     CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN_Msk);                                    /* Disable clocks for TIM1. */
 
-    /* Reset timer 2 periphery. */
+    /* Reset timer 2 and 3 periphery. */
     SET_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM2RST_Msk | RCC_APB1RSTR1_TIM3RST_Msk);
     CLEAR_BIT(RCC->APB1RSTR1, RCC_APB1RSTR1_TIM2RST_Msk | RCC_APB1RSTR1_TIM3RST_Msk);
     CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN | RCC_APB1ENR1_TIM3EN);
