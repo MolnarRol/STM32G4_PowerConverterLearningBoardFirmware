@@ -56,21 +56,21 @@ static void event_handler_cb_topo_ctrl_parameter_scr_topo_ctrl_parameter_scr(lv_
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__sw_freq_edit_en_btn);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__sw_freq_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__phase_shift_edit_en_btn);
-        lv_group_add_obj(groups.param_selector, objects.ctrl_param__phase_shift_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__phase_shift_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__phase_shift_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__mod_freq_edit_en_btn);
-        lv_group_add_obj(groups.param_selector, objects.ctrl_param__mod_freq_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__mod_freq_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__mod_freq_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param_1__duty_edit_en_btn);
-        lv_group_add_obj(groups.param_selector, objects.ctrl_param_1__duty_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param_1__duty_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param_1__duty_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_edit_en_btn);
-        lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__amplitude_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__deadtime_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_edit_en_btn);
-        lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_slider);
+        lv_group_add_obj(groups.param_selector, objects.ctrl_param__firing_angle_spinbox);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__pulse_len_edit_en_btn);
         lv_group_add_obj(groups.param_selector, objects.ctrl_param__pulse_len_spinbox);
         // group: pcc_topology_select_grp
@@ -113,17 +113,6 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_edi
     }
 }
 
-static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_spinbox(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-    if (event == LV_EVENT_VALUE_CHANGED) {
-        lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta) {
-            int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_phase_shift_i32(value);
-        }
-    }
-}
-
 static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -131,6 +120,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_sli
         if (tick_value_change_obj != ta) {
             int32_t value = lv_slider_get_value(ta);
             set_var_pcc_param_phase_shift_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_phase_shift_i32(value);
         }
     }
 }
@@ -146,17 +146,6 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_edit_e
     }
 }
 
-static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_spinbox(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-    if (event == LV_EVENT_VALUE_CHANGED) {
-        lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta) {
-            int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_mod_freq_i32(value);
-        }
-    }
-}
-
 static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -164,6 +153,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_slider
         if (tick_value_change_obj != ta) {
             int32_t value = lv_slider_get_value(ta);
             set_var_pcc_param_mod_freq_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_mod_freq_i32(value);
         }
     }
 }
@@ -179,17 +179,6 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_edit_en_
     }
 }
 
-static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_spinbox(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-    if (event == LV_EVENT_VALUE_CHANGED) {
-        lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta) {
-            int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_duty_cycle_i32(value);
-        }
-    }
-}
-
 static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -197,6 +186,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_slider(l
         if (tick_value_change_obj != ta) {
             int32_t value = lv_slider_get_value(ta);
             set_var_pcc_param_duty_cycle_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_duty_cycle_i32(value);
         }
     }
 }
@@ -212,17 +212,6 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_edit_
     }
 }
 
-static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_spinbox(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-    if (event == LV_EVENT_VALUE_CHANGED) {
-        lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta) {
-            int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_amplitude_i32(value);
-        }
-    }
-}
-
 static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -230,6 +219,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_slide
         if (tick_value_change_obj != ta) {
             int32_t value = lv_slider_get_value(ta);
             set_var_pcc_param_amplitude_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_amplitude_i32(value);
         }
     }
 }
@@ -256,17 +256,6 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_ed
     }
 }
 
-static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox(lv_event_t *e) {
-    lv_event_code_t event = lv_event_get_code(e);
-    if (event == LV_EVENT_VALUE_CHANGED) {
-        lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta) {
-            int32_t value = lv_spinbox_get_value(ta);
-            set_var_pcc_param_firing_angle_i32(value);
-        }
-    }
-}
-
 static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_slider(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     if (event == LV_EVENT_VALUE_CHANGED) {
@@ -274,6 +263,17 @@ static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_sl
         if (tick_value_change_obj != ta) {
             int32_t value = lv_slider_get_value(ta);
             set_var_pcc_param_firing_angle_f32(value);
+        }
+    }
+}
+
+static void event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_spinbox_get_value(ta);
+            set_var_pcc_param_firing_angle_i32(value);
         }
     }
 }
@@ -639,22 +639,6 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                         {
-                            // ctrl_param__phase_shift_spinbox
-                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
-                            objects.ctrl_param__phase_shift_spinbox = obj;
-                            lv_obj_set_pos(obj, -4, -4);
-                            lv_obj_set_size(obj, 67, 36);
-                            lv_spinbox_set_digit_format(obj, 5, 3);
-                            lv_spinbox_set_range(obj, 0, 18000);
-                            lv_spinbox_set_rollover(obj, false);
-                            lv_spinbox_set_step(obj, 1);
-                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_spinbox, LV_EVENT_ALL, 0);
-                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-                        }
-                        {
                             // ctrl_param__phase_shift_slider_cnt
                             lv_obj_t *obj = lv_obj_create(parent_obj);
                             objects.ctrl_param__phase_shift_slider_cnt = obj;
@@ -703,6 +687,22 @@ void create_screen_topo_ctrl_parameter_scr() {
                                 }
                             }
                         }
+                        {
+                            // ctrl_param__phase_shift_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__phase_shift_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__phase_shift_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
                     }
                 }
                 {
@@ -744,22 +744,6 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_edit_en_btn, LV_EVENT_ALL, 0);
                             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_ON_FOCUS|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
                             lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-                        }
-                        {
-                            // ctrl_param__mod_freq_spinbox
-                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
-                            objects.ctrl_param__mod_freq_spinbox = obj;
-                            lv_obj_set_pos(obj, -4, -4);
-                            lv_obj_set_size(obj, 67, 36);
-                            lv_spinbox_set_digit_format(obj, 5, 3);
-                            lv_spinbox_set_range(obj, 0, 18000);
-                            lv_spinbox_set_rollover(obj, false);
-                            lv_spinbox_set_step(obj, 1);
-                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_spinbox, LV_EVENT_ALL, 0);
-                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                         {
                             // ctrl_param__mod_freq_slider_cnt
@@ -810,6 +794,22 @@ void create_screen_topo_ctrl_parameter_scr() {
                                 }
                             }
                         }
+                        {
+                            // ctrl_param__mod_freq_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__mod_freq_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__mod_freq_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
                     }
                 }
                 {
@@ -851,22 +851,6 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_edit_en_btn, LV_EVENT_ALL, 0);
                             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_ON_FOCUS|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
                             lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-                        }
-                        {
-                            // ctrl_param_1__duty_spinbox
-                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
-                            objects.ctrl_param_1__duty_spinbox = obj;
-                            lv_obj_set_pos(obj, -4, -4);
-                            lv_obj_set_size(obj, 67, 36);
-                            lv_spinbox_set_digit_format(obj, 5, 3);
-                            lv_spinbox_set_range(obj, 0, 18000);
-                            lv_spinbox_set_rollover(obj, false);
-                            lv_spinbox_set_step(obj, 1);
-                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_spinbox, LV_EVENT_ALL, 0);
-                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                         {
                             // ctrl_param_1__duty_slider_cnt
@@ -917,6 +901,22 @@ void create_screen_topo_ctrl_parameter_scr() {
                                 }
                             }
                         }
+                        {
+                            // ctrl_param_1__duty_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param_1__duty_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param_1__duty_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
+                        }
                     }
                 }
                 {
@@ -958,22 +958,6 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_edit_en_btn, LV_EVENT_ALL, 0);
                             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_ON_FOCUS|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
                             lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-                        }
-                        {
-                            // ctrl_param__amplitude_spinbox
-                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
-                            objects.ctrl_param__amplitude_spinbox = obj;
-                            lv_obj_set_pos(obj, -4, -4);
-                            lv_obj_set_size(obj, 67, 36);
-                            lv_spinbox_set_digit_format(obj, 5, 3);
-                            lv_spinbox_set_range(obj, 0, 18000);
-                            lv_spinbox_set_rollover(obj, false);
-                            lv_spinbox_set_step(obj, 1);
-                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_spinbox, LV_EVENT_ALL, 0);
-                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                         {
                             // ctrl_param__amplitude_slider_cnt
@@ -1023,6 +1007,22 @@ void create_screen_topo_ctrl_parameter_scr() {
                                     lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
                                 }
                             }
+                        }
+                        {
+                            // ctrl_param__amplitude_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__amplitude_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__amplitude_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                     }
                 }
@@ -1112,22 +1112,6 @@ void create_screen_topo_ctrl_parameter_scr() {
                             lv_obj_set_style_align(obj, LV_ALIGN_TOP_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                         {
-                            // ctrl_param__firing_angle_spinbox
-                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
-                            objects.ctrl_param__firing_angle_spinbox = obj;
-                            lv_obj_set_pos(obj, -4, -4);
-                            lv_obj_set_size(obj, 67, 36);
-                            lv_spinbox_set_digit_format(obj, 5, 3);
-                            lv_spinbox_set_range(obj, 0, 18000);
-                            lv_spinbox_set_rollover(obj, false);
-                            lv_spinbox_set_step(obj, 1);
-                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox, LV_EVENT_ALL, 0);
-                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
-                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
-                        }
-                        {
                             // ctrl_param__firing_angle_slider_cnt
                             lv_obj_t *obj = lv_obj_create(parent_obj);
                             objects.ctrl_param__firing_angle_slider_cnt = obj;
@@ -1175,6 +1159,22 @@ void create_screen_topo_ctrl_parameter_scr() {
                                     lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
                                 }
                             }
+                        }
+                        {
+                            // ctrl_param__firing_angle_spinbox
+                            lv_obj_t *obj = lv_spinbox_create(parent_obj);
+                            objects.ctrl_param__firing_angle_spinbox = obj;
+                            lv_obj_set_pos(obj, -4, -4);
+                            lv_obj_set_size(obj, 67, 36);
+                            lv_spinbox_set_digit_format(obj, 5, 3);
+                            lv_spinbox_set_range(obj, 0, 18000);
+                            lv_spinbox_set_rollover(obj, false);
+                            lv_spinbox_set_step(obj, 1);
+                            lv_obj_add_event_cb(obj, event_handler_cb_topo_ctrl_parameter_scr_ctrl_param__firing_angle_spinbox, LV_EVENT_ALL, 0);
+                            lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+                            lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_text_font(obj, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_align(obj, LV_ALIGN_BOTTOM_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
                         }
                     }
                 }
@@ -1481,20 +1481,20 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_phase_shift_i32();
-        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__phase_shift_spinbox);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.ctrl_param__phase_shift_spinbox;
-            lv_spinbox_set_value(objects.ctrl_param__phase_shift_spinbox, new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
-    {
         int32_t new_val = get_var_pcc_param_phase_shift_f32();
         int32_t cur_val = lv_slider_get_value(objects.ctrl_param__phase_shift_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__phase_shift_slider;
             lv_slider_set_value(objects.ctrl_param__phase_shift_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_phase_shift_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__phase_shift_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__phase_shift_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__phase_shift_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1509,20 +1509,20 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_mod_freq_i32();
-        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__mod_freq_spinbox);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.ctrl_param__mod_freq_spinbox;
-            lv_spinbox_set_value(objects.ctrl_param__mod_freq_spinbox, new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
-    {
         int32_t new_val = get_var_pcc_param_mod_freq_f32();
         int32_t cur_val = lv_slider_get_value(objects.ctrl_param__mod_freq_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__mod_freq_slider;
             lv_slider_set_value(objects.ctrl_param__mod_freq_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_mod_freq_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__mod_freq_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__mod_freq_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__mod_freq_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1537,20 +1537,20 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_duty_cycle_i32();
-        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param_1__duty_spinbox);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.ctrl_param_1__duty_spinbox;
-            lv_spinbox_set_value(objects.ctrl_param_1__duty_spinbox, new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
-    {
         int32_t new_val = get_var_pcc_param_duty_cycle_f32();
         int32_t cur_val = lv_slider_get_value(objects.ctrl_param_1__duty_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param_1__duty_slider;
             lv_slider_set_value(objects.ctrl_param_1__duty_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_duty_cycle_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param_1__duty_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param_1__duty_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param_1__duty_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1565,20 +1565,20 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_amplitude_i32();
-        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__amplitude_spinbox);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.ctrl_param__amplitude_spinbox;
-            lv_spinbox_set_value(objects.ctrl_param__amplitude_spinbox, new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
-    {
         int32_t new_val = get_var_pcc_param_amplitude_f32();
         int32_t cur_val = lv_slider_get_value(objects.ctrl_param__amplitude_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__amplitude_slider;
             lv_slider_set_value(objects.ctrl_param__amplitude_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_amplitude_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__amplitude_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__amplitude_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__amplitude_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -1602,20 +1602,20 @@ void tick_screen_topo_ctrl_parameter_scr() {
         }
     }
     {
-        int32_t new_val = get_var_pcc_param_firing_angle_i32();
-        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__firing_angle_spinbox);
-        if (new_val != cur_val) {
-            tick_value_change_obj = objects.ctrl_param__firing_angle_spinbox;
-            lv_spinbox_set_value(objects.ctrl_param__firing_angle_spinbox, new_val);
-            tick_value_change_obj = NULL;
-        }
-    }
-    {
         int32_t new_val = get_var_pcc_param_firing_angle_f32();
         int32_t cur_val = lv_slider_get_value(objects.ctrl_param__firing_angle_slider);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.ctrl_param__firing_angle_slider;
             lv_slider_set_value(objects.ctrl_param__firing_angle_slider, new_val, LV_ANIM_ON);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = get_var_pcc_param_firing_angle_i32();
+        int32_t cur_val = lv_spinbox_get_value(objects.ctrl_param__firing_angle_spinbox);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.ctrl_param__firing_angle_spinbox;
+            lv_spinbox_set_value(objects.ctrl_param__firing_angle_spinbox, new_val);
             tick_value_change_obj = NULL;
         }
     }
