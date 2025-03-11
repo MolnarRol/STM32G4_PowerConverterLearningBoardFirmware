@@ -112,19 +112,16 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   GPIO_Init();
-#if 1
   PUI_Init();
-#endif
 
   TD_SPI_Init_v();
 #if LVGL_EN
-
   lv_init();
   lv_port_disp_init();
-
 #endif
 
   ATB_Init_v();
+  SYS_IWDG_Init_v();
   /* USER CODE END 2 */
 
   /* Infinite loop */
