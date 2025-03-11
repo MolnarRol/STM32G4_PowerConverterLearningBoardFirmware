@@ -6,7 +6,7 @@
  */
 #include <app_types.h>
 #include <stm32g4xx.h>
-#include <UTIL_timers.h>
+#include <UTIL_public_interface.h>
 #include <general_config.h>
 
 /* PB8 [AF1] - TIM16_CH1 */
