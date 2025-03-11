@@ -1564,66 +1564,6 @@
                       "groupIndex": 0
                     },
                     {
-                      "objID": "e3d65cee-c476-4e53-8a0c-a3c8edf17e58",
-                      "type": "LVGLSpinboxWidget",
-                      "left": -4,
-                      "top": -4,
-                      "width": 67,
-                      "height": 36,
-                      "customInputs": [],
-                      "customOutputs": [],
-                      "style": {
-                        "objID": "e7b8b1e2-cf1d-40e8-b1f4-d6e36c3e9ff4",
-                        "useStyle": "default",
-                        "conditionalStyles": [],
-                        "childStyles": []
-                      },
-                      "hiddenInEditor": true,
-                      "timeline": [],
-                      "eventHandlers": [],
-                      "identifier": "ctrl_param__phase_shift_spinbox",
-                      "leftUnit": "px",
-                      "topUnit": "px",
-                      "widthUnit": "px",
-                      "heightUnit": "px",
-                      "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-                      "hiddenFlagType": "literal",
-                      "clickableFlag": true,
-                      "clickableFlagType": "literal",
-                      "flagScrollbarMode": "",
-                      "flagScrollDirection": "",
-                      "scrollSnapX": "",
-                      "scrollSnapY": "",
-                      "checkedStateType": "literal",
-                      "disabledState": false,
-                      "disabledStateType": "literal",
-                      "states": "",
-                      "localStyles": {
-                        "objID": "39fb7d5a-ab89-4a76-ea7e-d7233a08d138",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_align": "CENTER",
-                              "text_font": "MONTSERRAT_14",
-                              "align": "BOTTOM_RIGHT"
-                            }
-                          }
-                        }
-                      },
-                      "group": "param_selector",
-                      "groupIndex": 0,
-                      "digitCount": 5,
-                      "separatorPosition": 3,
-                      "min": 0,
-                      "max": 18000,
-                      "rollover": false,
-                      "step": 1,
-                      "stepType": "literal",
-                      "value": "pcc_param_phase_shift_i32",
-                      "valueType": "expression"
-                    },
-                    {
                       "objID": "70ccbf36-4e7d-4b0a-b7f5-b22d661de296",
                       "type": "LVGLContainerWidget",
                       "left": 4,
@@ -1821,6 +1761,66 @@
                       },
                       "group": "",
                       "groupIndex": 0
+                    },
+                    {
+                      "objID": "e3d65cee-c476-4e53-8a0c-a3c8edf17e58",
+                      "type": "LVGLSpinboxWidget",
+                      "left": -4,
+                      "top": -4,
+                      "width": 67,
+                      "height": 36,
+                      "customInputs": [],
+                      "customOutputs": [],
+                      "style": {
+                        "objID": "e7b8b1e2-cf1d-40e8-b1f4-d6e36c3e9ff4",
+                        "useStyle": "default",
+                        "conditionalStyles": [],
+                        "childStyles": []
+                      },
+                      "hiddenInEditor": true,
+                      "timeline": [],
+                      "eventHandlers": [],
+                      "identifier": "ctrl_param__phase_shift_spinbox",
+                      "leftUnit": "px",
+                      "topUnit": "px",
+                      "widthUnit": "px",
+                      "heightUnit": "px",
+                      "children": [],
+                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "hiddenFlagType": "literal",
+                      "clickableFlag": true,
+                      "clickableFlagType": "literal",
+                      "flagScrollbarMode": "",
+                      "flagScrollDirection": "",
+                      "scrollSnapX": "",
+                      "scrollSnapY": "",
+                      "checkedStateType": "literal",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
+                      "states": "",
+                      "localStyles": {
+                        "objID": "39fb7d5a-ab89-4a76-ea7e-d7233a08d138",
+                        "definition": {
+                          "MAIN": {
+                            "DEFAULT": {
+                              "text_align": "CENTER",
+                              "text_font": "MONTSERRAT_14",
+                              "align": "BOTTOM_RIGHT"
+                            }
+                          }
+                        }
+                      },
+                      "group": "param_selector",
+                      "groupIndex": 0,
+                      "digitCount": 5,
+                      "separatorPosition": 3,
+                      "min": 0,
+                      "max": 18000,
+                      "rollover": false,
+                      "step": 1,
+                      "stepType": "literal",
+                      "value": "pcc_param_phase_shift_i32",
+                      "valueType": "expression"
                     }
                   ],
                   "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
@@ -1978,66 +1978,6 @@
                       },
                       "group": "param_selector",
                       "groupIndex": 0
-                    },
-                    {
-                      "objID": "66c8e48f-7dc5-4ad6-ad17-a578f7814198",
-                      "type": "LVGLSpinboxWidget",
-                      "left": -4,
-                      "top": -4,
-                      "width": 67,
-                      "height": 36,
-                      "customInputs": [],
-                      "customOutputs": [],
-                      "style": {
-                        "objID": "cf3221ad-73be-4968-ba4f-d75a53a7655f",
-                        "useStyle": "default",
-                        "conditionalStyles": [],
-                        "childStyles": []
-                      },
-                      "hiddenInEditor": true,
-                      "timeline": [],
-                      "eventHandlers": [],
-                      "identifier": "ctrl_param__mod_freq_spinbox",
-                      "leftUnit": "px",
-                      "topUnit": "px",
-                      "widthUnit": "px",
-                      "heightUnit": "px",
-                      "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-                      "hiddenFlagType": "literal",
-                      "clickableFlag": true,
-                      "clickableFlagType": "literal",
-                      "flagScrollbarMode": "",
-                      "flagScrollDirection": "",
-                      "scrollSnapX": "",
-                      "scrollSnapY": "",
-                      "checkedStateType": "literal",
-                      "disabledState": false,
-                      "disabledStateType": "literal",
-                      "states": "",
-                      "localStyles": {
-                        "objID": "7761726b-4cc1-4fd4-d41d-7d5d9ea2e1bc",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_align": "CENTER",
-                              "text_font": "MONTSERRAT_14",
-                              "align": "BOTTOM_RIGHT"
-                            }
-                          }
-                        }
-                      },
-                      "group": "param_selector",
-                      "groupIndex": 0,
-                      "digitCount": 5,
-                      "separatorPosition": 3,
-                      "min": 0,
-                      "max": 18000,
-                      "rollover": false,
-                      "step": 1,
-                      "stepType": "literal",
-                      "value": "pcc_param_mod_freq_i32",
-                      "valueType": "expression"
                     },
                     {
                       "objID": "dff1b62e-b6d4-40e4-f99b-20a83310f708",
@@ -2237,6 +2177,66 @@
                       },
                       "group": "",
                       "groupIndex": 0
+                    },
+                    {
+                      "objID": "66c8e48f-7dc5-4ad6-ad17-a578f7814198",
+                      "type": "LVGLSpinboxWidget",
+                      "left": -4,
+                      "top": -4,
+                      "width": 67,
+                      "height": 36,
+                      "customInputs": [],
+                      "customOutputs": [],
+                      "style": {
+                        "objID": "cf3221ad-73be-4968-ba4f-d75a53a7655f",
+                        "useStyle": "default",
+                        "conditionalStyles": [],
+                        "childStyles": []
+                      },
+                      "hiddenInEditor": true,
+                      "timeline": [],
+                      "eventHandlers": [],
+                      "identifier": "ctrl_param__mod_freq_spinbox",
+                      "leftUnit": "px",
+                      "topUnit": "px",
+                      "widthUnit": "px",
+                      "heightUnit": "px",
+                      "children": [],
+                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "hiddenFlagType": "literal",
+                      "clickableFlag": true,
+                      "clickableFlagType": "literal",
+                      "flagScrollbarMode": "",
+                      "flagScrollDirection": "",
+                      "scrollSnapX": "",
+                      "scrollSnapY": "",
+                      "checkedStateType": "literal",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
+                      "states": "",
+                      "localStyles": {
+                        "objID": "7761726b-4cc1-4fd4-d41d-7d5d9ea2e1bc",
+                        "definition": {
+                          "MAIN": {
+                            "DEFAULT": {
+                              "text_align": "CENTER",
+                              "text_font": "MONTSERRAT_14",
+                              "align": "BOTTOM_RIGHT"
+                            }
+                          }
+                        }
+                      },
+                      "group": "param_selector",
+                      "groupIndex": 0,
+                      "digitCount": 5,
+                      "separatorPosition": 3,
+                      "min": 0,
+                      "max": 18000,
+                      "rollover": false,
+                      "step": 1,
+                      "stepType": "literal",
+                      "value": "pcc_param_mod_freq_i32",
+                      "valueType": "expression"
                     }
                   ],
                   "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
@@ -2394,66 +2394,6 @@
                       },
                       "group": "param_selector",
                       "groupIndex": 0
-                    },
-                    {
-                      "objID": "80cc775d-f757-4574-d716-83f0d2c02476",
-                      "type": "LVGLSpinboxWidget",
-                      "left": -4,
-                      "top": -4,
-                      "width": 67,
-                      "height": 36,
-                      "customInputs": [],
-                      "customOutputs": [],
-                      "style": {
-                        "objID": "19bd94a5-ab14-4e9a-f2ea-d199f5296b77",
-                        "useStyle": "default",
-                        "conditionalStyles": [],
-                        "childStyles": []
-                      },
-                      "hiddenInEditor": true,
-                      "timeline": [],
-                      "eventHandlers": [],
-                      "identifier": "ctrl_param_1__duty_spinbox",
-                      "leftUnit": "px",
-                      "topUnit": "px",
-                      "widthUnit": "px",
-                      "heightUnit": "px",
-                      "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-                      "hiddenFlagType": "literal",
-                      "clickableFlag": true,
-                      "clickableFlagType": "literal",
-                      "flagScrollbarMode": "",
-                      "flagScrollDirection": "",
-                      "scrollSnapX": "",
-                      "scrollSnapY": "",
-                      "checkedStateType": "literal",
-                      "disabledState": false,
-                      "disabledStateType": "literal",
-                      "states": "",
-                      "localStyles": {
-                        "objID": "ffd98ad5-cbb9-4f7b-b25b-75c5c1ced9a0",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_align": "CENTER",
-                              "text_font": "MONTSERRAT_14",
-                              "align": "BOTTOM_RIGHT"
-                            }
-                          }
-                        }
-                      },
-                      "group": "param_selector",
-                      "groupIndex": 0,
-                      "digitCount": 5,
-                      "separatorPosition": 3,
-                      "min": 0,
-                      "max": 18000,
-                      "rollover": false,
-                      "step": 1,
-                      "stepType": "literal",
-                      "value": "pcc_param_duty_cycle_i32",
-                      "valueType": "expression"
                     },
                     {
                       "objID": "4c9e801d-427a-4fa2-e2fd-4194e794d762",
@@ -2653,6 +2593,66 @@
                       },
                       "group": "",
                       "groupIndex": 0
+                    },
+                    {
+                      "objID": "80cc775d-f757-4574-d716-83f0d2c02476",
+                      "type": "LVGLSpinboxWidget",
+                      "left": -4,
+                      "top": -4,
+                      "width": 67,
+                      "height": 36,
+                      "customInputs": [],
+                      "customOutputs": [],
+                      "style": {
+                        "objID": "19bd94a5-ab14-4e9a-f2ea-d199f5296b77",
+                        "useStyle": "default",
+                        "conditionalStyles": [],
+                        "childStyles": []
+                      },
+                      "hiddenInEditor": true,
+                      "timeline": [],
+                      "eventHandlers": [],
+                      "identifier": "ctrl_param_1__duty_spinbox",
+                      "leftUnit": "px",
+                      "topUnit": "px",
+                      "widthUnit": "px",
+                      "heightUnit": "px",
+                      "children": [],
+                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "hiddenFlagType": "literal",
+                      "clickableFlag": true,
+                      "clickableFlagType": "literal",
+                      "flagScrollbarMode": "",
+                      "flagScrollDirection": "",
+                      "scrollSnapX": "",
+                      "scrollSnapY": "",
+                      "checkedStateType": "literal",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
+                      "states": "",
+                      "localStyles": {
+                        "objID": "ffd98ad5-cbb9-4f7b-b25b-75c5c1ced9a0",
+                        "definition": {
+                          "MAIN": {
+                            "DEFAULT": {
+                              "text_align": "CENTER",
+                              "text_font": "MONTSERRAT_14",
+                              "align": "BOTTOM_RIGHT"
+                            }
+                          }
+                        }
+                      },
+                      "group": "param_selector",
+                      "groupIndex": 0,
+                      "digitCount": 5,
+                      "separatorPosition": 3,
+                      "min": 0,
+                      "max": 18000,
+                      "rollover": false,
+                      "step": 1,
+                      "stepType": "literal",
+                      "value": "pcc_param_duty_cycle_i32",
+                      "valueType": "expression"
                     }
                   ],
                   "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
@@ -2810,66 +2810,6 @@
                       },
                       "group": "param_selector",
                       "groupIndex": 0
-                    },
-                    {
-                      "objID": "0886b7c5-f91b-42ce-cb58-e02404822687",
-                      "type": "LVGLSpinboxWidget",
-                      "left": -4,
-                      "top": -4,
-                      "width": 67,
-                      "height": 36,
-                      "customInputs": [],
-                      "customOutputs": [],
-                      "style": {
-                        "objID": "4bac30d8-56bd-4cbe-d784-c023bd386a5b",
-                        "useStyle": "default",
-                        "conditionalStyles": [],
-                        "childStyles": []
-                      },
-                      "hiddenInEditor": true,
-                      "timeline": [],
-                      "eventHandlers": [],
-                      "identifier": "ctrl_param__amplitude_spinbox",
-                      "leftUnit": "px",
-                      "topUnit": "px",
-                      "widthUnit": "px",
-                      "heightUnit": "px",
-                      "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-                      "hiddenFlagType": "literal",
-                      "clickableFlag": true,
-                      "clickableFlagType": "literal",
-                      "flagScrollbarMode": "",
-                      "flagScrollDirection": "",
-                      "scrollSnapX": "",
-                      "scrollSnapY": "",
-                      "checkedStateType": "literal",
-                      "disabledState": false,
-                      "disabledStateType": "literal",
-                      "states": "",
-                      "localStyles": {
-                        "objID": "16adcbda-376d-4747-a74b-c872d1c6c4f0",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_align": "CENTER",
-                              "text_font": "MONTSERRAT_14",
-                              "align": "BOTTOM_RIGHT"
-                            }
-                          }
-                        }
-                      },
-                      "group": "param_selector",
-                      "groupIndex": 0,
-                      "digitCount": 5,
-                      "separatorPosition": 3,
-                      "min": 0,
-                      "max": 18000,
-                      "rollover": false,
-                      "step": 1,
-                      "stepType": "literal",
-                      "value": "pcc_param_amplitude_i32",
-                      "valueType": "expression"
                     },
                     {
                       "objID": "3a45c894-1d8a-47d0-e6f6-a1f8731dfa0d",
@@ -3069,6 +3009,66 @@
                       },
                       "group": "",
                       "groupIndex": 0
+                    },
+                    {
+                      "objID": "0886b7c5-f91b-42ce-cb58-e02404822687",
+                      "type": "LVGLSpinboxWidget",
+                      "left": -4,
+                      "top": -4,
+                      "width": 67,
+                      "height": 36,
+                      "customInputs": [],
+                      "customOutputs": [],
+                      "style": {
+                        "objID": "4bac30d8-56bd-4cbe-d784-c023bd386a5b",
+                        "useStyle": "default",
+                        "conditionalStyles": [],
+                        "childStyles": []
+                      },
+                      "hiddenInEditor": true,
+                      "timeline": [],
+                      "eventHandlers": [],
+                      "identifier": "ctrl_param__amplitude_spinbox",
+                      "leftUnit": "px",
+                      "topUnit": "px",
+                      "widthUnit": "px",
+                      "heightUnit": "px",
+                      "children": [],
+                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "hiddenFlagType": "literal",
+                      "clickableFlag": true,
+                      "clickableFlagType": "literal",
+                      "flagScrollbarMode": "",
+                      "flagScrollDirection": "",
+                      "scrollSnapX": "",
+                      "scrollSnapY": "",
+                      "checkedStateType": "literal",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
+                      "states": "",
+                      "localStyles": {
+                        "objID": "16adcbda-376d-4747-a74b-c872d1c6c4f0",
+                        "definition": {
+                          "MAIN": {
+                            "DEFAULT": {
+                              "text_align": "CENTER",
+                              "text_font": "MONTSERRAT_14",
+                              "align": "BOTTOM_RIGHT"
+                            }
+                          }
+                        }
+                      },
+                      "group": "param_selector",
+                      "groupIndex": 0,
+                      "digitCount": 5,
+                      "separatorPosition": 3,
+                      "min": 0,
+                      "max": 18000,
+                      "rollover": false,
+                      "step": 1,
+                      "stepType": "literal",
+                      "value": "pcc_param_amplitude_i32",
+                      "valueType": "expression"
                     }
                   ],
                   "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
@@ -3394,66 +3394,6 @@
                       "groupIndex": 0
                     },
                     {
-                      "objID": "fbfc6cf4-27ac-43b0-e999-c9d2b2697ee6",
-                      "type": "LVGLSpinboxWidget",
-                      "left": -4,
-                      "top": -4,
-                      "width": 67,
-                      "height": 36,
-                      "customInputs": [],
-                      "customOutputs": [],
-                      "style": {
-                        "objID": "8671bc03-59cc-460e-b52c-4eb00f309ff1",
-                        "useStyle": "default",
-                        "conditionalStyles": [],
-                        "childStyles": []
-                      },
-                      "hiddenInEditor": true,
-                      "timeline": [],
-                      "eventHandlers": [],
-                      "identifier": "ctrl_param__firing_angle_spinbox",
-                      "leftUnit": "px",
-                      "topUnit": "px",
-                      "widthUnit": "px",
-                      "heightUnit": "px",
-                      "children": [],
-                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
-                      "hiddenFlagType": "literal",
-                      "clickableFlag": true,
-                      "clickableFlagType": "literal",
-                      "flagScrollbarMode": "",
-                      "flagScrollDirection": "",
-                      "scrollSnapX": "",
-                      "scrollSnapY": "",
-                      "checkedStateType": "literal",
-                      "disabledState": false,
-                      "disabledStateType": "literal",
-                      "states": "",
-                      "localStyles": {
-                        "objID": "e3b0d578-4096-41c1-8243-158b594d3f9b",
-                        "definition": {
-                          "MAIN": {
-                            "DEFAULT": {
-                              "text_align": "CENTER",
-                              "text_font": "MONTSERRAT_14",
-                              "align": "BOTTOM_RIGHT"
-                            }
-                          }
-                        }
-                      },
-                      "group": "param_selector",
-                      "groupIndex": 0,
-                      "digitCount": 5,
-                      "separatorPosition": 3,
-                      "min": 0,
-                      "max": 18000,
-                      "rollover": false,
-                      "step": 1,
-                      "stepType": "literal",
-                      "value": "pcc_param_firing_angle_i32",
-                      "valueType": "expression"
-                    },
-                    {
                       "objID": "86c2f430-8ec6-4228-c583-a0563df9c7e6",
                       "type": "LVGLContainerWidget",
                       "left": 4,
@@ -3651,6 +3591,66 @@
                       },
                       "group": "",
                       "groupIndex": 0
+                    },
+                    {
+                      "objID": "fbfc6cf4-27ac-43b0-e999-c9d2b2697ee6",
+                      "type": "LVGLSpinboxWidget",
+                      "left": -4,
+                      "top": -4,
+                      "width": 67,
+                      "height": 36,
+                      "customInputs": [],
+                      "customOutputs": [],
+                      "style": {
+                        "objID": "8671bc03-59cc-460e-b52c-4eb00f309ff1",
+                        "useStyle": "default",
+                        "conditionalStyles": [],
+                        "childStyles": []
+                      },
+                      "hiddenInEditor": true,
+                      "timeline": [],
+                      "eventHandlers": [],
+                      "identifier": "ctrl_param__firing_angle_spinbox",
+                      "leftUnit": "px",
+                      "topUnit": "px",
+                      "widthUnit": "px",
+                      "heightUnit": "px",
+                      "children": [],
+                      "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+                      "hiddenFlagType": "literal",
+                      "clickableFlag": true,
+                      "clickableFlagType": "literal",
+                      "flagScrollbarMode": "",
+                      "flagScrollDirection": "",
+                      "scrollSnapX": "",
+                      "scrollSnapY": "",
+                      "checkedStateType": "literal",
+                      "disabledState": false,
+                      "disabledStateType": "literal",
+                      "states": "",
+                      "localStyles": {
+                        "objID": "e3b0d578-4096-41c1-8243-158b594d3f9b",
+                        "definition": {
+                          "MAIN": {
+                            "DEFAULT": {
+                              "text_align": "CENTER",
+                              "text_font": "MONTSERRAT_14",
+                              "align": "BOTTOM_RIGHT"
+                            }
+                          }
+                        }
+                      },
+                      "group": "param_selector",
+                      "groupIndex": 0,
+                      "digitCount": 5,
+                      "separatorPosition": 3,
+                      "min": 0,
+                      "max": 18000,
+                      "rollover": false,
+                      "step": 1,
+                      "stepType": "literal",
+                      "value": "pcc_param_firing_angle_i32",
+                      "valueType": "expression"
                     }
                   ],
                   "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
@@ -3697,7 +3697,7 @@
                     "childStyles": []
                   },
                   "locked": false,
-                  "hiddenInEditor": false,
+                  "hiddenInEditor": true,
                   "timeline": [],
                   "eventHandlers": [],
                   "identifier": "ctrl_param_line_freq_cnt",
@@ -3721,7 +3721,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
-                      "hiddenInEditor": false,
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "ctrl_param_line_freq_name_label",
@@ -3775,6 +3775,7 @@
                         "conditionalStyles": [],
                         "childStyles": []
                       },
+                      "hiddenInEditor": true,
                       "timeline": [],
                       "eventHandlers": [],
                       "identifier": "pcc__line_freq_text",
