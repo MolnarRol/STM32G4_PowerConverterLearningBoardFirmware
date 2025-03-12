@@ -36,6 +36,7 @@
 #include <stdio.h>
 
 #include "PCC_private_interface.h"
+#include "UTIL_public_interface.h"
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 
@@ -67,6 +68,7 @@ u32 pcc_handler_task__ticks__u32    = (u32)0;
 u32 lvgl_task_tick_u32              = (u32)0;
 PCC_Params_struct* active_params_ps;
 u16 dac_val_u16;
+f32 u_f32;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -135,10 +137,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   HAL_DAC_Start(&hdac1, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac2, DAC_CHANNEL_1);
   while (1)
   {
+      dac_val_u16 = (u16)UTIL_MapFloatToRange_f32(0.0f, 4095.0f, -10.0f, 10.0f, u_f32);
       HAL_DAC_SetValue(&hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac_val_u16);
       HAL_DAC_SetValue(&hdac2, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dac_val_u16);
 #if 1
