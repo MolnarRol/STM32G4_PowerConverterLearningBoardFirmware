@@ -34,4 +34,7 @@
 
 #define CONFIG_PCC_IRQ_PRIORITY_d                   2
 
+#define UNITY_INCLUDE_FLOAT
+#define UNITY_EXCLUDE_DOUBLE
+#define UNITY_INCLUDE_PRINT_FORMATTED
 #endif /* GENERAL_CONFIG_H_ */

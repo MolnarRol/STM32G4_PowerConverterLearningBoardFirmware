@@ -36,6 +36,8 @@
 #include <stdio.h>
 
 #include "PCC_private_interface.h"
+
+#include <unity.h>
 //#include "demos/benchmark/lv_demo_benchmark.h"
 /* USER CODE END Includes */
 
@@ -76,7 +78,8 @@ void GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern void test_1_v(void);
+extern void test_2_v(void);
 /* USER CODE END 0 */
 
 /**
@@ -121,11 +124,16 @@ int main(void)
 #endif
 
   ATB_Init_v();
-  SYS_IWDG_Init_v();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  UNITY_BEGIN();
+  RUN_TEST(test_1_v);
+  RUN_TEST(test_2_v);
+  UNITY_END();
+  SYS_IWDG_Init_v();
   while (1)
   {
 #if 1
