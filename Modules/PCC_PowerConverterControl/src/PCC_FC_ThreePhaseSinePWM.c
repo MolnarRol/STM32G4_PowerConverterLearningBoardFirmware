@@ -227,7 +227,7 @@ static void _s_start_v(void)
     TIM1->CCR3 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, v_val_f32);
     TIM1->CCR2 = (u32)UTIL_MapFloatToRange_f32(0.0f, (f32)TIM1->ARR, -100.0f, 100.0f, w_val_f32);
 
-    _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+    _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / (2.0f * _SET_SW_FREQ_d);
 
     _s_commutation_angle__deg__f32 += _s_commutation_angle_step_per_period__deg__f32;
     if(_s_commutation_angle__deg__f32 >= 360.0f) _s_commutation_angle__deg__f32 -= 360.0f;
@@ -275,7 +275,7 @@ static void _s_irq_handler_v(void)
         _s_switching_freq__Hz__f32 = _SET_SW_FREQ_d;
 
         /* Update commutation angle step. */
-        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / (2.0f * _SET_SW_FREQ_d);
     }
 
     /* Modulation frequency was changed. */
@@ -284,7 +284,7 @@ static void _s_irq_handler_v(void)
         _s_modulation_freq__Hz__f32 = _SET_MOD_FREQ_d;
 
         /* Update commutation angle step. */
-        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / _SET_SW_FREQ_d;
+        _s_commutation_angle_step_per_period__deg__f32 = (360.0f * _SET_MOD_FREQ_d) / (2.0f * _SET_SW_FREQ_d);
     }
 
     _s_amplitude__per_cent__f32 = _SET_AMPLIDTUDE_d;
